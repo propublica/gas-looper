@@ -4,11 +4,12 @@ This guide is for distributing the SSI Toolkit org-wide as a [Google Workspace *
 
 If you're a solo operator and trying out the SSI Toolkit for the first time, we recommend leaving this guide and installing the tool as a [Container-bound Apps Script](../README.md#get-your-own-copy) — it's a much easier path to get started.
 
-## When to reach for an Editor dd on
+## When to reach for an Editor add-on
 
 Distributing the SSI Toolkit via Editor add-on comes with specific scaling benefits:
-1. Installable org-wide via the [Workspace Marketplace](https://workspace.google.com/marketplace/).
-2. You want to maintain the SSI Toolkit from a single Apps Script project (container-bound scripts are unique unlinked copies)
+
+1. Installable org-wide via the [Workspace Marketplace](https://workspace.google.com/marketplace/)
+2. SSI Toolkit becomes maintainable from a single Apps Script project (container-bound scripts are unique unlinked copies)
 
 ## Set up your project
 
@@ -20,7 +21,7 @@ Go to [script.google.com](https://script.google.com/u/0/home/all) and create a n
 
 A script's default, Google-managed Cloud project can't back a Marketplace listing. Switch this project to a **standard**, user-owned GCP project before doing anything else here: **Project Settings → Change project**, in the script editor. Follow Google's [Google Cloud projects](https://developers.google.com/apps-script/guides/cloud-platform-projects) guide for the mechanics.
 
-Once you've switched, manually enable the **Drive API** in that Cloud project's console. If you skip this step don't, the Extract Text / Import Drive Links tools with fail.
+Once you've switched, manually enable the **Drive API** in that Cloud project's console.
 
 ### 3. Set your Gemini API key
 

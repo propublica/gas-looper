@@ -35,10 +35,15 @@ who will click through to the code.
   discreet "See the code" line — file path plus function name, never line
   numbers (they drift) and never commit permalinks (they point at stale
   code). Plain-language explanation stays readable without clicking.
-- **Friendly headings, Google's wording underneath.** Each permission gets a
-  plain-language heading (e.g. "Reading and writing your spreadsheet"), with
-  Google's exact consent-screen text quoted directly beneath so the reader
-  can match it to their screen.
+- **Google's wording as the heading, friendly wording underneath.** Each
+  permission's heading is Google's exact consent-screen text, so a reader
+  scanning for "what is this line asking me to approve?" finds it
+  immediately. A plain-language one-line summary (e.g. "Reading and writing
+  your spreadsheet") sits directly beneath, followed by the detail.
+- **No up-front "which screen you'll see" section.** Most readers don't need
+  to be prepared for install-path differences. The two Marketplace-only
+  lines are handled by a short note at the end of the line-by-line section
+  instead (see "Two consent screens" below).
 - **Contact: GitHub Issues**, plus "if your organization installed this for
   you, your admin can tell you which Gemini plan you're on."
 
@@ -117,7 +122,14 @@ the headline guarantee misleading.
 
 ## Two consent screens
 
-The Marketplace install shows **8** lines; a copied template Sheet
+Not given its own section in the doc — covered by a short note at the end
+of the line-by-line section, phrased from the reader's side rather than in
+SDK terms, e.g.: "If you installed the toolkit from the Google Workspace
+Marketplace, or your organization installed it for everyone, you may also
+see these two lines. Google adds them to every Marketplace app by default;
+the toolkit never reads your email address or profile."
+
+Background: the Marketplace install shows **8** lines; a copied template Sheet
 (container-bound) shows **6**. The extra two — "See your primary Google
 Account email address" (`userinfo.email`) and "See your personal info…"
 (`userinfo.profile`) — are added by the Google Workspace Marketplace SDK
@@ -160,14 +172,12 @@ service (Gemini API, Drive API, Google's grounding redirect links).
    - One thing to watch for (T16 caveat, wording above).
    - No outside server — everything runs inside your Apps Script project on
      Google's servers.
-3. **Which screen you'll see** — Marketplace (8 lines) vs. template copy (6
-   lines); the two extra lines are an SDK default the toolkit never uses.
-4. **Line by line** — one subsection per consent-screen line, in the order
-   of the table above. Each: friendly heading → Google's exact wording
-   quoted → what it lets the toolkit do → which feature needs it → "See the
-   code:" line. The two Marketplace-only lines share a single short
-   subsection at the end.
-5. **What happens to your data**
+3. **Line by line** — one subsection per consent-screen line, in the order
+   of the table above. Each: Google's exact wording as the heading →
+   plain-language one-line summary → what it lets the toolkit do → which
+   feature needs it → "See the code:" line. Ends with the Marketplace note
+   covering the two extra identity lines (wording above).
+4. **What happens to your data**
    - *What gets sent where* — Gemini only for AI; Drive/Docs/Sheets are
      read inside Google; the grounding-redirect sentence.
    - *What's kept, and for how long* — OCR temp Doc (deleted immediately);
@@ -178,7 +188,7 @@ service (Gemini API, Drive API, Google's grounding redirect links).
      (paid: Google says it doesn't use your data to improve its products;
      free/unpaid: it may), with a link to Google's current terms and "ask
      whoever set up your API key which plan you're on."
-6. **Questions or concerns** — GitHub Issues; your admin if your
+5. **Questions or concerns** — GitHub Issues; your admin if your
    organization installed it.
 
 ## Changes outside the doc

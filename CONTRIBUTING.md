@@ -54,7 +54,9 @@ npm run clasp:login    # authenticate with Google
 npm run deploy         # build + push to Apps Script
 ```
 
-Reload your dev Sheet. The **SSI Tools** menu should appear.
+On your first push, clasp asks whether to overwrite the manifest. Answer **y**: that's how `appsscript.json`'s Drive advanced service and OAuth scopes reach your project. Answering no (or running non-interactively) skips the push entirely.
+
+Reload your dev Sheet. The **📐 SSI Toolkit** menu should appear. The first time you run anything from it, Google shows a **"Google hasn't verified this app"** warning. Click **Advanced**, then **Go to [your sheet's name] (unsafe)**, and grant access. [`docs/permissions.md`](docs/permissions.md) explains each permission.
 
 ### Day-to-day commands
 
@@ -81,8 +83,10 @@ npm run format:check        # check Prettier formatting
 
 # Utilities
 npm run clasp:open          # open the Apps Script editor in your browser
-npm run clasp:logs          # tail execution logs
+npm run clasp:logs          # open Cloud Logging (needs a linked standard GCP project)
 ```
+
+For container-bound dev, check logs on the script editor's **Executions** page instead. `clasp:logs` only works once you've linked a standard GCP project.
 
 ## Branch Workflow
 

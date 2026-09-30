@@ -69,3 +69,6 @@ or splitting rows. Don't treat these descriptions as a ceiling.
   CONTRIBUTING instead of duplicating it, keeping only agent-specific
   material (sandbox, PR mechanics, session rules). Decided during row 5's
   brainstorm; deferred there to keep that PR docs-only.
+  Also fix two stale names in `CLAUDE.md` found in row 5's review: the
+  menu is "📐 SSI Toolkit" (not "SSI Tools"), and `docs/permissions.md`'s
+  table is "Code references" (not "For the technically curious").

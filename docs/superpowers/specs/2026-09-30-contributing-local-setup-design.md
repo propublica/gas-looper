@@ -89,7 +89,7 @@ push` carries it over. A container-bound script uses Apps Script's default GCP
 4. Create `.clasp.json` at the repo root (README's heredoc, `rootDir:
 "./dist"`); note it's gitignored.
 5. `npm install`, `npm run clasp:login`, `npm run deploy`, then reload the
-   Sheet — the **SSI Tools** menu appears.
+   Sheet — the **📐 SSI Toolkit** menu appears.
 
 Followed by the one-line pointer to `docs/deploying-as-an-editor-add-on.md`.
 
@@ -137,6 +137,6 @@ commands block for `lint:fix`/`format`.
 - `npm run format:check` passes.
 - Every relative link in CONTRIBUTING.md resolves.
 - Manual QA (in PR body): follow Local Setup verbatim on a fresh Sheet without
-  touching the Services panel, then run **SSI Tools → Extract Text** on a Drive
+  touching the Services panel, then run **📐 SSI Toolkit → Open SSI Toolkit → Extract Text** on a Drive
   PDF. A Drive service error means the dropped Advanced Service step must be
   restored.

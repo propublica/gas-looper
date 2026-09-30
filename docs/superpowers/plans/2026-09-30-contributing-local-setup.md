@@ -100,7 +100,7 @@ npm run clasp:login    # authenticate with Google
 npm run deploy         # build + push to Apps Script
 ```
 
-Reload your dev Sheet. The **SSI Tools** menu should appear.
+Reload your dev Sheet. The **📐 SSI Toolkit** menu should appear.
 
 ### Day-to-day commands
 
@@ -297,6 +297,6 @@ Expected: Prettier passes. If the tracker already failed Prettier before this ch
 Pushing hangs in this sandbox (known issue), so hand `git push -u origin AI-119-contributing-local-setup` to the user. After they push, create the PR against `AI-102-docs-restructure-tracker` per CLAUDE.md's "Creating PRs" (curl, with `Authorization: Bearer $GH_TOKEN`, JSON payload written to a `$TMPDIR` file first). The Manual QA feature-specific steps, placed above the template's regression checklist:
 
 1. On a fresh Google Sheet, follow CONTRIBUTING.md → Local Setup verbatim. Do **not** open the Apps Script editor's Services panel.
-2. After `npm run deploy`, reload the Sheet and confirm the **SSI Tools** menu appears.
-3. Run **SSI Tools → Extract Text** on a row linking a Drive PDF. Confirm text is extracted. A Drive service error means the dropped Advanced Service step must be restored.
+2. After `npm run deploy`, reload the Sheet and confirm the **📐 SSI Toolkit** menu appears.
+3. Run **📐 SSI Toolkit → Open SSI Toolkit → Extract Text** on a row linking a Drive PDF. Confirm text is extracted. A Drive service error means the dropped Advanced Service step must be restored.
 4. Click through every link in CONTRIBUTING.md on the PR's rendered file view and confirm each resolves.

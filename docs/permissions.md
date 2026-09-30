@@ -6,13 +6,13 @@ The first time you use SSI Toolkit, Google will ask you to approve a list of per
 
 - **It acts as you.** Approving these permissions lets the toolkit work with your Google account on your behalf. It can only reach things your account can already reach, and nothing more.
 - **It only opens what you point it at.** It reads the sheet you have open, the folders you name, and the files linked in the cells you choose to run it on. It never searches or browses the rest of your Drive, and it has no access at all to your Gmail, Calendar, or other Google apps.
-- **It never deletes your files.** The only thing it ever deletes is a temporary file it created itself (see below). One thing to know: if you choose an existing column for results, the toolkit writes over what's already in that column.
+- **It never deletes your files.** The only thing it ever deletes is a temporary file it created itself (see below).
 - **There's no SSI Toolkit server.** The toolkit runs on Google's own servers, and its AI features use Google's Gemini AI. Your data isn't sent to the toolkit's developers or to any company other than Google.
 - **One thing to watch for:** the toolkit trusts the links in the cells you run it on. If other people can edit your sheet, check that the file links are ones you expect before running AI or Extract Text, since it opens them with your access, not theirs.
 
 ## What does the consent screen mean?
 
-Here is a line-by-line breakdown of each permission request and what features it enables. If you'd like to check any of this against the code, see [For the technically curious](#for-the-technically-curious) at the bottom.
+Here is a line-by-line breakdown of each permission request and what features it enables. If you'd like to check any of this against the code, see [Code references](#code-references) at the bottom.
 
 ### "See, edit, create, and delete all your Google Sheets spreadsheets"
 
@@ -20,6 +20,8 @@ Allows the toolkit to read from and write results to your spreadsheet. Required 
 
 - read the data in the sheet you have open
 - write results back to it, usually into a new column (Sample Rows also adds a tab to hold its sample)
+
+If you choose an existing column for results, the toolkit writes over what's already there.
 
 Although Google's wording says "all," the toolkit only ever opens the spreadsheet you have open, and it never deletes a spreadsheet.
 
@@ -80,15 +82,9 @@ The one exception is AI. When you use AI, the following information is sent to G
 - The prompt you chose
 - The content of any linked files
 
-If an AI input cell contains a YouTube link, Gemini watches that video directly from YouTube.
-
 If you turn on Gemini's optional tools, Gemini may also reach beyond your data. With **Google Search**, it searches the web using wording based on your prompt. With **URL context**, Google's servers visit the web addresses that appear in your prompt, so those websites receive a visit.
 
-To use AI, someone has to connect the toolkit to Gemini with a **Gemini API key**, a code that links the toolkit to a Gemini account. If you made your own copy of the toolkit, that someone is you; otherwise, it's usually whoever set the toolkit up for your team. What Google may do with what you send to Gemini depends on that Gemini account's plan, not on SSI Toolkit:
-
-- **On a paid plan**, Google says it doesn't use your prompts or responses to improve its products. It keeps them for a limited time only to detect abuse.
-- **On the free (unpaid) plan**, Google may use them to improve its products, and people at Google may review them.
-- **In the European Economic Area, Switzerland, or the UK**, Google applies the paid-plan rules even on the free plan.
+To use AI, someone has to connect the toolkit to Gemini with a **Gemini API key**, a code that links the toolkit to a Gemini account. If you made your own copy of the toolkit, that someone is you; otherwise, it's usually whoever set the toolkit up for your team. What Google may do with what you send to Gemini depends on that Gemini account's plan, not on SSI Toolkit. On a paid plan, Google says it doesn't use your prompts to improve its products; on the free plan, it may, and people at Google may review them.
 
 Ask whoever set up your Gemini key which plan you're on. See Google's [Gemini API terms](https://ai.google.dev/gemini-api/terms) for details.
 
@@ -101,7 +97,7 @@ SSI Toolkit doesn't keep its own copy of your data. Here's what does stick aroun
 | Temporary Docs made for text recognition | Deleted as soon as the text is read | You, while it exists (it's in your Drive) |
 | Files sent to Gemini | [48 hours](https://ai.google.dev/gemini-api/docs/files), then deleted automatically | Whoever set up your Gemini key can see a list of them |
 | Progress messages and cost estimates in the sidebar (counts, status messages, and your column names, not your cell contents) | 5 minutes and up to 6 hours | Only you |
-| Error logs: the type of error, sometimes with a short message such as the name of a column that wasn't found, or an error message from Google or Gemini | 30 days ([Google's default](https://docs.cloud.google.com/logging/quotas)) | Whoever runs the toolkit's behind-the-scenes code project: the sheet's owner and anyone who can edit it, if you're using a copy of the template sheet, or your organization, if it installed the toolkit for everyone |
+| Error logs: the type of error, sometimes with a short message such as the name of a column that wasn't found, or an error message from Google or Gemini | 30 days ([Google's default](https://docs.cloud.google.com/logging/quotas)) | Whoever runs the toolkit's behind-the-scenes code project: the sheet's owner and anyone who can edit it, if you're using your own copy of the SSI Toolkit sheet, or your organization, if it installed the toolkit from the Google Workspace Marketplace |
 | Gemini request logs: copies of what was sent and received. **Off unless someone turns them on** | [55 days](https://ai.google.dev/gemini-api/docs/logs-datasets) | Whoever set up your Gemini key |
 
 ## Who can see my data?
@@ -111,17 +107,17 @@ SSI Toolkit doesn't keep its own copy of your data. Here's what does stick aroun
 | SSI Toolkit's developers | Nothing. There's no SSI Toolkit server, so your data never reaches them. |
 | Google | What's already in your Drive and Sheets, plus what you send to Gemini. What Google does with the Gemini part depends on your plan (see [What data is transmitted?](#what-data-is-transmitted)). |
 | Whoever set up your Gemini key | A list of files sent to Gemini (for 48 hours), and copies of requests and responses only if they've turned on request logging. |
-| People who can edit your sheet, if you're using a copy of the template | The toolkit's error logs. They can also see any results the toolkit writes into the sheet, as with anything else in it. |
-| Your organization, if it installed the toolkit for everyone | The toolkit's error logs. |
+| People who can edit your sheet (if you're using your own copy of the SSI Toolkit sheet) | The toolkit's error logs. They can also see any results the toolkit writes into the sheet, as with anything else in it. |
+| Your organization (if it installed the toolkit from the Google Workspace Marketplace) | The toolkit's error logs. |
 | Other websites | Only if you turn on Gemini's URL context tool: those sites receive a visit to the web addresses in your prompt. |
 
 ## Questions or concerns
 
 If something here is unclear or looks wrong, [open an issue](https://github.com/propublica/gas-ssi-toolkit/issues) on the project's GitHub page. If your organization installed the toolkit for you, your admin can tell you which Gemini plan you're on and who can see the project's logs.
 
-## For the technically curious
+## Code references
 
-SSI Toolkit is open source, so you can check every claim on this page against the code. The full list of permissions it requests lives in one file, [`appsscript.json`](../appsscript.json).
+SSI Toolkit is open source. The full list of permissions it requests is in [`appsscript.json`](../appsscript.json).
 
 | Permission | Where it's used in the code |
 |---|---|

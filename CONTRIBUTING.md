@@ -1,39 +1,42 @@
 # Contributing
 
-Start with [Local Setup](#local-setup) to get a working dev loop against your own Google Sheet.
-
-Before opening a PR:
-
-- **Check the threat model.** If your change affects anything documented in [`docs/threat_models/`](docs/threat_models/), or introduces a new threat, update it in the same PR.
-- **Keep [`docs/permissions.md`](docs/permissions.md) accurate.** If you change OAuth scopes in `appsscript.json`, add or change a data flow, change what's retained or logged, or rename/move a function listed in its "Code references" table, update it in the same PR. It's public and user-facing.
-
 ## Local Setup
 
-You'll run the toolkit as a [container-bound script](https://developers.google.com/apps-script/guides/bound) attached to a Google Sheet you own. It's the fastest dev loop: every push shows up in your Sheet's menu, with no test deployment needed. If you're working on add-on-specific behavior or distributing the toolkit, see [Deploying as an Editor Add-on](docs/deploying-as-an-editor-add-on.md) instead.
+These directions will help you run the toolkit as a [container-bound script](https://developers.google.com/apps-script/guides/bound) attached to a Google Sheet you own. It's the fastest dev loop: every push shows up in your Sheet's menu, with no test deployment needed. If you're working on add-on-specific behavior or distributing the toolkit, see [Deploying as an Editor Add-on](docs/deploying-as-an-editor-add-on.md) instead.
 
 ### Prerequisites
 
 - A Google account
-- Node.js 22 (pinned in `.nvmrc`, so `nvm use` picks it up)
+- Node.js 22 (pinned in `.nvmrc`)
 - The Apps Script API enabled at [script.google.com/home/usersettings](https://script.google.com/home/usersettings). Without it, your first push fails with "User has not enabled the Apps Script API."
 - [A Gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
   - Tip: [AI Studio](https://aistudio.google.com/api-keys) makes it easy to mint a key and [set a monthly spend cap](https://aistudio.google.com/spend) to avoid surprise billing
 
 `@google/clasp` is included as a devDependency, so no global install is needed.
 
-### 1. Create a dev Sheet and its Apps Script project
+### 1. Clone the repo
+
+If you don't have push access to `propublica/gas-ssi-toolkit`, fork it first and clone your fork instead.
+
+```zsh
+git clone https://github.com/propublica/gas-ssi-toolkit.git
+cd gas-ssi-toolkit
+nvm use
+```
+
+### 2. Create a dev Sheet and its Apps Script project
 
 Create a new Google Sheet to use as your dev Sheet, then open **Extensions → Apps Script**. This creates an Apps Script project bound to that Sheet.
 
-### 2. Set your Gemini API key
+### 3. Set your Gemini API key
 
-In the script editor: **Project Settings** → **Script Properties** → add `GEMINI_API_KEY` with your API key. Anyone with Editor access to your dev Sheet can see this key.
+In the script editor: **Project Settings** → **Script Properties** → add `GEMINI_API_KEY` with your API key. **Anyone with Editor access to your dev Sheet can see this key.**
 
-### 3. Get the script ID
+### 4. Get the script ID
 
 In the script editor: **Project Settings** → copy the **Script ID**.
 
-### 4. Create `.clasp.json`
+### 5. Create `.clasp.json`
 
 At the repo root (the file is gitignored):
 
@@ -46,7 +49,7 @@ cat > .clasp.json << 'EOF'
 EOF
 ```
 
-### 5. Install and deploy
+### 6. Install and deploy
 
 ```zsh
 npm install
@@ -157,4 +160,8 @@ The code follows the Google TypeScript Style Guide. ESLint, Prettier, and the hu
 - UpperCamelCase for types/interfaces, lowerCamelCase for functions/variables, CONSTANT_CASE for constants
 - Prefix unused parameters with `_`
 
-Run `npm run lint:fix` and `npm run format` before pushing (see [Day-to-day commands](#day-to-day-commands)).
+## Before opening a PR
+
+- **Run `npm run lint:fix` and `npm run format`** (see [Day-to-day commands](#day-to-day-commands)).
+- **Check the threat model.** If your change affects anything documented in [`docs/threat_models/`](docs/threat_models/), or introduces a new threat, update it in the same PR.
+- **Keep [`docs/permissions.md`](docs/permissions.md) accurate.** If you change OAuth scopes in `appsscript.json`, add or change a data flow, change what's retained or logged, or rename/move a function listed in its "Code references" table, update it in the same PR. It's public and user-facing.

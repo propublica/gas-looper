@@ -52,28 +52,35 @@ push` carries it over. A container-bound script uses Apps Script's default GCP
 
 ## Resulting structure of CONTRIBUTING.md
 
-1. `# Contributing` + short intro containing:
-   - Threat-model pointer: before opening a PR, check whether the change
-     affects anything in [`docs/threat_models/`](../../threat_models/) and
-     update it in the same PR if so.
-   - `docs/permissions.md` pointer: changes to OAuth scopes, data flows, or
-     functions listed in its code-references table must update it in the same
-     PR (it's public and user-facing). One line beyond the issue's ask; both
-     obligations already exist in `CLAUDE.md` but aren't visible to a human
-     contributor.
+1. `# Contributing` (no intro)
 2. `## Local Setup` (new)
 3. `## Branch Workflow` (unchanged)
 4. `## Exposing a new server function` (promoted from "Adding Features";
    content unchanged)
 5. `## Testing` (trimmed)
 6. `## Code Style` (trimmed)
+7. `## Before opening a PR` (new) — a closing checklist:
+   - Run `npm run lint:fix` and `npm run format` (moved from Code Style's
+     closing line).
+   - Threat-model pointer: check whether the change affects anything in
+     [`docs/threat_models/`](../../threat_models/) and update it in the same
+     PR if so.
+   - `docs/permissions.md` pointer: changes to OAuth scopes, data flows,
+     retention/logging, or functions listed in its "Code references" table
+     must update it in the same PR (it's public and user-facing). One line
+     beyond the issue's ask; both obligations already exist in `CLAUDE.md`
+     but aren't visible to a human contributor.
+
+   Revised during PR review: the issue suggested placing the threat-model
+   pointer "near the top", but contributors reach for it when opening a PR,
+   not during setup.
 
 ### Local Setup
 
 **Prerequisites**
 
 - A Google account
-- Node.js 22 (pinned in `.nvmrc`; `nvm use` picks it up)
+- Node.js 22 (pinned in `.nvmrc`)
 - Apps Script API enabled at script.google.com/home/usersettings — without it
   the first push fails with "User has not enabled the Apps Script API."
 - A Gemini API key, with README's AI Studio spend-cap tip
@@ -81,14 +88,17 @@ push` carries it over. A container-bound script uses Apps Script's default GCP
 
 **Steps**
 
-1. Create a new Google Sheet to use as your dev Sheet, then open
+1. `git clone`, `cd`, `nvm use`. Contributors without push access fork first
+   and clone their fork. (Added during PR review — the goal starts at clone
+   and step 5 assumes the repo root exists.)
+2. Create a new Google Sheet to use as your dev Sheet, then open
    **Extensions → Apps Script**. This creates the container-bound project.
-2. **Project Settings → Script Properties** → add `GEMINI_API_KEY`. Keep
+3. **Project Settings → Script Properties** → add `GEMINI_API_KEY`. Keep
    README's note: the key is visible to anyone with Editor access to the Sheet.
-3. **Project Settings** → copy the **Script ID**.
-4. Create `.clasp.json` at the repo root (README's heredoc, `rootDir:
+4. **Project Settings** → copy the **Script ID**.
+5. Create `.clasp.json` at the repo root (README's heredoc, `rootDir:
 "./dist"`); note it's gitignored.
-5. `npm install`, `npm run clasp:login`, `npm run deploy`, then reload the
+6. `npm install`, `npm run clasp:login`, `npm run deploy`, then reload the
    Sheet — the **📐 SSI Toolkit** menu appears.
 
 Followed by the one-line pointer to `docs/deploying-as-an-editor-add-on.md`.
@@ -109,9 +119,9 @@ subsections unchanged.
 
 Lead with: ESLint + Prettier + husky pre-commit hooks enforce most of this.
 Keep only the rules tooling doesn't mechanically catch: named exports only;
-`unknown` over `any`; naming conventions (UpperCamelCase / lowerCamelCase /
-CONSTANT*CASE); `*`-prefix unused parameters. Closing line points to the
-commands block for `lint:fix`/`format`.
+`unknown` over `any`; naming conventions (`UpperCamelCase` / `lowerCamelCase` /
+`CONSTANT_CASE`); prefix unused parameters with an underscore. The "run
+`lint:fix` and `format`" reminder moves to Before opening a PR.
 
 ## Out of scope
 

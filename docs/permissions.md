@@ -19,11 +19,11 @@ Each heading below is the exact wording Google shows you, in the same order.
 
 **Reading and writing your spreadsheet.**
 
-Every tool reads from the sheet you have open and writes its results back into it, usually into a new column. Sample Rows also adds a new tab to hold the sample. If you use another Google Sheet as an input to Run AI, the toolkit reads that Sheet too.
+Every tool reads from the sheet you have open and writes its results back into it, usually into a new column. Sample Rows also adds a tab to hold the sample, or adds to the one it made last time.
 
-The toolkit never deletes a spreadsheet. Google doesn't offer a narrower permission that would still let it read the other Sheets you link to, which is why the wording says "all."
+Although Google's wording says "all," the toolkit only ever opens the spreadsheet you have open, and it never deletes a spreadsheet. (If you link another Google Sheet as a Run AI input, the toolkit reads it using the Drive permission below, not this one.)
 
-**See the code:** [`src/server/index.ts`](../src/server/index.ts) (each tool's entry point, e.g. `runBatchAI`), [`src/server/safe-writes.ts`](../src/server/safe-writes.ts) (`writeSafeValue`, the one path for writing to cells), [`src/server/drive.ts`](../src/server/drive.ts) (`exportAndEncodeFile`, for reading a linked Sheet)
+**See the code:** [`src/server/index.ts`](../src/server/index.ts) (each tool's entry point, e.g. `runBatchAI`, all of which start from `getActiveSpreadsheet`), [`src/server/safe-writes.ts`](../src/server/safe-writes.ts) (`writeSafeValue`, the one path for writing to cells)
 
 ### "See and download all your Google Drive files"
 
@@ -31,7 +31,7 @@ The toolkit never deletes a spreadsheet. Google doesn't offer a narrower permiss
 
 This lets the toolkit:
 
-- list the files inside a folder you name (Import Drive Links). It collects each file's link (and checks its file type, if you filter by type), not its contents.
+- list the files inside a folder you name, including its subfolders (Import Drive Links and recipes). It collects each file's link (and checks its file type, if you filter by type), not its contents.
 - read the text of files linked in your sheet (Extract Text).
 - download files linked in your sheet so they can be sent to Gemini for analysis (Run AI).
 
@@ -55,7 +55,7 @@ The temporary Doc is deleted permanently as soon as its text has been read, not 
 
 Extract Text uses this to read the text of Google Docs linked in your sheet, and to read the temporary Doc described above.
 
-The toolkit only reads Docs. It never edits or deletes a Doc you own. As with Sheets, Google doesn't offer a narrower permission that would still let it read the Docs you link to.
+The toolkit only reads Docs. It never edits or deletes any of your existing Docs. The Google Docs service the toolkit uses in Apps Script needs this permission even just to read a Doc you link to.
 
 **See the code:** [`src/server/drive.ts`](../src/server/drive.ts) (`extractTextUniversal`)
 
@@ -69,7 +69,7 @@ Apps Script needs this permission for any web request the code makes itself. SSI
 - **Google Drive's API**, to download the files you've linked so they can be sent to Gemini.
 - **Google's own search-result links**, when Gemini uses Google Search to answer. Gemini returns its sources as Google redirect links, and the toolkit checks each one to show you the real web address. It doesn't send any of your data in that step, and it doesn't visit the site itself.
 
-No data is sent to any service outside Google.
+The toolkit's own code never sends data to any service outside Google. (Gemini's optional tools work a little differently; see [What gets sent where](#what-gets-sent-where).)
 
 **See the code:** [`src/server/api.ts`](../src/server/api.ts) (`callGeminiAPI`, `callGeminiAPIBatch`), [`src/server/files.ts`](../src/server/files.ts) (`uploadFilesToGemini`), [`src/server/drive.ts`](../src/server/drive.ts) (`fetchDriveMetadata`, `downloadDriveFiles`), [`src/server/utils.ts`](../src/server/utils.ts) (`resolveGroundingUris`)
 
@@ -91,14 +91,16 @@ Google adds these two to every Marketplace app by default. SSI Toolkit never rea
 
 ### What gets sent where
 
-When you use **Run AI** or the `=SSI()` formula, the cell values and files you selected are sent to Google's Gemini API to be analyzed. That's the only place your data goes outside of Google Drive and Sheets. **Import Drive Links**, **Extract Text**, and **Sample Rows** don't use Gemini at all; they work entirely within Google Drive, Docs, and Sheets.
+When you use **Run AI** or the `=SSI()` formula, the cell values you selected (and, for Run AI, their column names and any linked files) are sent to Google's Gemini API to be analyzed. That's the only place your data goes outside of Google Drive and Sheets. **Import Drive Links**, **Extract Text**, and **Sample Rows** don't use Gemini at all; they work entirely within Google Drive, Docs, and Sheets.
+
+If you turn on Gemini's optional tools, Gemini may reach beyond your data. With **Google Search**, it searches the web using wording based on your prompt. With **URL context**, Google's servers visit the web addresses that appear in your prompt, so those websites receive a request for that address. The toolkit itself still only talks to Google.
 
 ### What's kept, and for how long
 
 - **The temporary OCR Doc**: deleted as soon as its text is read (see above).
-- **Files sent to Gemini**: stored by Gemini's Files API and deleted automatically after 48 hours ([Google's documentation](https://ai.google.dev/gemini-api/docs/files)).
-- **Progress and run statistics**: the sidebar's progress messages and cost estimates are held in temporary storage tied to your account, for 5 minutes and up to 6 hours respectively. They contain counts and status messages, not your content.
-- **Error logs**: when something goes wrong, the toolkit records only the *type* of error, never the error's message or any of your content. Whoever runs the toolkit's Apps Script project can see these logs: you, if you made your own copy, or your organization, if it installed the toolkit for everyone.
+- **Files sent to Gemini**: stored by Gemini's Files API, in the Google Cloud project that owns the Gemini API key, and deleted automatically after 48 hours ([Google's documentation](https://ai.google.dev/gemini-api/docs/files)). Whoever owns that key can see a list of them while they're stored.
+- **Progress and run statistics**: the sidebar's progress messages and cost estimates are held in temporary storage tied to your account, for 5 minutes and up to 6 hours respectively. They contain counts, status messages, and your column names, not your cell contents.
+- **Error logs**: when something goes wrong, the toolkit's own logging records only the *type* of error. Google also automatically logs errors the toolkit shows you, and unexpected crashes. Those entries can include a short message, such as the name of a column that wasn't found, or an error message from Google or Gemini. Whoever runs the toolkit's Apps Script project can see these logs. If the toolkit is attached to a copy of the template sheet, that's the sheet's owner and anyone who can edit it. If your organization installed it for everyone, it's your organization.
 
 The toolkit itself doesn't keep a copy of your data anywhere else.
 

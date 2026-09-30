@@ -143,6 +143,9 @@ part of `drive.readonly`'s use, not an identity read.
 
 ## Scope-to-code map
 
+**Correction (added after final review, 2026-09-30):** the `spreadsheets` row below is wrong about linked Sheets. `exportAndEncodeFile` is reachable only via `runInference`, which has no production caller. In production, Run AI reads a linked Sheet through the Drive REST CSV export in `downloadDriveFiles` (under `drive.readonly`). No production code opens any spreadsheet but the active one. The doc says so instead of claiming no narrower Sheets permission exists. Whether to narrow to `spreadsheets.currentonly` is a separate follow-up question. The same review also tightened the doc's error-log claim (`exceptionLogging: STACKDRIVER` logs re-thrown and uncaught messages), its "outside Google" claim (Gemini's optional URL context and Search tools), and its log-visibility audience (editors of a container-bound copy).
+
+
 Source of truth for scopes: `appsscript.json` (re-verify at implementation
 time). Order matches the Marketplace consent screen.
 

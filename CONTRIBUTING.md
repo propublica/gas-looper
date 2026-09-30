@@ -1,5 +1,89 @@
 # Contributing
 
+Start with [Local Setup](#local-setup) to get a working dev loop against your own Google Sheet.
+
+Before opening a PR:
+
+- **Check the threat model.** If your change affects anything documented in [`docs/threat_models/`](docs/threat_models/), or introduces a new threat, update it in the same PR.
+- **Keep [`docs/permissions.md`](docs/permissions.md) accurate.** If you change OAuth scopes in `appsscript.json`, add or change a data flow, change what's retained or logged, or rename/move a function listed in its "Code references" table, update it in the same PR. It's public and user-facing.
+
+## Local Setup
+
+You'll run the toolkit as a [container-bound script](https://developers.google.com/apps-script/guides/bound) attached to a Google Sheet you own. It's the fastest dev loop: every push shows up in your Sheet's menu, with no test deployment needed. If you're working on add-on-specific behavior or distributing the toolkit, see [Deploying as an Editor Add-on](docs/deploying-as-an-editor-add-on.md) instead.
+
+### Prerequisites
+
+- A Google account
+- Node.js 22 (pinned in `.nvmrc`, so `nvm use` picks it up)
+- The Apps Script API enabled at [script.google.com/home/usersettings](https://script.google.com/home/usersettings). Without it, your first push fails with "User has not enabled the Apps Script API."
+- [A Gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
+  - Tip: [AI Studio](https://aistudio.google.com/api-keys) makes it easy to mint a key and [set a monthly spend cap](https://aistudio.google.com/spend) to avoid surprise billing
+
+`@google/clasp` is included as a devDependency, so no global install is needed.
+
+### 1. Create a dev Sheet and its Apps Script project
+
+Create a new Google Sheet to use as your dev Sheet, then open **Extensions → Apps Script**. This creates an Apps Script project bound to that Sheet.
+
+### 2. Set your Gemini API key
+
+In the script editor: **Project Settings** → **Script Properties** → add `GEMINI_API_KEY` with your API key. Anyone with Editor access to your dev Sheet can see this key.
+
+### 3. Get the script ID
+
+In the script editor: **Project Settings** → copy the **Script ID**.
+
+### 4. Create `.clasp.json`
+
+At the repo root (the file is gitignored):
+
+```zsh
+cat > .clasp.json << 'EOF'
+{
+  "scriptId": "<your-script-id>",
+  "rootDir": "./dist"
+}
+EOF
+```
+
+### 5. Install and deploy
+
+```zsh
+npm install
+npm run clasp:login    # authenticate with Google
+npm run deploy         # build + push to Apps Script
+```
+
+Reload your dev Sheet. The **SSI Tools** menu should appear.
+
+### Day-to-day commands
+
+```bash
+# Build
+npm run build               # clean build to dist/
+npm run build:watch         # rebuild on file changes
+
+# Deploy
+npm run deploy              # build + push to your Apps Script project
+npm run deploy:watch        # rebuild and push on every change
+
+# Test
+npm test                    # run all tests
+npm run test:watch          # watch mode
+npm run test:coverage       # with per-file coverage thresholds
+
+# Quality
+npm run lint                # ESLint
+npm run lint:fix            # ESLint with auto-fix
+npm run typecheck           # type-check without building
+npm run format              # Prettier (rewrites files)
+npm run format:check        # check Prettier formatting
+
+# Utilities
+npm run clasp:open          # open the Apps Script editor in your browser
+npm run clasp:logs          # tail execution logs
+```
+
 ## Branch Workflow
 
 ```
@@ -9,25 +93,7 @@ develop        → main      (PR = release gate)
 
 Feature work happens on branches, merged to `develop` via PR. When ready to ship, `develop` is merged to `main` via a PR containing manual QA instructions — that merge is the release gate.
 
-## Adding Features
-
-### Adding a new Gemini tool
-
-The Gemini tool system spans three layers, linked by `ToolId` (a string union in `src/shared/types.ts`). `ToolId` is the only tool concept that crosses the `google.script.run` RPC boundary.
-
-**To add a new Gemini tool, touch exactly three files:**
-
-1. `src/shared/types.ts` — add the string literal to `ToolId`
-2. `src/server/tools.ts` — add a `GeminiTool` entry to `TOOL_REGISTRY` (`Record<ToolId, GeminiTool>` enforces exhaustiveness at compile time — omitting an entry is a type error)
-3. `src/client/tools.ts` — add a `ToolCatalogEntry` to `TOOL_CATALOG` for sidebar display
-
-`GeminiTool` is a discriminated union: `{ kind: "grounding" }` produces `{ [id]: {} }` in the Gemini REST payload; `{ kind: "function" }` produces `{ function_declarations: [...] }`.
-
-### Adding a recipe
-
-Recipes are defined in `src/client/recipes.ts` as entries in the `RECIPES` array. Each `RecipeDefinition` describes the recipe's display metadata, the form fields shown during prep, and how those fields map to a `RunConfig` passed to Run AI. Adding a recipe is entirely client-side and requires no server changes — it's one of the most accessible contributions to make.
-
-### Exposing a new server function
+## Exposing a new server function
 
 Apps Script has no module system — it only sees top-level global functions. Rollup wraps everything in an IIFE assigned to `_GASEntry`, and `rollup.config.js`'s `footer` field appends plain global stubs that delegate into it (e.g. `function onOpen(e) { _GASEntry.onOpen(e); }`).
 
@@ -40,13 +106,7 @@ Skipping step 2 means Apps Script can't discover or call the function. If the fu
 
 ## Testing
 
-Tests live in `__tests__/`. Run them with:
-
-```bash
-npm test                    # all tests
-npm run test:watch          # watch mode
-npm run test:coverage       # with per-file coverage thresholds
-```
+Tests live in `__tests__/`. See [Day-to-day commands](#day-to-day-commands) for how to run them.
 
 ### Mocking GAS globals
 
@@ -86,14 +146,11 @@ Coverage is enforced per-file. Run `npm run test:coverage` to check thresholds. 
 
 ## Code Style
 
-Follows the Google TypeScript Style Guide, enforced by ESLint + Prettier + pre-commit hooks:
+The code follows the Google TypeScript Style Guide. ESLint, Prettier, and the husky pre-commit hooks enforce most of it automatically. The conventions tooling doesn't fully catch:
 
 - Named exports only (no default exports)
-- `const` by default; no `var`, no `namespace`
-- `===` always; avoid `any` (prefer `unknown`)
+- Avoid `any`; prefer `unknown`
 - UpperCamelCase for types/interfaces, lowerCamelCase for functions/variables, CONSTANT_CASE for constants
-- Semicolons required, double quotes, trailing commas
-- Explicit return types on exported functions
 - Prefix unused parameters with `_`
 
-Run `npm run lint:fix` and `npm run format` before pushing.
+Run `npm run lint:fix` and `npm run format` before pushing (see [Day-to-day commands](#day-to-day-commands)).

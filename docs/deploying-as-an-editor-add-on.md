@@ -35,6 +35,8 @@ You don't want to publish publicly: **private publishing** makes your listing im
 
 **Skip the "unverified app" warning entirely.** Under **APIs & Services → OAuth consent screen → Audience** in your GCP project, set **User Type** to **Internal** rather than **External**.
 
+**Something to share with your users.** Your users will see a list of permissions when they first open the toolkit. [permissions.md](permissions.md) explains each one in plain language, including the two extra email/profile lines the Marketplace adds by default.
+
 **TK:** a marketplace-listing asset packet (icon, screenshots, promotional copy) for this toolkit doesn't exist yet. Use your own placeholders for now.
 
 ## Deploy your code

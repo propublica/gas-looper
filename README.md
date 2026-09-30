@@ -24,6 +24,8 @@ The first time you run anything from the menu, Google will show a **"Google hasn
 
 To continue: click **Advanced** (near the bottom of the warning), then click **Go to [your sheet's name] (unsafe)**. "Unsafe" here just means Google hasn't reviewed the app — you're granting access to your own independent copy of code you can inspect in this repo, not to a stranger's app. You'll only need to do this once per copy.
 
+Wondering what the permissions on the next screen mean? [Permissions: what SSI Toolkit asks for, and why](docs/permissions.md) explains each one in plain language.
+
 If you want to build, modify, or contribute to the toolkit itself, keep reading — the rest of this README covers the developer setup.
 
 ## Deployment (for contributors)

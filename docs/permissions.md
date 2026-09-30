@@ -1,6 +1,6 @@
 # Permissions: what SSI Toolkit asks for, and why
 
-The first time you use SSI Toolkit, Google will ask you to approve a list of permissions. This page goes through each one: what it lets the toolkit do, which feature needs it, and what the toolkit *can't* do with it.
+The first time you use SSI Toolkit, Google will ask you to approve a list of permissions. This page goes through each one.
 
 ## TL;DR
 
@@ -31,7 +31,7 @@ Allows the toolkit to read files and folders in your Drive. Required to:
 
 - look inside a folder you choose, including its subfolders, and list the files in it
 - read files linked in your spreadsheet, including other Google Sheets
-- send the contents of linked files (Docs, Sheets, PDFs, images) to Gemini to be analyzed
+- read linked files (Docs, Sheets, PDFs, images) so their contents can be analyzed by Gemini
 
 This permission is read-only: it can't change or delete anything in your Drive.
 
@@ -41,7 +41,7 @@ Allows the toolkit to create and delete files it makes itself. Required to:
 
 - create a temporary Google Doc so Google can turn a PDF or image into text (text recognition, sometimes called OCR), then delete it
 
-The temporary Doc's name starts with `[SSI-TEMP]` and it's deleted as soon as the text has been read. This permission can't touch any file the toolkit didn't create.
+The temporary Doc's name starts with `[SSI-TEMP]` and it's deleted as soon as the text has been read.
 
 ### "See, edit, create, and delete all your Google Docs documents"
 
@@ -57,7 +57,7 @@ The toolkit never edits or deletes any of your existing Docs.
 Allows the toolkit to talk to other Google services over the internet. Required to:
 
 - send your data to Google's Gemini AI to be analyzed
-- download files you've linked from Google Drive so they can be sent to Gemini
+- fetch those linked files from Google Drive over the internet. Apps Script counts this as an outside connection even though it stays within Google
 - look up the real web addresses behind the sources Gemini cites when it uses Google Search
 
 No data is sent to any service outside Google.
@@ -76,7 +76,7 @@ Google adds these two to every Marketplace app by default. SSI Toolkit never rea
 
 The toolkit is built on Google Apps Script, Google's tool for adding features to Sheets, Docs, and other Google apps. That means it runs on Google's servers. There is no separate SSI Toolkit server. If you use a Google Workspace account (through work or school), Apps Script is covered by [the same level of data protection](https://workspaceupdates.googleblog.com/2026/06/google-apps-script-workspace-core-service.html) as the rest of your Workspace.
 
-The one exception is AI. When you use AI, the following information is sent to Google's Gemini AI:
+The one exception is AI. When you use AI, the following information is sent to Google's Gemini servers:
 
 - The cell values you selected, labeled with their column names by default
 - The prompt you chose
@@ -98,7 +98,7 @@ SSI Toolkit doesn't keep its own copy of your data. Here's what does stick aroun
 | Files sent to Gemini | [48 hours](https://ai.google.dev/gemini-api/docs/files), then deleted automatically | Whoever set up your Gemini key can see a list of them |
 | Progress messages and cost estimates in the sidebar (counts, status messages, and your column names, not your cell contents) | 5 minutes and up to 6 hours | Only you |
 | Error logs: the type of error, sometimes with a short message such as the name of a column that wasn't found, or an error message from Google or Gemini | 30 days ([Google's default](https://docs.cloud.google.com/logging/quotas)) | Whoever runs the toolkit's behind-the-scenes code project: the sheet's owner and anyone who can edit it, if you're using your own copy of the SSI Toolkit sheet, or your organization, if it installed the toolkit from the Google Workspace Marketplace |
-| Gemini request logs: copies of what was sent and received. **Off unless someone turns them on** | [55 days](https://ai.google.dev/gemini-api/docs/logs-datasets) | Whoever set up your Gemini key |
+| Gemini request logs: copies of what was sent and received. **Off unless someone turns them on** | None by default. If turned on: [55 days](https://ai.google.dev/gemini-api/docs/logs-datasets), or longer if saved to a dataset | Whoever set up your Gemini key |
 
 ## Who can see my data?
 

@@ -290,6 +290,7 @@ Changes that always warrant a threat model review before submitting a PR:
 - **`appsscript.json` OAuth scope changes** — expanding scopes affects T4 (scope expansion variant) and T5; note the change and the justification in the threat model
 - **New npm dependencies** — affects T10 (build dependency compromise); flag in the PR security checklist
 - **New or changed GCP integrations** — any new Google Cloud service, new Gemini endpoint, new data types sent, or changes to the Files API upload path; review T2, T3, T11, and T14 as a starting point
+- **Anything `docs/permissions.md` describes** — OAuth scope changes, new or changed data flows, retention/logging changes, or renaming/moving a function it links under "See the code" must update `docs/permissions.md` in the same PR. It's public and user-facing; a stale claim there is a trust problem, not just a docs bug. Its "One thing to watch for" caveat exists because T16/R23 is open (AI-77) — update or remove it when that lands
 
 ## Git Worktrees
 

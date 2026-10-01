@@ -13,6 +13,17 @@ Distributing the SSI Toolkit via Editor add-on comes with specific scaling benef
 
 ## Set up your project
 
+### Prerequisites
+
+- A Google Workspace account in the organization you're deploying to (a personal Gmail account can't publish privately)
+- Permission to create or link a standard GCP project in that org
+- Node.js 22 (pinned in `.nvmrc`)
+- The Apps Script API enabled at [script.google.com/home/usersettings](https://script.google.com/home/usersettings). Without it, your first push fails with "User has not enabled the Apps Script API."
+- [A Gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
+  - Tip: [AI Studio](https://aistudio.google.com/api-keys) makes it easy to mint a key and [set a monthly spend cap](https://aistudio.google.com/spend) to avoid surprise billing
+
+[`@google/clasp`](https://github.com/google/clasp) is included as a devDependency, so no global install is needed.
+
 ### 1. Create an Apps Script project
 
 Go to [script.google.com](https://script.google.com/u/0/home/all) and create a new, standalone project. This repo's `appsscript.json` already declares the Drive Advanced Service in its manifest, and `clasp push` (see [Deploy your code](#deploy-your-code) below) carries that declaration over automatically — but see the next step for one more thing this requires.
@@ -25,7 +36,7 @@ Once you've switched, manually enable the **Drive API** in that Cloud project's 
 
 ### 3. Set your Gemini API key
 
-In the script editor: **Project Settings → Script Properties** → add a property called `GEMINI_API_KEY` and populate with your own key. [AI Studio](https://aistudio.google.com/api-keys) makes it easy to mint one and [set a monthly spend cap](https://aistudio.google.com/spend) to avoid surprise billing.
+In the script editor: **Project Settings → Script Properties** → add a property called `GEMINI_API_KEY` and populate with your own key.
 
 ## Set up the Marketplace listing
 
@@ -42,8 +53,6 @@ You don't want to publish publicly: **private publishing** makes your listing im
 ## Deploy your code
 
 It's time to copy the SSI Toolkit code into your Apps Script project!
-
-You'll need Node.js 22+, this repo cloned locally, and the Apps Script API enabled at [script.google.com/home/usersettings](https://script.google.com/home/usersettings) — without it, your first push fails with "User has not enabled the Apps Script API." [`clasp`](https://developers.google.com/apps-script/guides/clasp) is included as a devDependency — no global install needed.
 
 **First-time setup:**
 

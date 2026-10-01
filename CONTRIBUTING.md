@@ -12,7 +12,7 @@ These directions will help you run the toolkit as a [container-bound script](htt
 - [A Gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
   - Tip: [AI Studio](https://aistudio.google.com/api-keys) makes it easy to mint a key and [set a monthly spend cap](https://aistudio.google.com/spend) to avoid surprise billing
 
-`@google/clasp` is included as a devDependency, so no global install is needed.
+[`@google/clasp`](https://github.com/google/clasp) is included as a devDependency, so no global install is needed.
 
 ### 1. Clone the repo
 

@@ -16,7 +16,7 @@ These directions will help you run the toolkit as a [container-bound script](htt
 
 ### 1. Clone the repo
 
-If you don't have push access to `propublica/gas-ssi-toolkit`, fork it first and clone your fork instead.
+If you're contributing from outside ProPublica, fork the repo first and clone your fork's URL instead.
 
 ```zsh
 git clone https://github.com/propublica/gas-ssi-toolkit.git

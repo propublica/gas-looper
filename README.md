@@ -122,7 +122,7 @@ Example D → {"change":"Major Change","rationale":"Removed a richly diverse and
 
 </details>
 
-Extract the `change` field the same way, filter to Major Change, and read those rationales first.
+Pull out the category with `=REGEXEXTRACT(C2, """change"":\s*""([^""]+)""")` (where C2 is the answer cell), filter to Major Change, and read those rationales first.
 
 ## Getting help
 

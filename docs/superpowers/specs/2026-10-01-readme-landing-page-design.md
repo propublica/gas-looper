@@ -121,17 +121,52 @@ the output column lets you do. Two examples for now; more (Drive files, web
 addresses) can be added later.
 
 1. **YouTube.** ~45 Glenn Beck videos that mention Ken Paxton; which are
-   actual interviews? Prompt (from Aaron's blog post): *"Does this video
-   contain an interview between Glenn Beck and Ken Paxton? (Yes/No)"*. Output:
-   filter on Yes and that's your list.
-2. **Plain text.** 38,000 nonprofit mission statements — did they remove DEI
-   language? Prompt: **TK — Aaron to supply.** Output: a column you can filter;
-   link to the published
-   [Deleting DEI](https://www.propublica.org/article/deleting-dei-language-nonprofits-irs-forms)
-   story.
+   actual conversations between the two? Prompt shown **in full**, verbatim
+   (the one actually used — it replaces the simplified Yes/No version in the
+   blog post):
 
-TK markers stay visible in the merged README until filled; they are not
-invented.
+   ```
+   Return a single JSON object with exactly the following fields -- no other fields, and no text before or after the JSON object.
+
+   - `is_paxton_interview` -- a boolean (true/false). True if this video shows Glenn Beck and Texas Attorney General Ken Paxton having a conversation with each other (e.g. an interview, phone call, or direct exchange). False if Paxton is only mentioned, shown in a clip, or discussed without an actual conversation between the two.
+   - `reasoning` -- a string. A brief explanation for the classification, citing what is actually shown or said in the video.
+   ```
+
+   Output: filter `is_paxton_interview` to true and that's your list; the
+   `reasoning` field is what you check.
+
+2. **Plain text.** 38,000 nonprofit mission statements, two consecutive years
+   per nonprofit — did their DEI language change? Two input columns, which also
+   shows multi-column prompts. Link to the published
+   [Deleting DEI](https://www.propublica.org/article/deleting-dei-language-nonprofits-irs-forms)
+   story. The page shows a **condensed** prompt, explicitly labeled "condensed
+   for readability," followed by a collapsed
+   `<details><summary>Full prompt we used</summary>` block containing the
+   full prompt verbatim (as supplied by Aaron, 2026-10-01; ~600 words with
+   definitions, evidence lists, classification rules, tie-breakers, output
+   format, and examples). Condensed version:
+
+   ```
+   Compare these two consecutive-year mission statements from the same
+   nonprofit. Using only the text provided, judge how their DEI (diversity,
+   equity, inclusion) language changed.
+
+   - Major Change: explicit DEI language or commitments added or removed, or a
+     big shift in specificity (named groups, goals, resources).
+   - Subtle Change: smaller shifts, like adding "inclusive" or "welcoming"
+     without concrete commitments, or softening explicit language.
+   - No Change: same DEI content; only style or unrelated edits.
+   If unsure, pick the less severe category.
+
+   Return only JSON:
+   {"change": "No Change" | "Subtle Change" | "Major Change",
+    "rationale": "<≤50 words citing the specific language differences>"}
+   ```
+
+   Output: a category column plus a rationale — filter to Major Change and
+   read those rationales first.
+
+The full prompt text lives in the implementation plan (verbatim), not here.
 
 ### Getting help
 

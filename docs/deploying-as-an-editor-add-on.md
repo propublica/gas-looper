@@ -54,10 +54,12 @@ You don't want to publish publicly: **private publishing** makes your listing im
 
 It's time to copy the SSI Toolkit code into your Apps Script project!
 
+**Always deploy from `main`.** `main` only changes when we cut a release, so it always matches the latest release. `develop`, the repo's default branch, holds unreleased work in progress — a plain `git clone` lands you there. Each release is also tagged (`v7`, `v8`, …) if you'd rather pin a specific version or roll back: `git checkout <tag>`.
+
 **First-time setup:**
 
 ```zsh
-git clone https://github.com/propublica/gas-ssi-toolkit.git
+git clone --branch main https://github.com/propublica/gas-ssi-toolkit.git
 cd gas-ssi-toolkit
 npm install
 ```
@@ -87,6 +89,7 @@ Before pointing your Marketplace listing at this deployment (next section), veri
 **Every update after that:**
 
 ```zsh
+git checkout main && git pull                     # get the latest release
 npm run deploy                                    # build + push
 npx clasp create-version "<description>"          # snapshot a version
 npx clasp update-deployment <deployment-id> --versionNumber <version>

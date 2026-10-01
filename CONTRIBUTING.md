@@ -98,6 +98,8 @@ feature-branch → develop   (PR + code review)
 develop        → main      (PR = release gate)
 ```
 
+`develop` is the default branch and where all PRs land. `main` holds only released code — it's what distributors deploy from — so never open a PR against it.
+
 Feature work happens on branches, merged to `develop` via PR. When ready to ship, `develop` is merged to `main` via a PR containing manual QA instructions — that merge is the release gate.
 
 ## Exposing a new server function

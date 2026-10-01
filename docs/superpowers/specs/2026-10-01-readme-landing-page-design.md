@@ -132,8 +132,10 @@ addresses) can be added later.
    - `reasoning` -- a string. A brief explanation for the classification, citing what is actually shown or said in the video.
    ```
 
-   Output: filter `is_paxton_interview` to true and that's your list; the
-   `reasoning` field is what you check.
+   Output: each answer is one JSON object in one cell (the toolkit doesn't
+   split fields into columns), so the README shows a `REGEXEXTRACT` formula
+   that pulls `is_paxton_interview` into its own column, then filter to true;
+   the `reasoning` field is what you check.
 
 2. **Plain text.** 38,000 nonprofit mission statements, two consecutive years
    per nonprofit — did their DEI language change? Two input columns, which also

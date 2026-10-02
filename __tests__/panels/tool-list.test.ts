@@ -36,6 +36,11 @@ beforeEach(() => {
 });
 
 describe("ToolListPanel", () => {
+  it("shows the Looper name and version in the footer", () => {
+    const c = mountPanel();
+    expect(c.querySelector(".status-footer")!.textContent).toContain("Looper v");
+  });
+
   it("clicking Guided AI Inference navigates to guided-ai-inference", () => {
     const c = mountPanel();
     c.querySelector<HTMLButtonElement>("#btn-guided-ai")!.click();

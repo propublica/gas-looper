@@ -1,5 +1,5 @@
 /**
- * index.ts — Entry point for SSI Drive & AI Tools.
+ * index.ts — Entry point for Looper.
  *
  * This file contains the top-level tool functions (the ones users invoke
  * from the menu) and exposes them to Apps Script via globalThis.
@@ -63,10 +63,7 @@ import type { DriveFileInfo, PromptInput, GeminiRequest } from "./types";
 // ==========================================
 
 export function onOpen(): void {
-  SpreadsheetApp.getUi()
-    .createMenu("📐 SSI Toolkit")
-    .addItem("📐 Open SSI Toolkit", "showSidebar")
-    .addToUi();
+  SpreadsheetApp.getUi().createMenu("➰ Looper").addItem("➰ Open Looper", "showSidebar").addToUi();
 }
 
 /**
@@ -97,7 +94,7 @@ export function getGeminiGemUrl(): string | null {
 
 export function showSidebar(): void {
   const html = HtmlService.createTemplateFromFile("Sidebar");
-  const output = html.evaluate().setTitle("SSI Toolkit").setWidth(300);
+  const output = html.evaluate().setTitle("Looper").setWidth(300);
   SpreadsheetApp.getUi().showSidebar(output);
 }
 
@@ -196,7 +193,7 @@ export function extractText(config: ExtractTextConfig, jobId?: string): void {
     }
 
     // T15/R19: a temp OCR doc that failed automatic cleanup is named with the
-    // [SSI-TEMP] prefix (extractTextUniversal), so it's identifiable in Drive
+    // [LOOPER-TEMP] prefix (extractTextUniversal), so it's identifiable in Drive
     // even if this alert is missed.
     if (orphanedTempDocNames.length > 0) {
       const plural = orphanedTempDocNames.length > 1;

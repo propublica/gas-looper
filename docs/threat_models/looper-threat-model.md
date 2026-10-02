@@ -1,8 +1,8 @@
-# SSI Toolkit — Threat Model
+# Looper — Threat Model
 
 | Field | Value |
 | --- | --- |
-| Project | SSI Toolkit (Google Apps Script add-on for Google Sheets) |
+| Project | Looper (Google Apps Script add-on for Google Sheets) |
 | Description | ProPublica journalism tool providing Drive file listing, OCR text extraction, reproducible row sampling, and batch Gemini AI inference |
 | Version | 1.6 |
 | Last updated | 2026-09-09 |
@@ -142,7 +142,7 @@ flowchart LR
 | ID | Asset | Description |
 | --- | --- | --- |
 | A1 | `GEMINI_API_KEY` | API key granting access to both Gemini APIs; stored in Script Properties |
-| A2 | Spreadsheet row data | User's research data in the active spreadsheet; read by SSI Toolkit server and potentially passed along to other services (Sidebar, Gemini, etc.) |
+| A2 | Spreadsheet row data | User's research data in the active spreadsheet; read by Looper's server-side code (running on Google's Apps Script servers) and potentially passed along to other services (Sidebar, Gemini, etc.) |
 | A3 | Drive file content | Documents, PDFs, and images fetched from Drive; sent to Gemini for inference or OCR |
 | A4 | Gemini AI responses | Model-generated text written back to the output column in the spreadsheet |
 | A5 | OAuth tokens | Managed by Google; grant the add-on access to the user's Workspace data |
@@ -240,7 +240,7 @@ flowchart LR
 | T14 | R16 | Reduce | Configure GCP budget alerts on the project with email notification thresholds (e.g. 50%, 90%, 100% of monthly budget); enable a hard spend cap if the GCP billing account supports it. Implemented 2026-08-17 (AI-90): `GEMINI_API_KEY` is minted via AI Studio (`aistudio.google.com/api-keys`) against project `product-ai-fellow-experiments`, with a monthly spend cap set at `aistudio.google.com/spend` — confirmed as a hard cap, not just an alert. Documented in README.md (Get started → What you'll need), CONTRIBUTING.md (Local Setup → Prerequisites), and docs/deploying-as-an-editor-add-on.md (Prerequisites). Contingent on staying on the Gemini Developer API/AI Studio; reopen if the project migrates to Vertex AI, which has no equivalent cap |
 | T14 | R17 | Reduce | Set per-API-key quotas in Google Cloud Console to cap daily request volume and token usage for `GEMINI_API_KEY`; this limits blast radius for both key abuse and accidental overuse |
 | T14 | R18 | Reduce | Surface the row count to the user before confirming a large batch run and add a configurable warning threshold (e.g. >500 rows); this gives users a chance to scope down before generating a large number of API calls. Superseded by R44 — see AI-88 |
-| T15 | R19 | Reduce | Three-part mitigation: (1) wrap temp doc deletion in a `finally` block so cleanup runs even on exception; (2) if deletion fails, surface an explicit alert to the user in the sidebar identifying the orphaned doc by name so they can delete it from Drive themselves; (3) name all temp docs with a recognizable prefix (e.g. `[SSI-TEMP]`) so orphaned docs are identifiable in Drive even if the alert is missed. Implemented 2026-09-08 (AI-85): `extractTextUniversal` (`src/server/drive.ts`) now shares the OCR read and `Drive.Files.remove()` call in one try/finally, so a read failure no longer skips cleanup; temp docs are named `[SSI-TEMP] <original name>`; and `extractText` (`index.ts`) collects any doc names that fail to delete and shows one `ui.alert` listing them after the batch. This does not cover a hard Apps Script execution-timeout kill mid-function, where no `finally` can run — the prefix is the residual safety net for that case, per the "Reduce" (not "Eliminate") classification |
+| T15 | R19 | Reduce | Three-part mitigation: (1) wrap temp doc deletion in a `finally` block so cleanup runs even on exception; (2) if deletion fails, surface an explicit alert to the user in the sidebar identifying the orphaned doc by name so they can delete it from Drive themselves; (3) name all temp docs with a recognizable prefix (e.g. `[LOOPER-TEMP]`) so orphaned docs are identifiable in Drive even if the alert is missed. Implemented 2026-09-08 (AI-85): `extractTextUniversal` (`src/server/drive.ts`) now shares the OCR read and `Drive.Files.remove()` call in one try/finally, so a read failure no longer skips cleanup; temp docs are named `[LOOPER-TEMP] <original name>`; and `extractText` (`index.ts`) collects any doc names that fail to delete and shows one `ui.alert` listing them after the batch. This does not cover a hard Apps Script execution-timeout kill mid-function, where no `finally` can run — the prefix is the residual safety net for that case, per the "Reduce" (not "Eliminate") classification |
 | T6 | R21 | Reduce | Route Extract Text's extracted-text write through `sanitizeForCell()` before `setValue()` (`index.ts:164`). Superseded by R45 — see AI-89 |
 | T6 | R22 | Reduce | Route the `applyMarkdown` branch's assembled plain text through `sanitizeForCell()` before building the `RichTextValue`, or fall back to the plain `setValue()` path when it flags a dangerous formula (`index.ts:546`). Superseded by R45 — see AI-89 |
 | T16 | R23 | Reduce | Restrict Drive fileId processing in `fetchDriveMetadata`/`downloadDriveFiles` to IDs the tool itself produced (e.g. via Import Drive Links), or verify the file's parent folder matches the folder the user explicitly selected before adding it to a batch |
@@ -286,7 +286,7 @@ First draft — not yet formally reviewed by the security team. A full OWASP/LLM
 | Medium | Open | — | — | Shorten Stackdriver log retention | Set GCP Cloud Logging retention for the Apps Script project to 7 days (or the shortest operationally acceptable period) to limit exposure window for accidentally logged sensitive data (R20) |
 | Medium | Open | — | — | Add `npm audit` to CI | Fail CI on high/critical npm vulnerabilities (R12) |
 | Low | Open | — | — | Add `.npmrc` min-release-age | Add `min-release-age=1` to `.npmrc` to enforce minimal package age during install (R40) |
-| Medium | Closed | [AI-85](https://linear.app/propublica/issue/AI-85/fix-t15-ocr-temp-doc-cleanup-on-interrupted-execution) | — | Fix T15 — OCR temp doc cleanup | Done 2026-09-08 — `finally`-wrapped deletion, `[SSI-TEMP]` name prefix, and a batch-level `ui.alert` on cleanup failure, all in `extractTextUniversal`/`extractText` (R19) |
+| Medium | Closed | [AI-85](https://linear.app/propublica/issue/AI-85/fix-t15-ocr-temp-doc-cleanup-on-interrupted-execution) | — | Fix T15 — OCR temp doc cleanup | Done 2026-09-08 — `finally`-wrapped deletion, `[LOOPER-TEMP]` name prefix, and a batch-level `ui.alert` on cleanup failure, all in `extractTextUniversal`/`extractText` (R19) |
 | Low | Open | — | — | 2FA verification | Confirm 2FA is enforced on all accounts with deploy access (R9) |
 | Medium | Open | — | — | T11 sidebar warning — specify both url_context vectors | Update the `url_context` warning copy to explicitly state that URLs already in dataset cells will be fetched, and that attacker-controlled URLs can inject instructions via their response (R13) |
 | Low | Open | — | — | Post-MVP: pre-inference URL scan | Before a `url_context` run, scan prompt column cells for URLs and surface an alert listing them so the user can confirm before proceeding (R13, deferred) |
@@ -323,8 +323,8 @@ Two additional threat models are scoped for future sessions:
 
 | Document | Perspective | Focus |
 | --- | --- | --- |
-| [`ssi-toolkit-threat-model-journalist.md`](ssi-toolkit-threat-model-journalist.md) | Journalist / user | Threats to the reporting process — source exposure via AI inference, data leakage in workflow, AI-generated errors affecting published work |
-| `ssi-toolkit-threat-model-source.md` | Source | Threats to a source's identity — information that could identify a source via AI inference, Drive file metadata, prompt logs, Gemini data retention |
+| [`looper-threat-model-journalist.md`](looper-threat-model-journalist.md) | Journalist / user | Threats to the reporting process — source exposure via AI inference, data leakage in workflow, AI-generated errors affecting published work |
+| `looper-threat-model-source.md` | Source | Threats to a source's identity — information that could identify a source via AI inference, Drive file metadata, prompt logs, Gemini data retention |
 
 These cover the *human* security surface. The current document covers the *tool's* security surface.
 

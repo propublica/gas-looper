@@ -1,4 +1,4 @@
-# SSI Toolkit
+# Looper
 
 **A Google Sheets extension that runs AI over your data, one row at a time. Built and tested by ProPublica journalists.**
 
@@ -8,7 +8,7 @@ Constraining AI to a single row forces us to break big questions into smaller, m
 
 This approach helped power stories like [Deleting DEI](https://www.propublica.org/article/deleting-dei-language-nonprofits-irs-forms), [DOJ Declinations](https://www.propublica.org/article/trump-doj-immigration-bondi-declinations-criminal-investigations) and [Woke Grants](https://www.propublica.org/article/ted-cruz-woke-grants-national-science-foundation).
 
-We built SSI Toolkit right into Google Sheets because that's where hundreds of newsrooms around the world already work.
+We built Looper right into Google Sheets because that's where hundreds of newsrooms around the world already work.
 
 Here is the core flow:
 
@@ -29,7 +29,7 @@ For help writing your first prompt, check out [looper-skills](https://github.com
 
 ### Option 1: Copy the template
 
-The easiest way to get started is to open our [template sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing). It comes with SSI Toolkit pre-installed and a tutorial to walk you through it.
+The easiest way to get started is to open our [template sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing). It comes with Looper pre-installed and a tutorial walkthrough.
 
 You'll likely see a **Request access** prompt — click it. We approve requests individually.
 
@@ -44,11 +44,11 @@ Our [User Guide](docs/user-guide.md) covers every tool available plus helpful ti
 
 ## Your data
 
-SSI Toolkit has no server of its own. It runs on Google's servers, and when you use AI, the cells, prompt and linked files you choose are sent to Gemini — never to the toolkit's developers. For what each permission on Google's consent screen means, where it's used, and who can see what, read [Permissions: what SSI Toolkit asks for, and why](docs/permissions.md).
+Looper has no server of its own. It runs on Google's servers, and when you use AI, the cells, prompt and linked files you choose are sent to Gemini — never to the toolkit's developers. For what each permission on Google's consent screen means, where it's used, and who can see what, read [Permissions: what Looper asks for, and why](docs/permissions.md).
 
 ## Getting help
 
-Questions, bugs or ideas? [Open a GitHub issue](https://github.com/propublica/gas-ssi-toolkit/issues).
+Questions, bugs or ideas? [Open a GitHub issue](https://github.com/propublica/gas-looper/issues).
 
 ## Learn more
 
@@ -57,6 +57,6 @@ Questions, bugs or ideas? [Open a GitHub issue](https://github.com/propublica/ga
 - [Deploying as an Editor add-on](docs/deploying-as-an-editor-add-on.md) — for organizations
 - [Contributing](CONTRIBUTING.md) — set up a dev copy and work on the code
 - [Architecture](docs/architecture.md) and [Releasing](docs/releasing.md) — for maintainers
-- [ssi-skills](https://github.com/propublica/ssi-skills) — help writing prompts
+- [looper-skills](https://github.com/propublica/looper-skills) — help writing prompts
 
 [MIT License](LICENSE)

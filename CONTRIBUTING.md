@@ -19,8 +19,8 @@ These directions will help you run the toolkit as a [container-bound script](htt
 If you're contributing from outside ProPublica, fork the repo first and clone your fork's URL instead.
 
 ```zsh
-git clone https://github.com/propublica/gas-ssi-toolkit.git
-cd gas-ssi-toolkit
+git clone https://github.com/propublica/gas-looper.git
+cd gas-looper
 nvm use
 ```
 
@@ -59,7 +59,7 @@ npm run deploy         # build + push to Apps Script
 
 On your first push, clasp asks whether to overwrite the manifest. Answer **y**: that's how `appsscript.json`'s Drive advanced service and OAuth scopes reach your project. Answering no (or running non-interactively) skips the push entirely.
 
-Reload your dev Sheet. The **📐 SSI Toolkit** menu should appear. The first time you run anything from it, Google shows a **"Google hasn't verified this app"** warning. Click **Advanced**, then **Go to [your sheet's name] (unsafe)**, and grant access. [`docs/permissions.md`](docs/permissions.md) explains each permission.
+Reload your dev Sheet. The **➰ Looper** menu should appear. The first time you run anything from it, Google shows a **"Google hasn't verified this app"** warning. Click **Advanced**, then **Go to [your sheet's name] (unsafe)**, and grant access. [`docs/permissions.md`](docs/permissions.md) explains each permission.
 
 > **Note:** Make code changes in this repo, not in the online Apps Script editor — the next `npm run deploy` overwrites anything edited there.
 

@@ -96,7 +96,7 @@ export class ToolListPanel implements Panel {
         </button>
       </div>
       <div class="status-footer">
-        <strong>SSI Toolkit v{{VERSION}}</strong>
+        <strong>Looper v{{VERSION}}</strong>
       </div>
     `;
   }

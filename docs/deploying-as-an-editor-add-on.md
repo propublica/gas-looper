@@ -1,15 +1,15 @@
 # Deploying as an Editor Add-on
 
-This guide is for distributing the SSI Toolkit org-wide as a [Google Workspace **Editor add-on**](https://developers.google.com/workspace/add-ons/concepts/types#editor-add-ons).
+This guide is for distributing Looper org-wide as a [Google Workspace **Editor add-on**](https://developers.google.com/workspace/add-ons/concepts/types#editor-add-ons).
 
-If you're a solo operator and trying out the SSI Toolkit for the first time, we recommend leaving this guide and installing the tool as a [Container-bound Apps Script](../README.md#get-started) — it's a much easier path to get started.
+If you're a solo operator and trying out Looper for the first time, we recommend leaving this guide and installing the tool as a [Container-bound Apps Script](../README.md#get-started) — it's a much easier path to get started.
 
 ## When to reach for an Editor add-on
 
-Distributing the SSI Toolkit via Editor add-on comes with specific scaling benefits:
+Distributing Looper via Editor add-on comes with specific scaling benefits:
 
 1. Installable org-wide via the [Workspace Marketplace](https://workspace.google.com/marketplace/)
-2. SSI Toolkit becomes maintainable from a single Apps Script project (container-bound scripts are unique unlinked copies)
+2. Looper becomes maintainable from a single Apps Script project (container-bound scripts are unique unlinked copies)
 
 ## Set up your project
 
@@ -52,15 +52,15 @@ You don't want to publish publicly: **private publishing** makes your listing im
 
 ## Deploy your code
 
-It's time to copy the SSI Toolkit code into your Apps Script project!
+It's time to copy the Looper code into your Apps Script project!
 
 **Always deploy from `main`.** `main` only changes when we cut a release, so it always matches the latest release. `develop`, the repo's default branch, holds unreleased work in progress — a plain `git clone` lands you there. Each release is also tagged (`v7`, `v8`, …) if you'd rather pin a specific version or roll back: `git checkout <tag>`.
 
 **First-time setup:**
 
 ```zsh
-git clone --branch main https://github.com/propublica/gas-ssi-toolkit.git
-cd gas-ssi-toolkit
+git clone --branch main https://github.com/propublica/gas-looper.git
+cd gas-looper
 npm install
 ```
 

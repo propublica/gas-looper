@@ -92,15 +92,15 @@ describe("onOpen", () => {
     jest.clearAllMocks();
   });
 
-  it("creates a menu named '📐 SSI Toolkit'", () => {
+  it("creates a menu named '➰ Looper'", () => {
     onOpen();
-    expect(mockCreateMenu).toHaveBeenCalledWith("📐 SSI Toolkit");
+    expect(mockCreateMenu).toHaveBeenCalledWith("➰ Looper");
   });
 
   it("adds a single item that opens the sidebar", () => {
     onOpen();
     expect(mockAddItem).toHaveBeenCalledTimes(1);
-    expect(mockAddItem).toHaveBeenCalledWith("📐 Open SSI Toolkit", "showSidebar");
+    expect(mockAddItem).toHaveBeenCalledWith("➰ Open Looper", "showSidebar");
   });
 
   it("adds the menu to the UI", () => {
@@ -123,6 +123,12 @@ describe("showSidebar", () => {
     showSidebar();
     expect(mockEvaluate).toHaveBeenCalledTimes(1);
     expect(mockShowSidebarFn).toHaveBeenCalledTimes(1);
+  });
+
+  it("titles the sidebar 'Looper'", () => {
+    showSidebar();
+    const output = mockEvaluate.mock.results[0].value;
+    expect(output.setTitle).toHaveBeenCalledWith("Looper");
   });
 });
 

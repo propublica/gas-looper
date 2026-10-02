@@ -7,7 +7,7 @@
  * "unknown tool 'x'", the missing-API-key message). Anything that is NOT a
  * DomainError is an exception from a layer this code doesn't fully control
  * (Drive, Docs, network) and is never shown verbatim — see T12 in
- * docs/threat_models/ssi-toolkit-threat-model.md.
+ * docs/threat_models/looper-threat-model.md.
  *
  * No subclasses: no catch site needs to distinguish *which kind* of
  * DomainError it caught, only *whether* it caught one.

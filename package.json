@@ -1,7 +1,7 @@
 {
-  "name": "gas-project",
+  "name": "gas-looper",
   "version": "9.0.0",
-  "description": "Google Apps Script project with TypeScript, Rollup, and Clasp",
+  "description": "Looper — a Google Sheets add-on for running AI and document tools across spreadsheet rows",
   "private": true,
   "type": "module",
   "scripts": {

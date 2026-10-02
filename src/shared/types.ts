@@ -1,5 +1,5 @@
 /**
- * Shared types for the SSI Toolkit.
+ * Shared types for Looper.
  *
  * IMPORTANT: This file is the client↔server RPC boundary.
  * Only types that cross google.script.run calls belong here.

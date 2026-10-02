@@ -215,7 +215,7 @@ describe("extractTextUniversal", () => {
 
     expect(extractTextUniversal("pdfId123")).toEqual({
       text: "ocr text from pdf",
-      orphanedTempDocName: "[SSI-TEMP] report.pdf",
+      orphanedTempDocName: "[LOOPER-TEMP] report.pdf",
     });
   });
 
@@ -240,7 +240,7 @@ describe("extractTextUniversal", () => {
     expect((Drive.Files as any).remove).toHaveBeenCalledWith("tempImgDocId");
   });
 
-  it("names the temporary OCR doc with an [SSI-TEMP] prefix", () => {
+  it("names the temporary OCR doc with a [LOOPER-TEMP] prefix", () => {
     const createMock = jest.fn().mockReturnValue({ id: "tempDocId" });
     (DriveApp.getFileById as jest.Mock).mockReturnValue({
       getMimeType: () => "application/pdf",
@@ -255,7 +255,7 @@ describe("extractTextUniversal", () => {
     extractTextUniversal("pdfId123");
 
     expect(createMock).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "[SSI-TEMP] report.pdf" }),
+      expect.objectContaining({ name: "[LOOPER-TEMP] report.pdf" }),
       expect.anything(),
     );
   });

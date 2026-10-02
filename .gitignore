@@ -42,6 +42,8 @@ Thumbs.db
 
 # Claude
 .claude/
+# Personal agent instructions — keep machine-specific setup out of the repo
+CLAUDE.local.md
 
 # Superpowers brainstorming session artifacts
 .superpowers/

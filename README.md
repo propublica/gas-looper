@@ -29,7 +29,7 @@ For help writing your first prompt, check out [looper-skills](https://github.com
 
 ### Option 1: Copy the template
 
-The easiest way to get started is to open our [template sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing). It comes with Looper pre-installed and a tutorial to walk you through it.
+The easiest way to get started is to open our [template sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing). It comes with Looper pre-installed and a tutorial walkthrough.
 
 You'll likely see a **Request access** prompt — click it. We approve requests individually.
 

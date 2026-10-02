@@ -8,7 +8,7 @@ Constraining AI to a single row forces us to break big questions into smaller, m
 
 This approach helped power stories like [Deleting DEI](https://www.propublica.org/article/deleting-dei-language-nonprofits-irs-forms), [DOJ Declinations](https://www.propublica.org/article/trump-doj-immigration-bondi-declinations-criminal-investigations) and [Woke Grants](https://www.propublica.org/article/ted-cruz-woke-grants-national-science-foundation).
 
-We built SSI Toolkit right into Google Sheets because that's where we, and many of our partner newsrooms, already work.
+We built SSI Toolkit right into Google Sheets because that's where hundreds of newsrooms around the world already work.
 
 Here is the core flow:
 

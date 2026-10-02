@@ -142,7 +142,7 @@ flowchart LR
 | ID | Asset | Description |
 | --- | --- | --- |
 | A1 | `GEMINI_API_KEY` | API key granting access to both Gemini APIs; stored in Script Properties |
-| A2 | Spreadsheet row data | User's research data in the active spreadsheet; read by Looper server and potentially passed along to other services (Sidebar, Gemini, etc.) |
+| A2 | Spreadsheet row data | User's research data in the active spreadsheet; read by Looper's server-side code (running on Google's Apps Script servers) and potentially passed along to other services (Sidebar, Gemini, etc.) |
 | A3 | Drive file content | Documents, PDFs, and images fetched from Drive; sent to Gemini for inference or OCR |
 | A4 | Gemini AI responses | Model-generated text written back to the output column in the spreadsheet |
 | A5 | OAuth tokens | Managed by Google; grant the add-on access to the user's Workspace data |

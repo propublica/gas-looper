@@ -18,7 +18,7 @@ Here is the core flow:
 
 Use it to analyze text, Google Drive files (PDFs, Docs, images, audio and video), public web addresses and YouTube links. **Because the answers land in a spreadsheet column, you can filter, sort and pivot them like the rest of your data.**
 
-For help writing your first prompt, check out [ssi-skills](https://github.com/propublica/ssi-skills).
+For help writing your first prompt, check out [looper-skills](https://github.com/propublica/looper-skills).
 
 ## Get started
 

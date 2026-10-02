@@ -7,7 +7,7 @@ set -e
 # Marketplace SDK App Configuration section of docs/releasing.md.
 DEPLOYMENT_ID="AKfycbx1DUg1j_MW2KNDFsfqhHaW5D7ngPaweMr4GZ8LGkINJF_5HbugCrnaDNqZ7Xeg2KIDGA"
 
-echo "⚠️  This will update the SSI Toolkit for everyone who has it installed."
+echo "⚠️  This will update Looper for everyone who has it installed."
 read -p "Are you sure you want to release? (y/N) " CONFIRM
 if [ "$CONFIRM" != "y" ] && [ "$CONFIRM" != "Y" ]; then
   echo "Release cancelled."

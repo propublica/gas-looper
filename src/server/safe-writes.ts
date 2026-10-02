@@ -29,7 +29,7 @@ const WEB_FETCH_PATTERN = /\b(image|importdata|importxml|importhtml|importrange|
 export function sanitizeForCell(value: string): string {
   if (!value.length || !/^[=+-]/.test(value[0])) return value;
   if (WEB_FETCH_PATTERN.test(value)) {
-    return "[SSI Error: AI response contained an external request formula — output rejected]";
+    return "[Error: AI response contained an external request formula — output rejected]";
   }
   return `'${value}`;
 }

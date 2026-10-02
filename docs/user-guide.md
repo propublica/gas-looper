@@ -15,7 +15,7 @@ Open the sidebar using the **📐 Open SSI Toolkit** menu option. If installed a
 
 ### Don't have an org-wide install?
 
-You can get your own personal copy instead — no admin required. Open our [template Sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing), click **Request access** if prompted (we approve these individually — see the note on the template's Start Here tab), then **File → Make a copy**. The Start Here tab in your copy walks you through setting your own Gemini API key and getting past Google's "unverified app" warning the first time you run the menu. See the main [README](../README.md#get-started) for an overview.
+You can get your own personal copy instead — no admin required. Open our [template Sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing), click **Request access** if prompted (we approve these individually — see the note on the template's Installation tab), then **File → Make a copy**. The Installation tab in your copy walks you through setting your own Gemini API key and getting past Google's "unverified app" warning the first time you run the menu. See the main [README](../README.md#get-started) for an overview.
 
 ## But first, don't forget about other spreadsheet tools
 

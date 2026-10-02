@@ -5,6 +5,8 @@ Row 6 of the documentation restructure tracker
 `AI-120-readme-rewrite`, cut from and PR'd into
 `AI-102-docs-restructure-tracker`.
 
+> **Revised during PR review (2026-10-02):** Aaron rewrote the opening in his own words (ProPublica framing, links to published stories, core three-step flow), and dropped both the Examples section and the TK screenshot placeholder. The template's tutorial covers examples. The template tab is named **Installation**, not Start Here. Where this spec and README.md disagree, README.md is the record.
+
 ## Goal
 
 README.md becomes the project's front door: a landing page that tells a
@@ -32,9 +34,9 @@ footer.
 - **Screenshot is a TK placeholder** — held until the rebrand.
 - **"Check the AI's work" is folded into the pitch**, framed as part of the
   method, not a separate disclaimer section.
-- **Get started defers to the template.** The template Sheet's Start Here tab
+- **Get started defers to the template.** The template Sheet's Installation tab
   already covers setting the API key and opening the menu (old steps 3–5), so
-  README stops at "make a copy, follow Start Here."
+  README stops at "make a copy, follow Installation."
 - **The "Google hasn't verified this app" section is dropped** — the template
   will carry that warning instead. Until it does, a README reader hits Google's
   block unexplained, so this is gated by a manual-QA step (see Testing).
@@ -91,7 +93,7 @@ the user switches on per run.
   1. Open the template Sheet (current URL from today's README) and click
      **Request access** if prompted — requests are approved individually.
   2. **File → Make a copy.**
-  3. Follow the **Start Here** tab in your copy.
+  3. Follow the **Installation** tab in your copy.
 - Closing line: next, the [User Guide](docs/user-guide.md) walks through each
   tool.
 
@@ -204,7 +206,7 @@ Then: "Built by ProPublica. [MIT License](LICENSE)."
    - `docs/deploying-as-an-editor-add-on.md:5`
    - `docs/user-guide.md:18` — also rewrite the sentence's claim that README has
      "the full walkthrough, including setting your own Gemini API key and getting
-     past Google's 'unverified app' warning"; point to the template's Start Here
+     past Google's 'unverified app' warning"; point to the template's Installation
      tab instead. Touch only this sentence (row 3, AI-117, owns the rest of that
      section).
 2. **CONTRIBUTING.md:** add the "avoid editing in the online Apps Script editor —
@@ -226,7 +228,7 @@ Then: "Built by ProPublica. [MIT License](LICENSE)."
 - Docs-only change: no build, lint, or Prettier step touches Markdown
   (lint-staged runs on `*.ts` only), so link checking is the whole test.
 - **Gate before the tracker branch merges to `develop`:** confirm the template
-  Sheet's Start Here tab includes the "Google hasn't verified this app"
+  Sheet's Installation tab includes the "Google hasn't verified this app"
   walkthrough. README no longer documents it.
 
 ## Out of scope
@@ -234,5 +236,5 @@ Then: "Built by ProPublica. [MIT License](LICENSE)."
 - Screenshots (blocked on the Looper rebrand).
 - Additional examples beyond the two above.
 - Looper renaming.
-- Template Sheet content changes (the Start Here verification warning is
+- Template Sheet content changes (the Installation verification warning is
   Aaron's, tracked only as a QA gate here).

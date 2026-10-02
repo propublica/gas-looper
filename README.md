@@ -1,113 +1,62 @@
 # SSI Toolkit
 
-A Google Sheets add-on for AI-assisted investigations.
+**A Google Sheets extension that runs AI over your data, one row at a time. Built and tested by ProPublica journalists.**
 
-Built with TypeScript, bundled by Rollup, and deployed via clasp.
+At ProPublica, we use spreadsheets to organize many of our investigations. They also help us wield AI effectively.
 
-> **Note:** Avoid making changes in the online Apps Script editor — they will be overwritten on the next deploy.
+Constraining AI to a single row forces us to break big questions into smaller, more carefully considered chunks, which are usually easier for the AI to answer and easier for us to audit.
 
-If you're looking for an SSI Toolkit usage guide, check out our [user onboarding documentation](./docs/user-guide.md).
+This approach helped power stories like [Deleting DEI](https://www.propublica.org/article/deleting-dei-language-nonprofits-irs-forms), [DOJ Declinations](https://www.propublica.org/article/trump-doj-immigration-bondi-declinations-criminal-investigations) and [Woke Grants](https://www.propublica.org/article/ted-cruz-woke-grants-national-science-foundation).
 
-## Get your own copy
+We built SSI Toolkit right into Google Sheets because that's where hundreds of newsrooms around the world already work.
 
-Want to try the toolkit without installing Node, clasp, or anything else? We maintain a template Google Sheet with the toolkit already set up as a container-bound script.
+Here is the core flow:
 
-1. Open the template Sheet: https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing
-2. Our Workspace doesn't allow public sharing, so you'll likely see a **Request access** prompt — click it. We approve individual requests as they come in.
-3. Once you have access, go to **File → Make a copy** to get your own independent copy — its own script, its own data, its own API key.
-4. In your copy, open **Extensions → Apps Script → Project Settings → Script Properties** and add a `GEMINI_API_KEY` — [AI Studio](https://aistudio.google.com/api-keys) makes it easy to mint a key and [set a monthly spend cap](https://aistudio.google.com/spend) to avoid surprise billing.
-5. Open the **📐 SSI Toolkit** menu in your copy to get started, or check the **Start Here** tab in the template for a walkthrough of each tool.
+1. Select the spreadsheet columns you want the AI to look at
+2. Craft the set of directions you want the AI to follow
+3. Run the AI over each row
 
-### About the "Google hasn't verified this app" screen
+Use it to analyze text, Google Drive files (PDFs, Docs, images, audio and video), public web addresses and YouTube links. **Because the answers land in a spreadsheet column, you can filter, sort and pivot them like the rest of your data.**
 
-The first time you run anything from the menu, Google will show a **"Google hasn't verified this app"** warning before it asks you to grant access. This is expected — it isn't specific to this toolkit or a sign anything is wrong with your copy. Google shows this for any project that hasn't gone through its formal app-review process, which is normal for a personal copy like the one you just made.
+For help writing your first prompt, check out [ssi-skills](https://github.com/propublica/ssi-skills).
 
-To continue: click **Advanced** (near the bottom of the warning), then click **Go to [your sheet's name] (unsafe)**. "Unsafe" here just means Google hasn't reviewed the app — you're granting access to your own independent copy of code you can inspect in this repo, not to a stranger's app. You'll only need to do this once per copy.
+## Get started
 
-If you want to build, modify, or contribute to the toolkit itself, keep reading — the rest of this README covers the developer setup.
-
-## Deployment (for contributors)
-
-### Prerequisites
+### What you'll need
 
 - A Google account
-- Node.js 22+
-- Apps Script API enabled at [script.google.com/home/usersettings](https://script.google.com/home/usersettings)
-- [A Gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
-  - Tip: [AI Studio](https://aistudio.google.com/api-keys) makes it easy to mint a key and [set a monthly spend cap](https://aistudio.google.com/spend) to avoid surprise billing
+- A Gemini API key. It's free to start, though a few features (like Google Search) need a paid plan. Your plan also affects what Google can do with what you send it — see [Who can see my data?](docs/permissions.md#who-can-see-my-data). [AI Studio](https://aistudio.google.com/api-keys) makes it easy to create a key and, if you add billing, to [set a monthly spend cap](https://aistudio.google.com/spend).
 
-`@google/clasp` is included as a devDependency — no global install needed.
+### Option 1: Copy the template
 
-### 1. Create an Apps Script project
+The easiest way to get started is to open our [template sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing). It comes with SSI Toolkit pre-installed and a tutorial to walk you through it.
 
-The toolkit can run as either a [Container-bound Script](https://developers.google.com/apps-script/guides/bound) (attached to a specific Sheet) or an [Editor add-on](https://developers.google.com/workspace/add-ons/concepts/types#editor-add-ons) (deployable org-wide). **If you are exploring this project for the first time or installing the SSI Toolkit for personal use, we recommend starting with a Container-bound Script before graduating to an Editor Add-on.**
+You'll likely see a **Request access** prompt — click it. We approve requests individually.
 
-Follow Google's instructions to create your Apps Script project, then find it at [script.google.com](https://script.google.com/u/0/home/all).
+When you're ready to begin, open the **Installation** tab and follow its setup steps. It will walk you through copying the template, configuring an API key and the relevant permissions. See [Your data](#your-data) for more privacy information.
 
-### 2. Enable the Drive Advanced Service
+Our [User Guide](docs/user-guide.md) covers every tool available plus helpful tips.
 
-In the script editor: **Editor** → **Services** → find **Drive API** → select **V3** → **Add**.
+### Option 2: Other ways to run it
 
-### 3. Set your Gemini API key
+- **Want your own copy without requesting access, or want to change the code?** Set one up yourself with [Local Setup in CONTRIBUTING.md](CONTRIBUTING.md#local-setup).
+- **Rolling it out to a whole organization on Google Workspace?** See [Deploying as an Editor add-on](docs/deploying-as-an-editor-add-on.md). This needs a Workspace account; a personal Gmail account can't publish an add-on privately.
 
-In the script editor: **Project Settings** → **Script Properties** → add `GEMINI_API_KEY` with your API key. This key will only be visible to users with Editor access to your Google Sheet (Container-bound script) or Editor access to your Apps Script Project (Editor Add on).
+## Your data
 
-### 4. Get the script ID
+SSI Toolkit has no server of its own. It runs on Google's servers, and when you use AI, the cells, prompt and linked files you choose are sent to Gemini — never to the toolkit's developers. For what each permission on Google's consent screen means, where it's used, and who can see what, read [Permissions: what SSI Toolkit asks for, and why](docs/permissions.md).
 
-In the script editor: **Project Settings** → copy the **Script ID**.
+## Getting help
 
-### 5. Create `.clasp.json`
+Questions, bugs or ideas? [Open a GitHub issue](https://github.com/propublica/gas-ssi-toolkit/issues).
 
-At the project root:
+## Learn more
 
-```zsh
-cat > .clasp.json << 'EOF'
-{
-  "scriptId": "<your-script-id>",
-  "rootDir": "./dist"
-}
-EOF
-```
+- [User Guide](docs/user-guide.md) — tips and tricks for each tool
+- [Permissions and your data](docs/permissions.md) — what the toolkit can access, and who can see what
+- [Deploying as an Editor add-on](docs/deploying-as-an-editor-add-on.md) — for organizations
+- [Contributing](CONTRIBUTING.md) — set up a dev copy and work on the code
+- [Architecture](docs/architecture.md) and [Releasing](docs/releasing.md) — for maintainers
+- [ssi-skills](https://github.com/propublica/ssi-skills) — help writing prompts
 
-### 6. Install and deploy
-
-```zsh
-npm install
-npm run clasp:login    # authenticate with Google
-npm run deploy         # build + push to Apps Script
-```
-
-If running as a container bound script, the toolkit should appear as a menu option automatically in your attached sheet. If you are running it as a standalone Apps Script project and Editor add-on, you'll need to create [a test deployment](https://developers.google.com/workspace/add-ons/how-tos/testing-editor-addons) to see the app in action.
-
-## Development
-
-```bash
-# Build
-npm run build               # clean build to dist/
-npm run build:watch         # rebuild on file changes
-
-# Deploy
-npm run deploy              # build + push to HEAD (development)
-npm run deploy:watch        # continuous build + push
-
-# Test
-npm test                    # run all tests
-npm run test:watch          # watch mode
-npm run test:coverage       # with per-file coverage thresholds
-
-# Quality
-npm run lint                # ESLint
-npm run typecheck           # type-check without building
-npm run format:check        # check Prettier formatting
-
-# Utilities
-npm run clasp:open          # open Apps Script editor in browser
-npm run clasp:logs          # tail execution logs
-```
-
-## Further Reading
-
-- [Architecture](docs/architecture.md) — server/client split, build pipeline, tool system
-- [Contributing](CONTRIBUTING.md) — testing patterns, code style, how to add features
-- [Releasing](docs/releasing.md) — deployment lifecycle and release process
-- [User Guide](docs/user-guide.md) — basic usage guidance
+[MIT License](LICENSE)

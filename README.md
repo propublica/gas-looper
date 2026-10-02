@@ -2,14 +2,13 @@
 
 **A Google Sheets extension that runs AI over your data, one row at a time. Built and tested by ProPublica journalists.**
 
-
 At ProPublica, we use spreadsheets to organize many of our investigations. They also help us wield AI effectively.
 
 Constraining AI to a single row forces us to break big questions into smaller, more carefully considered chunks, which are usually easier for the AI to answer and easier for us to audit.
 
 This approach helped power stories like [Deleting DEI](https://www.propublica.org/article/deleting-dei-language-nonprofits-irs-forms), [DOJ Declinations](https://www.propublica.org/article/trump-doj-immigration-bondi-declinations-criminal-investigations) and [Woke Grants](https://www.propublica.org/article/ted-cruz-woke-grants-national-science-foundation).
 
-We built it right into Google Sheets because that's where we, and many of our partner newsrooms, already work.
+We built SSI Toolkit right into Google Sheets because that's where we, and many of our partner newsrooms, already work.
 
 Here is the core flow:
 
@@ -30,7 +29,7 @@ For help writing your first prompt, check out [ssi-skills](https://github.com/pr
 
 ### Option 1: Copy the template
 
-The easiest way to get started is to copy our [template sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing). It comes with SSI Toolkit pre-installed and a tutorial to help you get started.
+The easiest way to get started is to open our [template sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing). It comes with SSI Toolkit pre-installed and a tutorial to walk you through it.
 
 You'll likely see a **Request access** prompt — click it. We approve requests individually.
 
@@ -53,11 +52,11 @@ Questions, bugs or ideas? [Open a GitHub issue](https://github.com/propublica/ga
 
 ## Learn more
 
-- [User Guide](docs/user-guide.md) — Tips and tricks for each tool
+- [User Guide](docs/user-guide.md) — tips and tricks for each tool
 - [Permissions and your data](docs/permissions.md) — what the toolkit can access, and who can see what
 - [Deploying as an Editor add-on](docs/deploying-as-an-editor-add-on.md) — for organizations
 - [Contributing](CONTRIBUTING.md) — set up a dev copy and work on the code
 - [Architecture](docs/architecture.md) and [Releasing](docs/releasing.md) — for maintainers
 - [ssi-skills](https://github.com/propublica/ssi-skills) — help writing prompts
 
-Built by ProPublica. [MIT License](LICENSE).
+[MIT License](LICENSE)

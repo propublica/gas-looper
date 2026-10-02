@@ -9,6 +9,18 @@ The first time you use SSI Toolkit, Google will ask you to approve a list of per
 - **It never deletes your files.** The only thing it ever deletes is a temporary file it created itself (see below).
 - **There's no SSI Toolkit server.** The toolkit runs on Google's own servers, and its AI features use Google's Gemini AI. Your data isn't sent to the toolkit's developers or to any company other than Google.
 - **One thing to watch for:** the toolkit trusts the links in the cells you run it on. If other people can edit your sheet, check that the file links are ones you expect before running AI or Extract Text, since it opens them with your access, not theirs.
+- **If you're using your own copy of the SSI Toolkit sheet, you may see an "unverified app" warning.** [Here's why that appears](#why-does-google-say-it-hasnt-verified-this-app).
+
+## Why does Google say it "hasn't verified this app"?
+
+If you're using your own copy of the SSI Toolkit sheet (made from the template, or set up yourself from the code), you may see a warning screen: **"Google hasn't verified this app."** That's expected. Here's what it means:
+
+- **"Verification" is Google's review of an app before it's widely shared.** Even if the original template were verified, your copy wouldn't be, and no one can apply for it but you.
+- **Google treats your copy as a brand-new app, and you're its developer.** That's why the warning lists your own email address as the developer.
+- **Verification needs a single, central version of the app that everyone installs**, such as a public Google Workspace Marketplace listing. We'd love to get there, but we're not there yet.
+- **Despite the lack of verification, this project has gone through [threat modeling](threat_models/ssi-toolkit-threat-model.md).** We recommend reading the rest of this page to understand what the toolkit can and can't do with your data.
+
+To continue past the warning, click **Advanced**, then **Go to [your sheet's name] (unsafe)**. "Unsafe" is Google's standard wording for any unverified app.
 
 ## What does the consent screen mean?
 

@@ -1,21 +1,10 @@
 # SSI Toolkit — User Guide
 
-The SSI Toolkit is a Google Sheets sidebar for AI-assisted investigations. This guide covers each tool available in this alpha round: **Run AI Inference**, **Import Drive Links**, **Extract Text**, **Sample Rows**, and **Format Markdown**.
+Tips and tricks for using the SSI Toolkit's tools effectively: **Run AI Inference**, **Import Drive Links**, **Extract Text**, **Sample Rows**, and **Format Markdown**.
 
-Recipes (the curated, one-click AI workflows) also appear in the sidebar, but they're still being refined and aren't part of this alpha round — feel free to ignore that button for now.
+Don't have SSI Toolkit yet? See [Get started](../README.md#get-started) in the README.
 
-## Installing the add-on
-
-The following steps only apply if your organization distributes SSI Toolkit as a **Google Workspace Editor add-on** (installed once, available across every Sheet you open). If you're working with a **container-bound** copy of the toolkit (attached directly to one specific Sheet), the menu referenced below should appear automatically.
-
-1. Open your organization's Marketplace listing for the add-on: `<Marketplace URL — ask your admin>`
-2. Click **Install**, and grant the requested permissions when prompted.
-
-Open the sidebar using the **📐 Open SSI Toolkit** menu option. If installed as an Editor add-on, the SSI Toolkit will be available as an item under **Extensions**.
-
-### Don't have an org-wide install?
-
-You can get your own personal copy instead — no admin required. Open our [template Sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing), click **Request access** if prompted (we approve these individually — see the note on the template's Installation tab), then **File → Make a copy**. The Installation tab in your copy walks you through setting your own Gemini API key and getting past Google's "unverified app" warning the first time you run the menu. See the main [README](../README.md#get-started) for an overview.
+Already have it? Open the sidebar from **📐 SSI Toolkit → 📐 Open SSI Toolkit** (under **Extensions** if your organization installed it as an add-on).
 
 ## But first, don't forget about other spreadsheet tools
 

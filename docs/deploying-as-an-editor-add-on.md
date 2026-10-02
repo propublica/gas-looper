@@ -2,7 +2,7 @@
 
 This guide is for distributing the SSI Toolkit org-wide as a [Google Workspace **Editor add-on**](https://developers.google.com/workspace/add-ons/concepts/types#editor-add-ons).
 
-If you're a solo operator and trying out the SSI Toolkit for the first time, we recommend leaving this guide and installing the tool as a [Container-bound Apps Script](../README.md#get-your-own-copy) — it's a much easier path to get started.
+If you're a solo operator and trying out the SSI Toolkit for the first time, we recommend leaving this guide and installing the tool as a [Container-bound Apps Script](../README.md#get-started) — it's a much easier path to get started.
 
 ## When to reach for an Editor add-on
 

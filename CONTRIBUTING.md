@@ -61,6 +61,8 @@ On your first push, clasp asks whether to overwrite the manifest. Answer **y**: 
 
 Reload your dev Sheet. The **📐 SSI Toolkit** menu should appear. The first time you run anything from it, Google shows a **"Google hasn't verified this app"** warning. Click **Advanced**, then **Go to [your sheet's name] (unsafe)**, and grant access. [`docs/permissions.md`](docs/permissions.md) explains each permission.
 
+> **Note:** Make code changes in this repo, not in the online Apps Script editor — the next `npm run deploy` overwrites anything edited there.
+
 ### Day-to-day commands
 
 ```bash

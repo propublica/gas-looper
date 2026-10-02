@@ -11,7 +11,7 @@
  * error-handling.ts). A key in the URL was therefore one network hiccup away from
  * being readable in a cell.
  *
- * See T17/R24/R25 in docs/threat_models/ssi-toolkit-threat-model.md.
+ * See T17/R24/R25 in docs/threat_models/looper-threat-model.md.
  */
 
 import { DomainError } from "./error-handling";

@@ -18,7 +18,7 @@ If you're using your own copy of the SSI Toolkit sheet (made from the template, 
 - **"Verification" is Google's review of an app before it's widely shared.** Even if the original template were verified, your copy wouldn't be, and no one can apply for it but you.
 - **Google treats your copy as a brand-new app, and you're its developer.** That's why the warning lists your own email address as the developer.
 - **Verification needs a single, central version of the app that everyone installs**, such as a public Google Workspace Marketplace listing. We'd love to get there, but we're not there yet.
-- **Despite the lack of verification, this project has gone through [threat modeling](threat_models/ssi-toolkit-threat-model.md).** We recommend reading the rest of this page to understand what the toolkit can and can't do with your data.
+- **Despite the lack of verification, this project has gone through [threat modeling](threat_models/looper-threat-model.md).** We recommend reading the rest of this page to understand what the toolkit can and can't do with your data.
 
 To continue past the warning, click **Advanced**, then **Go to [your sheet's name] (unsafe)**. "Unsafe" is Google's standard wording for any unverified app.
 

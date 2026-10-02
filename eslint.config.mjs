@@ -47,7 +47,7 @@ export default defineConfig([globalIgnores(["**/dist/", "**/node_modules/", "**/
             selector:
                 "CallExpression[callee.type='MemberExpression'][callee.property.name=/^(setValue|setValues|setRichTextValue|setRichTextValues)$/]",
             message:
-                "Raw Sheets write calls are restricted to src/server/safe-writes.ts. Route this write through writeSafeValue/writeSafeValueGrid/writeSafeRichText/writeSafeRichTextGrid. See docs/threat_models/ssi-toolkit-threat-model.md, T6.",
+                "Raw Sheets write calls are restricted to src/server/safe-writes.ts. Route this write through writeSafeValue/writeSafeValueGrid/writeSafeRichText/writeSafeRichTextGrid. See docs/threat_models/looper-threat-model.md, T6.",
         }],
     },
 }]);

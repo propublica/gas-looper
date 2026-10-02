@@ -17,7 +17,7 @@
 
 ## Security
 
-> Check any that apply to this PR. If any box is checked, review `docs/threat_models/ssi-toolkit-threat-model.md` and update it if the change introduces, removes, or materially changes a threat or data flow.
+> Check any that apply to this PR. If any box is checked, review `docs/threat_models/looper-threat-model.md` and update it if the change introduces, removes, or materially changes a threat or data flow.
 
 - [ ] Adds or changes a data flow (new API call, new Drive/Sheets/Docs operation, new RPC endpoint)
 - [ ] Modifies how AI output is written to the spreadsheet (affects T6 — formula injection)

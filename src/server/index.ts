@@ -33,7 +33,6 @@ import {
   resolveColumns,
   writeJobProgress,
   writeRunStats,
-  interpolateTemplate,
   flattenArg,
   markAIOutputRange,
   resolveGroundingUris,
@@ -50,8 +49,8 @@ import { CONFIG } from "./config";
 import type {
   RunConfig,
   RunStats,
-  PrepRecipeParams,
-  PrepRecipeResult,
+  FillColumnsParams,
+  FillColumnsResult,
   ImportDriveLinksConfig,
   ExtractTextConfig,
 } from "../shared/types";
@@ -650,21 +649,19 @@ export function runTool(functionName: string, jobId?: string): void {
 }
 
 // ==========================================
-// RECIPE PREP
+// COLUMN FILL
 // ==========================================
 
-export function prepRecipe({ cols, inputValues }: PrepRecipeParams): PrepRecipeResult {
-  return withErrorScrubbing("Recipe Setup", () => {
+export function fillColumns({ cols, inputValues }: FillColumnsParams): FillColumnsResult {
+  return withErrorScrubbing("Fill Columns", () => {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     const hasFolderSpec = cols.some((col) => col.fillStrategy.kind === "list-drive-folder");
     // When nothing in this call determines a row count from an actual listing
     // (no list-drive-folder spec), fall back to however many rows the sheet
-    // already has data in. Without this, a fill-value/template-only call (e.g.
-    // Guided AI Inference's system-prompt step, writing into a column
-    // alongside pre-existing data) silently wrote exactly 1 row regardless of
-    // the sheet's real size. Existing list-drive-folder-driven recipes are
-    // unaffected: numRows still starts at 1 and is only ever raised by the
-    // folder scan below, exactly as before.
+    // already has data in — e.g. Guided AI Inference's system-prompt step,
+    // writing a fill-value column alongside pre-existing data. With a
+    // list-drive-folder spec, numRows starts at 1 and is only ever raised by
+    // the folder scan below.
     let numRows = hasFolderSpec ? 1 : Math.max(1, sheet.getLastRow() - 1);
 
     // Pass 1: scan Drive folders, cache results, determine numRows
@@ -701,18 +698,6 @@ export function prepRecipe({ cols, inputValues }: PrepRecipeParams): PrepRecipeR
             Array(numRows).fill(col.fillStrategy.value) as string[],
             SpreadsheetApp.WrapStrategy.CLIP,
           );
-          break;
-        case "template": {
-          const resolved = interpolateTemplate(col.fillStrategy.template, inputValues);
-          writeColumn(
-            sheet,
-            colIdx,
-            Array(numRows).fill(resolved) as string[],
-            SpreadsheetApp.WrapStrategy.CLIP,
-          );
-          break;
-        }
-        case "create-empty":
           break;
       }
     }

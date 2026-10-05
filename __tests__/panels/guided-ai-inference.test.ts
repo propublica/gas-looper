@@ -5,7 +5,7 @@
 jest.mock("../../src/client/services", () => ({
   getSheetHeaders: jest.fn(),
   getGeminiGemUrl: jest.fn().mockResolvedValue(undefined),
-  prepRecipe: jest.fn(),
+  fillColumns: jest.fn(),
   runBatchAI: jest.fn().mockResolvedValue(undefined),
   getActiveRangeInfo: jest.fn().mockResolvedValue({ start: 2, end: 11 }),
   getDefaultRowRange: jest.fn().mockResolvedValue(undefined),
@@ -135,7 +135,7 @@ describe("GuidedAIInferencePanel — refresh columns", () => {
   });
 
   it("once Step 3 is reached, refresh also re-fetches its row-range default (mirrors ConfigureAIRunPanel)", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const { container } = await mountAndLoad();
 
     // Reach Step 3 so RunStep's RunControls actually mounts.
@@ -240,7 +240,7 @@ describe("GuidedAIInferencePanel — unmount cleanup", () => {
 
 describe("GuidedAIInferencePanel — end-to-end step progression", () => {
   it("completing Step 1 and Step 2 unlocks Step 3, which assembles a RunConfig from both", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const { container } = await mountAndLoad();
 
     // Step 1: pick an existing column, continue.
@@ -298,7 +298,7 @@ describe("GuidedAIInferencePanel — persistence", () => {
   });
 
   it("restoring a fully-completed flow still allows Run AI to succeed (regression: step results must survive a remount)", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const { container, panel } = await mountAndLoad();
 
     container.querySelector<HTMLButtonElement>("#gi-add-column")!.click();
@@ -331,7 +331,7 @@ describe("GuidedAIInferencePanel — persistence", () => {
   });
 
   it("editing the Prompt step (without re-completing it) then restoring the flow still runs with systemPromptCol set (regression: hydrate() must run for a re-opened-but-not-remounted step)", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const { container, panel } = await mountAndLoad();
 
     // Step 1: pick a column, continue.

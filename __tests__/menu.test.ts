@@ -82,7 +82,7 @@ import {
   importDriveLinks,
   getDefaultRowRange,
   getGeminiGemUrl,
-  prepRecipe,
+  fillColumns,
 } from "../src/server/index";
 
 // ── Tests ──────────────────────────────────────────────────────
@@ -228,7 +228,7 @@ describe("getGeminiGemUrl", () => {
   });
 });
 
-describe("prepRecipe", () => {
+describe("fillColumns", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockActiveSheet.getLastColumn.mockReturnValue(1);
@@ -257,7 +257,7 @@ describe("prepRecipe", () => {
   it("fills a bare fill-value column to match the sheet's existing row count when no list-drive-folder spec is present", () => {
     mockActiveSheet.getLastRow.mockReturnValue(51); // header + 50 data rows
 
-    const result = prepRecipe({
+    const result = fillColumns({
       cols: [
         {
           colTitle: "System Prompt",
@@ -274,7 +274,7 @@ describe("prepRecipe", () => {
   it("falls back to 1 row when the sheet has only a header row and no folder spec", () => {
     mockActiveSheet.getLastRow.mockReturnValue(1);
 
-    prepRecipe({
+    fillColumns({
       cols: [{ colTitle: "System Prompt", fillStrategy: { kind: "fill-value", value: "x" } }],
       inputValues: {},
     });
@@ -302,7 +302,7 @@ describe("prepRecipe", () => {
       }),
     };
 
-    prepRecipe({
+    fillColumns({
       cols: [
         { colTitle: "Drive Link", fillStrategy: { kind: "list-drive-folder", inputId: "folder" } },
         { colTitle: "System Prompt", fillStrategy: { kind: "fill-value", value: "Summarize." } },

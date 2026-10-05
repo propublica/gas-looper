@@ -16,8 +16,8 @@ export class Router {
    * navigation path — lets a bare navigate() (no explicit params) restore
    * where the user left off, even after visiting unrelated panels in
    * between. Only consulted when the caller passes no params: an explicit
-   * params argument means the caller has a specific intent (e.g. a recipe's
-   * prepped config) that must win over any leftover state.
+   * params argument means the caller has a specific intent (e.g. Guided's
+   * "Switch to Freeform" config) that must win over any leftover state.
    */
   private readonly lastState = new Map<PanelId, { params?: unknown; savedState?: unknown }>();
 

@@ -96,7 +96,7 @@ function runBatchAI(config, jobId) { return _GASEntry.runBatchAI(config, jobId);
 function importDriveLinks(config, jobId) { _GASEntry.importDriveLinks(config, jobId); }
 function extractText(config, jobId) { _GASEntry.extractText(config, jobId); }
 function sampleRowsToEvaluation(jobId) { _GASEntry.sampleRowsToEvaluation(jobId); }
-function prepRecipe(params) { return _GASEntry.prepRecipe(params); }
+function fillColumns(params) { return _GASEntry.fillColumns(params); }
 function getJobProgress(jobId) { return _GASEntry.getJobProgress(jobId); }
 function getActiveRangeInfo() { return _GASEntry.getActiveRangeInfo(); }
 function getDefaultRowRange() { return _GASEntry.getDefaultRowRange(); }

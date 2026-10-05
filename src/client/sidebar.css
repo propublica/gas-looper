@@ -2,8 +2,7 @@
   --primary-blue: #1a73e8;
   --hover-blue: #f1f3f4;
   --border-color: #dadce0;
-  /* Guided AI Inference step rail/badges only -- sampled from the Document
-     Summarization (V3) recipe prototype's progress rail. */
+  /* Guided AI Inference step rail/badges only. */
   --google-green: #34a853;
   --text-main: rgb(31, 31, 31);
   --text-secondary: rgb(57, 57, 57);
@@ -533,7 +532,7 @@ h3 {
   margin-left: 1px;
 }
 
-/* ── Recipe list button hierarchy ── */
+/* ── Tool list button hierarchy ── */
 
 .tool-btn-text {
   display: flex;
@@ -565,43 +564,6 @@ h3 {
   margin-top: 2px;
 }
 
-/* ── Coming soon stub ── */
-
-.tool-btn-stub {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  border-radius: 24px;
-  border: 1px dashed var(--border-color);
-  background: #f8f9fa;
-  color: var(--text-secondary);
-  font-family: var(--font-family);
-  font-size: var(--font-size-300);
-  font-style: italic;
-  cursor: default;
-  box-sizing: border-box;
-}
-
-/* ── Recipe section cards ── */
-
-.recipe-section-card {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 12px;
-}
-
-.recipe-section-card-title {
-  font-size: var(--font-size-100);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-secondary);
-  margin-bottom: 10px;
-}
-
 .field-helper {
   font-size: var(--font-size-200);
   color: var(--text-secondary);
@@ -625,64 +587,11 @@ h3 {
   text-decoration: underline;
 }
 
-.recipe-intro {
+.panel-intro {
   font-size: var(--font-size-200);
   color: var(--text-secondary);
   line-height: 1.5;
   margin: 0 0 16px 0;
-}
-
-/* ── LockableField layouts ── */
-
-.lockable-field-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.lockable-field-header .field-label {
-  margin-bottom: 0;
-}
-
-.lockable-field-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
-}
-
-.lockable-field-row .field-label {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  margin-bottom: 0;
-}
-
-.lockable-field-row .text-input {
-  flex: 1;
-  min-width: 0;
-  width: auto;
-  margin-top: 0;
-}
-
-.unlock-btn {
-  flex: 0 0 auto;
-  background: none;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: var(--text-secondary);
-  font-size: var(--font-size-100);
-  font-style: italic;
-  cursor: pointer;
-  padding: 3px 6px;
-  white-space: nowrap;
-  font-family: var(--font-family);
-  line-height: 1.4;
-}
-
-.unlock-btn:hover {
-  border-color: var(--primary-blue);
-  color: var(--primary-blue);
 }
 
 /* ── Job Strip (sidebar chrome) ──────────────────────────────────────────── */

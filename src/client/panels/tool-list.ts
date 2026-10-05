@@ -19,9 +19,6 @@ export class ToolListPanel implements Panel {
     container.querySelector("#btn-run-ai")?.addEventListener("click", () => {
       nav.navigate("configure-ai-run");
     });
-    container.querySelector("#btn-recipes")?.addEventListener("click", () => {
-      nav.navigate("recipes-list");
-    });
     container.querySelector("#btn-import-drive-links")?.addEventListener("click", () => {
       nav.navigate("import-drive-links");
     });
@@ -70,13 +67,6 @@ export class ToolListPanel implements Panel {
           <div class="tool-btn-text">
             <span class="tool-btn-name">Freeform</span>
             <span class="tool-btn-sub">Full control over inputs, prompts and settings</span>
-          </div>
-        </button>
-        <button id="btn-recipes" class="tool-btn">
-          <span class="icon">🥞</span>
-          <div class="tool-btn-text">
-            <span class="tool-btn-name">Recipes</span>
-            <span class="tool-btn-sub">Ready-made presets for common tasks</span>
           </div>
         </button>
       </div>

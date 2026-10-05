@@ -3,7 +3,7 @@
  * setRichTextValue/setRichTextValues in src/server/. Every Apps Script write
  * of content that the acting user did not directly type into that specific
  * cell (AI output, Drive-extracted text, a re-write of existing cell
- * content, a recipe form-field value) must go through one of the four
+ * content, a Guided prompt-step value) must go through one of the four
  * writeSafe* primitives below. Enforced by an ESLint rule — see
  * eslint.config.mjs. See docs/threat_models/looper-threat-model.md, T6.
  */

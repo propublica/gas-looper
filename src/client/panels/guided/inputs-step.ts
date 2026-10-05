@@ -1,8 +1,8 @@
 import type { Step, StepContext } from "../../types";
-import type { PrepColSpec, PromptColumnSpec } from "../../../shared/types";
+import type { FillColumnSpec, PromptColumnSpec } from "../../../shared/types";
 import { TokenInput } from "../../components/token-input";
 import { AsyncActionButton } from "../../components/async-action-button";
-import { prepRecipe } from "../../services";
+import { fillColumns } from "../../services";
 
 export type InputRow =
   | { kind: "column"; colTitle: string }
@@ -203,7 +203,7 @@ export class InputsStep implements Step<InputsStepSavedState> {
       return;
     }
 
-    const cols: PrepColSpec[] = folderRows.map((r, i) => ({
+    const cols: FillColumnSpec[] = folderRows.map((r, i) => ({
       colTitle: r.colTitle,
       fillStrategy: { kind: "list-drive-folder", inputId: `driveFolder_${i}` },
     }));
@@ -212,7 +212,7 @@ export class InputsStep implements Step<InputsStepSavedState> {
 
     ctx.onBusyChange(true);
     this.continueButton!.setLoading();
-    prepRecipe({ cols, inputValues }).then(
+    fillColumns({ cols, inputValues }).then(
       () => {
         ctx.onBusyChange(false);
         finish();

@@ -8,7 +8,6 @@
  * assign to `global.*` — that's the contract with Rollup's IIFE output.
  */
 
-export { SSI } from "./customFunctions";
 import { callGeminiAPIBatch } from "./api";
 import { computeRunStats } from "./cost-tracking";
 import { buildConfigSnapshot } from "../shared/run-stats";

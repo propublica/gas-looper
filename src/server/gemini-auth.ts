@@ -6,10 +6,10 @@
  *
  * The key must never be interpolated into a request URL. UrlFetchApp can throw an
  * exception containing the full request URL on a fetch-level failure (DNS error,
- * timeout) — which `muteHttpExceptions` does not suppress — and SSI()'s catch block
- * used to write raw exception messages into spreadsheet cells (fixed by R25 — see
- * error-handling.ts). A key in the URL was therefore one network hiccup away from
- * being readable in a cell.
+ * timeout) — which `muteHttpExceptions` does not suppress — and catch blocks that
+ * write errors into spreadsheet cells used to echo raw exception messages (fixed by
+ * R25 — see error-handling.ts). A key in the URL was therefore one network hiccup
+ * away from being readable in a cell.
  *
  * See T17/R24/R25 in docs/threat_models/looper-threat-model.md.
  */

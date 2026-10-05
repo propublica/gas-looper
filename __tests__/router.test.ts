@@ -200,11 +200,11 @@ describe("Router", () => {
       new Map([
         ["tool-list", home],
         ["configure-ai-run", ai],
-        ["recipes-list", spy],
+        ["extract-text", spy],
       ]),
     );
     router.start("tool-list");
-    router.navigate("recipes-list");
+    router.navigate("extract-text");
     expect(capturedNav).not.toBeNull();
 
     // Verify delegates actually invoke router methods.

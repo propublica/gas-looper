@@ -3,7 +3,7 @@
  */
 
 jest.mock("../../../src/client/services", () => ({
-  prepRecipe: jest.fn(),
+  fillColumns: jest.fn(),
 }));
 
 import {
@@ -147,7 +147,7 @@ describe("PromptStep — Expand modal", () => {
 });
 
 describe("PromptStep — required prompt", () => {
-  it("alerts and does not call prepRecipe when the prompt is empty", () => {
+  it("alerts and does not call fillColumns when the prompt is empty", () => {
     const container = makeContainer();
     const step = new PromptStep();
     const ctx = makeCtx();
@@ -156,7 +156,7 @@ describe("PromptStep — required prompt", () => {
     expect(globalThis.alert).toHaveBeenCalledWith(
       expect.stringContaining("describe what the AI should do"),
     );
-    expect(services.prepRecipe).not.toHaveBeenCalled();
+    expect(services.fillColumns).not.toHaveBeenCalled();
     expect(ctx.onComplete).not.toHaveBeenCalled();
   });
 
@@ -167,13 +167,13 @@ describe("PromptStep — required prompt", () => {
     container.querySelector<HTMLTextAreaElement>("#gp-prompt-text")!.value = "   ";
     container.querySelector<HTMLButtonElement>("#gp-continue")!.click();
     expect(globalThis.alert).toHaveBeenCalled();
-    expect(services.prepRecipe).not.toHaveBeenCalled();
+    expect(services.fillColumns).not.toHaveBeenCalled();
   });
 });
 
 describe("PromptStep — commit", () => {
-  it("writes a single fill-value PrepColSpec and calls onComplete", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+  it("writes a single fill-value FillColumnSpec and calls onComplete", async () => {
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const container = makeContainer();
     const step = new PromptStep();
     const ctx = makeCtx();
@@ -184,7 +184,7 @@ describe("PromptStep — commit", () => {
     await Promise.resolve();
     await Promise.resolve();
 
-    expect(services.prepRecipe).toHaveBeenCalledWith({
+    expect(services.fillColumns).toHaveBeenCalledWith({
       cols: [
         {
           colTitle: SYSTEM_PROMPT_COLUMN_TITLE,
@@ -198,7 +198,7 @@ describe("PromptStep — commit", () => {
   });
 
   it("reverts the continue button to idle on success too -- StepFlow can re-expand this step's DOM later without a mount(), so a leftover loading state would otherwise stay stuck", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const container = makeContainer();
     const step = new PromptStep();
     step.mount(container, makeCtx());
@@ -211,11 +211,11 @@ describe("PromptStep — commit", () => {
     expect(continueBtn.textContent).toBe("Import & Continue");
   });
 
-  it("shows a loading state on the continue button while prepRecipe is in flight, then reverts to idle on failure", async () => {
-    let rejectPrepRecipe!: (err: Error) => void;
-    (services.prepRecipe as jest.Mock).mockReturnValue(
+  it("shows a loading state on the continue button while fillColumns is in flight, then reverts to idle on failure", async () => {
+    let rejectFillColumns!: (err: Error) => void;
+    (services.fillColumns as jest.Mock).mockReturnValue(
       new Promise((_resolve, reject) => {
-        rejectPrepRecipe = reject;
+        rejectFillColumns = reject;
       }),
     );
     const container = makeContainer();
@@ -229,15 +229,15 @@ describe("PromptStep — commit", () => {
     expect(continueBtn.disabled).toBe(true);
     expect(continueBtn.textContent).toContain("Importing...");
 
-    rejectPrepRecipe(new Error("boom"));
+    rejectFillColumns(new Error("boom"));
     for (let i = 0; i < 5; i++) await Promise.resolve();
 
     expect(continueBtn.disabled).toBe(false);
     expect(continueBtn.textContent).toBe("Import & Continue");
   });
 
-  it("calls ctx.onError and alerts, not onComplete, when prepRecipe rejects", async () => {
-    (services.prepRecipe as jest.Mock).mockRejectedValue(new Error("write failed"));
+  it("calls ctx.onError and alerts, not onComplete, when fillColumns rejects", async () => {
+    (services.fillColumns as jest.Mock).mockRejectedValue(new Error("write failed"));
     const container = makeContainer();
     const step = new PromptStep();
     const ctx = makeCtx();
@@ -298,7 +298,7 @@ describe("PromptStep — setInteractive", () => {
 
 describe("PromptStep — onBusyChange", () => {
   it("reports busy true before the request and false after it resolves", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue(undefined);
+    (services.fillColumns as jest.Mock).mockResolvedValue(undefined);
     const container = makeContainer();
     const step = new PromptStep();
     const ctx = makeCtx();
@@ -315,7 +315,7 @@ describe("PromptStep — onBusyChange", () => {
   });
 
   it("reports busy false after a failed request", async () => {
-    (services.prepRecipe as jest.Mock).mockRejectedValue(new Error("boom"));
+    (services.fillColumns as jest.Mock).mockRejectedValue(new Error("boom"));
     const container = makeContainer();
     const step = new PromptStep();
     const ctx = makeCtx();

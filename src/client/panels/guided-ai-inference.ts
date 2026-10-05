@@ -112,7 +112,7 @@ export class GuidedAIInferencePanel implements Panel<undefined, StepFlowSavedSta
         <span class="panel-title">🧭 Guided AI Inference</span>
         <button id="refresh-btn" class="refresh-btn" title="Refresh columns">↻</button>
       </div>
-      <p class="recipe-intro">Walk through each stage of Spreadsheet Inference.</p>
+      <p class="panel-intro">Walk through each stage of Spreadsheet Inference.</p>
       <div id="panel-loader" class="panel-loader" hidden>
         <div class="panel-loader__bar-wrap" hidden>
           <div class="panel-loader__bar-fill"></div>

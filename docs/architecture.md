@@ -30,7 +30,7 @@ HtmlService can only serve `.html` files. A custom Rollup plugin inlines all JS 
 
 ## Panel / Router System
 
-The client uses a lightweight navigation system: `Router` (`src/client/router.ts`) manages a push/pop navigation stack, and each `Panel` implementation handles its own render and state. Recipes are a workflow layer built on top of Run AI, driven by a generic `RecipePanel` that walks the user through a prep step (filling in inputs, writing spreadsheet columns) before launching an AI run.
+The client uses a lightweight navigation system: `Router` (`src/client/router.ts`) manages a push/pop navigation stack, and each `Panel` implementation handles its own render and state. Guided AI Inference is a step-by-step workflow built on top of Run AI: `StepFlow` (`src/client/components/step-flow.ts`) walks the user through gathering inputs and writing a system prompt (via the `fillColumns` server call, which writes spreadsheet columns) before launching an AI run with the shared `RunControls` component.
 
 ## Historical Design Records
 

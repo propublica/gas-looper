@@ -2,11 +2,14 @@
   --primary-blue: #1a73e8;
   --hover-blue: #f1f3f4;
   --border-color: #dadce0;
-  /* Guided AI Inference step rail/badges only -- sampled from the Document
-     Summarization (V3) recipe prototype's progress rail. */
+  /* Guided AI Inference step rail/badges only. */
   --google-green: #34a853;
   --text-main: rgb(31, 31, 31);
   --text-secondary: rgb(57, 57, 57);
+  /* Dimmer than --text-secondary, for quiet asides (home "How it works"). */
+  --text-tertiary: #5f6368;
+  /* Light gray fill for quiet asides. */
+  --surface-subtle: #f8f9fa;
 
   --font-family: "Google Sans Flex", Roboto, sans-serif;
 
@@ -57,51 +60,11 @@ h3 {
   margin: 0 0 12px 4px;
 }
 
-.tool-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  border-radius: 24px;
-  border: 1px solid var(--border-color);
-  background: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: var(--font-family);
-  font-size: var(--font-size-300);
-  font-weight: 500;
-  color: var(--text-main);
-}
-
-.tool-btn:hover {
-  background-color: var(--hover-blue);
-  border-color: transparent;
-  color: var(--primary-blue);
-}
-
-.tool-btn:active {
-  background-color: #e8eaed;
-  transform: scale(0.98);
-}
-
 .icon {
   margin-right: 12px;
   font-size: var(--font-size-500);
   width: 24px;
   text-align: center;
-}
-
-.status-footer {
-  margin-top: 40px;
-  padding: 16px;
-  border-top: 1px solid #eee;
-  font-size: var(--font-size-100);
-  font-style: italic;
-  color: var(--text-secondary);
-  text-align: center;
-  line-height: 1.5;
 }
 
 .loading {
@@ -533,73 +496,160 @@ h3 {
   margin-left: 1px;
 }
 
-/* ── Recipe list button hierarchy ── */
+/* ── Home page (ToolListPanel) ── */
 
-.tool-btn-text {
+/* Column wrapper filling #app's height, so .home-footer's margin-top: auto
+   pins it to the bottom of the sidebar. */
+.home {
   display: flex;
   flex-direction: column;
+  min-height: 100%;
+}
+
+.home-aside {
+  background: var(--surface-subtle);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 24px;
+}
+
+/* Same look as .collapsible-label, without its button hover color. */
+.home-aside-label {
+  font-size: var(--font-size-100);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin: 0 0 6px 0;
+}
+
+.home-steps {
+  font-size: var(--font-size-200);
+  line-height: 1.45;
+  color: var(--text-tertiary);
+  margin: 0;
+  padding-left: 16px;
+}
+
+.home-steps li {
+  margin: 0;
+}
+
+.home-question {
+  font-size: var(--font-size-500);
+  font-weight: 500;
+  margin: 0 0 12px 0;
+}
+
+.home-choice {
+  width: 100%;
+  display: flex;
+  gap: 12px;
   align-items: flex-start;
   text-align: left;
-  gap: 2px;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-family: var(--font-family);
+  color: var(--text-main);
 }
 
-.tool-btn-sub {
+.home-choice:hover {
+  border-color: var(--primary-blue);
+  background: rgba(26, 115, 232, 0.06);
+}
+
+/* Fixed-width box so emoji of different glyph widths (📄 vs 📂) don't
+   push their titles out of line. */
+.home-choice .icon,
+.tool-row .icon {
+  margin: 0;
+  font-size: var(--font-size-400);
+  flex: none;
+  width: 24px;
+}
+
+.home-choice-name {
+  display: block;
+  font-size: var(--font-size-300);
+  font-weight: 500;
+}
+
+.home-choice-sub {
+  display: block;
   font-size: var(--font-size-200);
   color: var(--text-secondary);
-  font-weight: 400;
-  line-height: 1.3;
-}
-
-.tool-btn:hover .tool-btn-sub {
-  color: var(--primary-blue);
-  opacity: 0.8;
-}
-
-/* Buttons with a stacked title+caption (this pattern, not the plain
-           single-line ones below) should align the icon with the title line,
-           not center it against the whole two-line block. */
-.tool-btn:has(.tool-btn-text) {
-  align-items: flex-start;
-}
-.tool-btn:has(.tool-btn-text) .icon {
+  line-height: 1.4;
   margin-top: 2px;
 }
 
-/* ── Coming soon stub ── */
+.home-freeform {
+  font-size: var(--font-size-200);
+  color: var(--text-secondary);
+  margin: 10px 0 0 4px;
+}
 
-.tool-btn-stub {
+.home-freeform .link-btn {
+  padding: 0;
+}
+
+.home-tools {
+  margin-top: 28px;
+  margin-bottom: 28px; /* minimum gap above the pinned footer */
+}
+
+.tool-row {
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  border-radius: 24px;
-  border: 1px dashed var(--border-color);
-  background: #f8f9fa;
-  color: var(--text-secondary);
+  gap: 10px;
+  padding: 8px 4px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
   font-family: var(--font-family);
   font-size: var(--font-size-300);
-  font-style: italic;
+  color: var(--text-main);
+}
+
+.tool-row:hover {
+  background: var(--hover-blue);
+  color: var(--primary-blue);
+}
+
+.tool-row:disabled {
+  opacity: 0.6;
   cursor: default;
-  box-sizing: border-box;
 }
 
-/* ── Recipe section cards ── */
-
-.recipe-section-card {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 12px;
+.tool-row-name {
+  display: block;
 }
 
-.recipe-section-card-title {
-  font-size: var(--font-size-100);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
+.tool-row-sub {
+  display: block;
+  font-size: var(--font-size-200);
   color: var(--text-secondary);
-  margin-bottom: 10px;
+}
+
+.home-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto; /* pinned to the bottom of .home */
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+  font-size: var(--font-size-100);
+  color: var(--text-secondary);
+}
+
+.home-footer a {
+  color: var(--text-secondary);
 }
 
 .field-helper {
@@ -625,64 +675,11 @@ h3 {
   text-decoration: underline;
 }
 
-.recipe-intro {
+.panel-intro {
   font-size: var(--font-size-200);
   color: var(--text-secondary);
   line-height: 1.5;
   margin: 0 0 16px 0;
-}
-
-/* ── LockableField layouts ── */
-
-.lockable-field-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.lockable-field-header .field-label {
-  margin-bottom: 0;
-}
-
-.lockable-field-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
-}
-
-.lockable-field-row .field-label {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  margin-bottom: 0;
-}
-
-.lockable-field-row .text-input {
-  flex: 1;
-  min-width: 0;
-  width: auto;
-  margin-top: 0;
-}
-
-.unlock-btn {
-  flex: 0 0 auto;
-  background: none;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: var(--text-secondary);
-  font-size: var(--font-size-100);
-  font-style: italic;
-  cursor: pointer;
-  padding: 3px 6px;
-  white-space: nowrap;
-  font-family: var(--font-family);
-  line-height: 1.4;
-}
-
-.unlock-btn:hover {
-  border-color: var(--primary-blue);
-  color: var(--primary-blue);
 }
 
 /* ── Job Strip (sidebar chrome) ──────────────────────────────────────────── */

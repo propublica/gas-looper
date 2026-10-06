@@ -10,7 +10,7 @@ import { resolve } from "path";
  * - Apps Script expects a flat set of .gs files with top-level functions.
  * - There is no module system on the server — output must be IIFE or plain script.
  * - Any NPM packages used must be inlined (no dynamic require/import at runtime).
- * - Functions that Apps Script needs to call (onOpen, triggers, custom functions)
+ * - Functions that Apps Script needs to call (onOpen, triggers, sidebar RPC endpoints)
  *   must be global — Rollup's IIFE wrapper will scope them unless we handle it.
  *
  * The "footer" trick below closes the IIFE early and re-exposes our entry-point
@@ -85,13 +85,6 @@ export default [
  * Every export from index.ts that Apps Script needs to call must have a
  * matching one-line stub here. Rollup's IIFE wrapper scopes everything inside
  * _GASEntry; these stubs re-expose the relevant functions in the global scope.
- *
- * CUSTOM FUNCTIONS: If the stub is for a Sheets custom function (callable from
- * a cell formula), you MUST add a JSDoc comment with @customfunction directly
- * on the stub below. The TypeScript-level JSDoc is compiled away by Rollup and
- * does NOT appear on the global stub. Google Sheets only recognises a function
- * as a custom function when @customfunction is present on the global declaration
- * — without it the function will not appear in autocomplete or parameter hints.
  */
 function onOpen(e) { _GASEntry.onOpen(e); }
 function showSidebar() { _GASEntry.showSidebar(); }
@@ -103,17 +96,7 @@ function runBatchAI(config, jobId) { return _GASEntry.runBatchAI(config, jobId);
 function importDriveLinks(config, jobId) { _GASEntry.importDriveLinks(config, jobId); }
 function extractText(config, jobId) { _GASEntry.extractText(config, jobId); }
 function sampleRowsToEvaluation(jobId) { _GASEntry.sampleRowsToEvaluation(jobId); }
-/**
- * Call the Gemini API from a spreadsheet cell.
- * @param {string|Array} userTexts One or more text parts for the user message.
- *   Pass a single string, a cell reference, or a range / array literal.
- * @param {string} [systemPrompt] (Optional) System-level instruction for the model.
- * @param {string|Array} [toolNames] (Optional) Names of pre-registered tools to enable.
- * @return {string} The model's text response, or "[SSI Error: ...]" on failure.
- * @customfunction
- */
-function SSI(userTexts, systemPrompt, toolNames) { return _GASEntry.SSI(userTexts, systemPrompt, toolNames); }
-function prepRecipe(params) { return _GASEntry.prepRecipe(params); }
+function fillColumns(params) { return _GASEntry.fillColumns(params); }
 function getJobProgress(jobId) { return _GASEntry.getJobProgress(jobId); }
 function getActiveRangeInfo() { return _GASEntry.getActiveRangeInfo(); }
 function getDefaultRowRange() { return _GASEntry.getDefaultRowRange(); }

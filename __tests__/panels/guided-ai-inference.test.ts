@@ -5,7 +5,7 @@
 jest.mock("../../src/client/services", () => ({
   getSheetHeaders: jest.fn(),
   getGeminiGemUrl: jest.fn().mockResolvedValue(undefined),
-  prepRecipe: jest.fn(),
+  fillColumns: jest.fn(),
   runBatchAI: jest.fn().mockResolvedValue(undefined),
   getActiveRangeInfo: jest.fn().mockResolvedValue({ start: 2, end: 11 }),
   getDefaultRowRange: jest.fn().mockResolvedValue(undefined),
@@ -19,9 +19,12 @@ jest.mock("../../src/client/job-store", () => ({
   },
 }));
 
-import { GuidedAIInferencePanel } from "../../src/client/panels/guided-ai-inference";
+import {
+  GuidedAIInferencePanel,
+  type GuidedParams,
+} from "../../src/client/panels/guided-ai-inference";
 import * as services from "../../src/client/services";
-import type { NavigationContext } from "../../src/client/types";
+import type { NavigationContext, StepFlowSavedState } from "../../src/client/types";
 
 const mockNav: NavigationContext = {
   navigate: jest.fn(),
@@ -135,7 +138,7 @@ describe("GuidedAIInferencePanel — refresh columns", () => {
   });
 
   it("once Step 3 is reached, refresh also re-fetches its row-range default (mirrors ConfigureAIRunPanel)", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const { container } = await mountAndLoad();
 
     // Reach Step 3 so RunStep's RunControls actually mounts.
@@ -240,7 +243,7 @@ describe("GuidedAIInferencePanel — unmount cleanup", () => {
 
 describe("GuidedAIInferencePanel — end-to-end step progression", () => {
   it("completing Step 1 and Step 2 unlocks Step 3, which assembles a RunConfig from both", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const { container } = await mountAndLoad();
 
     // Step 1: pick an existing column, continue.
@@ -298,7 +301,7 @@ describe("GuidedAIInferencePanel — persistence", () => {
   });
 
   it("restoring a fully-completed flow still allows Run AI to succeed (regression: step results must survive a remount)", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const { container, panel } = await mountAndLoad();
 
     container.querySelector<HTMLButtonElement>("#gi-add-column")!.click();
@@ -331,7 +334,7 @@ describe("GuidedAIInferencePanel — persistence", () => {
   });
 
   it("editing the Prompt step (without re-completing it) then restoring the flow still runs with systemPromptCol set (regression: hydrate() must run for a re-opened-but-not-remounted step)", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const { container, panel } = await mountAndLoad();
 
     // Step 1: pick a column, continue.
@@ -384,5 +387,61 @@ describe("GuidedAIInferencePanel — persistence", () => {
       }),
       expect.any(String),
     );
+  });
+});
+
+describe("GuidedAIInferencePanel — startWith preset", () => {
+  async function mountWithPreset(
+    startWith: GuidedParams["startWith"],
+    savedState?: StepFlowSavedState,
+  ): Promise<{ container: HTMLElement; panel: GuidedAIInferencePanel }> {
+    (services.getSheetHeaders as jest.Mock).mockResolvedValue(["NoteCol", "OtherCol"]);
+    const container = makeContainer();
+    const panel = new GuidedAIInferencePanel();
+    panel.mount(container, mockNav, { startWith }, savedState);
+    for (let i = 0; i < 5; i++) await Promise.resolve();
+    return { container, panel };
+  }
+
+  function pickSeededColumn(container: HTMLElement): void {
+    container.querySelector<HTMLElement>(".token-add-btn")!.click();
+    container.querySelector<HTMLElement>('.token-option[data-value="NoteCol"]')!.click();
+  }
+
+  it("opens step 1 with one row of the preset kind", async () => {
+    const { container } = await mountWithPreset("drive-folder");
+    expect(container.querySelectorAll(".guided-input-row")).toHaveLength(1);
+    expect(container.querySelector(".guided-input-folder-url")).not.toBeNull();
+  });
+
+  it("restores a filled-in step 1 when remounted with saved state (Back from Freeform)", async () => {
+    const { container, panel } = await mountWithPreset("column");
+    pickSeededColumn(container);
+    const saved = panel.unmount();
+
+    const { container: container2 } = await mountWithPreset("drive-folder", saved);
+    expect(container2.querySelectorAll(".guided-input-row")).toHaveLength(1);
+    expect(container2.querySelector(".guided-input-folder-url")).toBeNull();
+    expect(container2.querySelector(".guided-input-col-picker")!.textContent).toContain("NoteCol");
+  });
+
+  it("reopens on the step the user reached when remounted with saved state (Back from Freeform)", async () => {
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    const { container, panel } = await mountWithPreset("column");
+    pickSeededColumn(container);
+    container.querySelector<HTMLButtonElement>("#gi-continue")!.click();
+    await Promise.resolve();
+    container.querySelector<HTMLTextAreaElement>("#gp-prompt-text")!.value = "Summarize this.";
+    container.querySelector<HTMLButtonElement>("#gp-continue")!.click();
+    for (let i = 0; i < 5; i++) await Promise.resolve();
+    const saved = panel.unmount();
+    expect(saved?.activeStepIndex).toBe(2);
+
+    const { container: container2 } = await mountWithPreset("drive-folder", saved);
+    const icons = container2.querySelectorAll(".step-icon");
+    expect(icons[0].textContent).toBe("✓");
+    expect(icons[1].textContent).toBe("✓");
+    expect(container2.querySelector("#run-btn")).not.toBeNull();
+    expect(container2.querySelector(".guided-input-folder-url")).toBeNull();
   });
 });

@@ -1,8 +1,8 @@
 import type {
   RunConfig,
   RunStats,
-  PrepRecipeParams,
-  PrepRecipeResult,
+  FillColumnsParams,
+  FillColumnsResult,
   ImportDriveLinksConfig,
   ExtractTextConfig,
 } from "../shared/types";
@@ -17,7 +17,7 @@ declare global {
     runBatchAI(config: RunConfig, jobId?: string): RunStats | null;
     importDriveLinks(config: ImportDriveLinksConfig, jobId?: string): void;
     extractText(config: ExtractTextConfig, jobId?: string): void;
-    prepRecipe(params: PrepRecipeParams): PrepRecipeResult;
+    fillColumns(params: FillColumnsParams): FillColumnsResult;
     getJobProgress(jobId: string): void;
     getActiveRangeInfo(): void;
     getDefaultRowRange(): void;

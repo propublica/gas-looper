@@ -10,8 +10,6 @@ import { Router } from "./router";
 import { ToolListPanel } from "./panels/tool-list";
 import { GuidedAIInferencePanel } from "./panels/guided-ai-inference";
 import { ConfigureAIRunPanel } from "./panels/configure-ai-run";
-import { RecipesListPanel } from "./panels/recipes-list";
-import { RecipePanel } from "./panels/recipe";
 import { ImportDriveLinksPanel } from "./panels/import-drive-links";
 import { ExtractTextPanel } from "./panels/extract-text";
 import { JobIndicator } from "./components/job-indicator";
@@ -31,8 +29,6 @@ function init(): void {
     ["tool-list", new ToolListPanel()],
     ["guided-ai-inference", new GuidedAIInferencePanel()],
     ["configure-ai-run", new ConfigureAIRunPanel()],
-    ["recipes-list", new RecipesListPanel()],
-    ["recipe", new RecipePanel()],
     ["import-drive-links", new ImportDriveLinksPanel()],
     ["extract-text", new ExtractTextPanel()],
   ]);

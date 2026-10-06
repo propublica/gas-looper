@@ -1,20 +1,4 @@
-import type { PrepColSpec, RunConfig, RunStats } from "../shared/types";
-
-// ── Recipe column types ──────────────────────────────────────────
-
-/**
- * The AI inference role this column plays at run time.
- * Lives client-side only — the server never reads it.
- */
-export type ColumnRole = "file-prompt" | "text-prompt" | "system-prompt" | "output";
-
-/**
- * What recipe authors write: the RPC-crossing PrepColSpec plus the
- * client-only role that determines the column's place in the AI call.
- */
-export interface RecipeColumn extends PrepColSpec {
-  role?: ColumnRole;
-}
+import type { RunStats } from "../shared/types";
 
 // ── Loading / Progress types ─────────────────────────────────────────────────
 
@@ -99,34 +83,6 @@ export interface StepFlowSavedState {
   }>;
 }
 
-// ── Recipe UI types ─────────────────────────────────────────────
-// These are client-only — they define the journalist-facing form, not RPC payloads.
-
-/**
- * Non-column AI settings a recipe can pre-configure.
- * These flow into RunConfig at cook time alongside the derived column references.
- * Typed as a Pick so it stays in sync with RunConfig automatically.
- */
-export type RecipeSettings = Pick<
-  RunConfig,
-  "tools" | "applyMarkdown" | "includeGrounding" | "wrapPromptsInTags" | "model"
->;
-
-export interface RecipeInput {
-  /**
-   * Unique identifier for this input. Used as the key in template interpolation
-   * (e.g. a fill strategy of `{{folder}}` resolves from `inputValues["folder"]`).
-   *
-   * Must be camelCase or underscore_separated — no hyphens. The interpolation
-   * regex uses `\w+` which does not match `-`.
-   */
-  id: string;
-  label: string;
-  required?: boolean;
-  helperText?: string;
-  placeholder?: string;
-}
-
 /**
  * All registered panel identifiers. Add new panels here first.
  */
@@ -134,8 +90,6 @@ export type PanelId =
   | "tool-list"
   | "guided-ai-inference"
   | "configure-ai-run"
-  | "recipes-list"
-  | "recipe"
   | "import-drive-links"
   | "extract-text";
 
@@ -169,23 +123,4 @@ export interface TestRunDisplay {
   stats: RunStats;
   /** The full (uncapped) row count the test's range was resolved from, before capping to 10 rows. */
   fullRowCount: number;
-}
-
-export interface RecipeDefinition {
-  id: string;
-  name: string;
-  icon: string;
-  description: string;
-  /** Optional longer description rendered at the top of the recipe panel. */
-  intro?: string;
-  /** Journalist-facing form fields. Drives RecipePanel rendering. */
-  inputs: RecipeInput[];
-  /**
-   * Column template passed to prepRecipe(). Each column's role field determines
-   * its place in the AI call — promptCols, systemPromptCol, outputCol are derived
-   * from these roles at cook time via buildRunTemplate().
-   */
-  prepTemplate: RecipeColumn[];
-  /** Non-column AI settings (tools, markdown, grounding, etc.). */
-  settings?: RecipeSettings;
 }

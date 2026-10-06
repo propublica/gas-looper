@@ -11,7 +11,7 @@ const mockRun = {
   getDefaultRowRange: jest.fn(),
   runBatchAI: jest.fn(),
   runTool: jest.fn(),
-  prepRecipe: jest.fn(),
+  fillColumns: jest.fn(),
   getJobProgress: jest.fn(),
   importDriveLinks: jest.fn(),
   extractText: jest.fn(),
@@ -223,28 +223,28 @@ describe("runTool", () => {
   });
 });
 
-describe("prepRecipe", () => {
-  it("calls google.script.run.prepRecipe with params and resolves with result", async () => {
+describe("fillColumns", () => {
+  it("calls google.script.run.fillColumns with params and resolves with result", async () => {
     const handlers = captureHandlers();
-    const params: import("../src/shared/types").PrepRecipeParams = {
+    const params: import("../src/shared/types").FillColumnsParams = {
       cols: [
         { colTitle: "Drive Link", fillStrategy: { kind: "list-drive-folder", inputId: "folder" } },
-        { colTitle: "AI_Summarization", fillStrategy: { kind: "create-empty" } },
+        { colTitle: "System Prompt", fillStrategy: { kind: "fill-value", value: "Summarize." } },
       ],
       inputValues: { folder: "https://drive.google.com/drive/folders/abc123" },
     };
-    const result: import("../src/shared/types").PrepRecipeResult = {
+    const result: import("../src/shared/types").FillColumnsResult = {
       rowRange: { start: 2, end: 5 },
     };
-    const promise = services.prepRecipe(params);
+    const promise = services.fillColumns(params);
     handlers.resolve(result);
     await expect(promise).resolves.toEqual(result);
-    expect(mockRun.prepRecipe).toHaveBeenCalledWith(params);
+    expect(mockRun.fillColumns).toHaveBeenCalledWith(params);
   });
 
   it("rejects on failure", async () => {
     const handlers = captureHandlers();
-    const promise = services.prepRecipe({ cols: [], inputValues: {} });
+    const promise = services.fillColumns({ cols: [], inputValues: {} });
     handlers.reject(new Error("prep error"));
     await expect(promise).rejects.toThrow("prep error");
   });

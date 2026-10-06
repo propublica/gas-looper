@@ -397,14 +397,14 @@ describe("ConfigureAIRunPanel — back", () => {
     expect(mockNav.back).toHaveBeenCalled();
   });
 
-  it("browse-recipes-link navigates to recipes-list when no headers present", async () => {
+  it("try-guided-link navigates to guided-ai-inference when no headers present", async () => {
     (services.getSheetHeaders as jest.Mock).mockResolvedValue([]);
     const container = makeContainer();
     const panel = new ConfigureAIRunPanel();
     panel.mount(container, mockNav);
     for (let i = 0; i < 5; i++) await Promise.resolve();
-    container.querySelector<HTMLAnchorElement>("#browse-recipes-link")!.click();
-    expect(mockNav.navigate).toHaveBeenCalledWith("recipes-list");
+    container.querySelector<HTMLAnchorElement>("#try-guided-link")!.click();
+    expect(mockNav.navigate).toHaveBeenCalledWith("guided-ai-inference");
   });
 });
 

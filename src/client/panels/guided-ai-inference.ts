@@ -66,7 +66,7 @@ export class GuidedAIInferencePanel implements Panel<GuidedParams, StepFlowSaved
             [inputsStep, promptStep, runStep],
             savedState,
             {
-              onEditingChange: (isEditing) => {
+              onEditingChange: (isEditing): void => {
                 this.isEditingGuardActive = isEditing;
                 this.updateRefreshButtonState(container);
               },

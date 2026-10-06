@@ -10,8 +10,8 @@ import { PanelLoader } from "../components/panel-loader";
 export interface GuidedParams {
   /** Which kind of input row step 1 opens with when it has no work yet.
    * Sent by the home page, which always opens a fresh Guided. On Back from
-   * Freeform the router re-sends these params with savedState, and saved
-   * work wins over the preset (see InputsStep). */
+   * Freeform the router re-sends these params with savedState, and the
+   * saved rows win over the preset (see InputsStep). */
   startWith: InputRow["kind"];
 }
 

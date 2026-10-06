@@ -90,11 +90,11 @@ No change. Explicit params already bypass the router's per-panel cache, so a hom
 
 ### InputsStep (`src/client/panels/guided/inputs-step.ts`)
 
-InputsStep owns the "is there real work?" rule, because it defines what a filled-in row is. The rule matters on Back from Freeform, where Guided gets its preset params and its saved state together.
+InputsStep decides whether to seed. Guided only gets saved state together with its preset on Back from Freeform, and "Switch to Freeform" lives on step 3, so step 1 already has filled-in rows by then. That makes the rule simple: seed on a fresh mount, restore saved rows otherwise.
 
 - A module-level `isFilled(row)` helper (column has a `colTitle`, folder has a `url`) replaces the duplicated predicate in `hydrate()` and `handleContinue()`.
 - The constructor takes an optional `startWith`.
-- On `mount()`: if `startWith` is set and no saved row `isFilled`, render a single seed row in place of the saved rows (leftover empty rows are dropped). Otherwise render saved rows as today.
+- On `mount()`: if `startWith` is set and there is no saved state, render a single seed row. Otherwise render saved rows as today. *(The first version also seeded when every saved row was empty; that case can't happen once resume was removed, so it was simplified.)*
 - Column seed: `{ kind: "column", colTitle: "" }`.
 - Folder seed: `{ kind: "drive-folder", url: "", colTitle: "Drive Link" }`, so the next added folder is "Drive Link 2". Its URL input gets focus.
 
@@ -116,9 +116,7 @@ Written test-first.
 - **`__tests__/panels/guided/inputs-step.test.ts`**:
   - Seeds a column row.
   - Seeds a focused folder row, and the next added folder is titled "Drive Link 2".
-  - Filled saved rows are restored instead of seeded.
-  - All-empty saved rows are replaced by the seed.
-  - A typed-but-unimported folder URL counts as filled.
+  - Saved rows are restored instead of seeded, including all-empty ones.
   - Nothing is seeded without `startWith`.
 - **`__tests__/panels/guided-ai-inference.test.ts`**:
   - `startWith` reaches step 1.

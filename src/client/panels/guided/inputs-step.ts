@@ -34,8 +34,8 @@ export class InputsStep implements Step<InputsStepSavedState> {
   private readonly startWith?: InputRow["kind"];
 
   /** `startWith` comes from the home page's "Columns in this sheet" / "A
-   * Drive folder" choices. It only applies while step 1 has no filled-in
-   * rows -- real work always wins over the preset. */
+   * Drive folder" choices. It only applies to a fresh mount: when there's
+   * saved state (Back from Freeform), those rows are restored instead. */
   constructor(headers: string[], startWith?: InputRow["kind"]) {
     this.headers = headers;
     this.startWith = startWith;
@@ -126,9 +126,9 @@ export class InputsStep implements Step<InputsStepSavedState> {
     }
   }
 
-  /** The row to show in place of savedState's rows, or null to keep them. */
+  /** The row a fresh mount starts with, or null when there's nothing to seed. */
   private seedRow(savedState?: InputsStepSavedState): InputRow | null {
-    if (!this.startWith || savedState?.rows.some(isFilled)) return null;
+    if (!this.startWith || savedState) return null;
     return this.startWith === "column"
       ? { kind: "column", colTitle: "" }
       : { kind: "drive-folder", url: "", colTitle: "Drive Link" };

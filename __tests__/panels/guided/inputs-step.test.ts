@@ -476,7 +476,7 @@ describe("InputsStep — startWith seed", () => {
     expect(titles).toEqual(["Drive Link", "", "Drive Link 2"]);
   });
 
-  it("restores saved rows instead of seeding when any row is filled in", () => {
+  it("restores saved rows instead of seeding (Back from Freeform)", () => {
     const container = makeContainer();
     const saved: InputsStepSavedState = {
       rows: [
@@ -495,42 +495,13 @@ describe("InputsStep — startWith seed", () => {
     );
   });
 
-  it("treats a typed-but-unimported folder URL as filled in", () => {
-    const container = makeContainer();
-    const step = new InputsStep([], "drive-folder");
-    step.mount(container, makeCtx());
-    container.querySelector<HTMLInputElement>(".guided-input-folder-url")!.value =
-      "https://drive.google.com/drive/folders/abc";
-    const saved = step.unmount()!.savedState;
-
-    const container2 = makeContainer();
-    new InputsStep(["col_a"], "column").mount(container2, makeCtx(), saved);
-    expect(container2.querySelector(".guided-input-col-picker")).toBeNull();
-    expect(container2.querySelector<HTMLInputElement>(".guided-input-folder-url")!.value).toBe(
-      "https://drive.google.com/drive/folders/abc",
-    );
-  });
-
-  it("treats a whitespace-only folder URL as empty and seeds instead", () => {
-    const container = makeContainer();
-    const step = new InputsStep([], "drive-folder");
-    step.mount(container, makeCtx());
-    container.querySelector<HTMLInputElement>(".guided-input-folder-url")!.value = "   ";
-    const saved = step.unmount()!.savedState;
-
-    const container2 = makeContainer();
-    new InputsStep(["col_a"], "column").mount(container2, makeCtx(), saved);
-    expect(container2.querySelectorAll(".guided-input-row")).toHaveLength(1);
-    expect(container2.querySelector(".guided-input-col-picker")).not.toBeNull();
-    expect(container2.querySelector(".guided-input-folder-url")).toBeNull();
-  });
-
-  it("replaces all-empty saved rows with the seed", () => {
+  it("restores saved rows as they are, even all-empty ones, rather than seeding", () => {
     const container = makeContainer();
     const saved: InputsStepSavedState = { rows: [{ kind: "column", colTitle: "" }] };
     new InputsStep(["col_a"], "drive-folder").mount(container, makeCtx(), saved);
     expect(container.querySelectorAll(".guided-input-row")).toHaveLength(1);
-    expect(container.querySelector(".guided-input-folder-url")).not.toBeNull();
+    expect(container.querySelector(".guided-input-col-picker")).not.toBeNull();
+    expect(container.querySelector(".guided-input-folder-url")).toBeNull();
   });
 
   it("does not seed without startWith", () => {

@@ -92,9 +92,9 @@ export class ToolListPanel implements Panel {
         <div class="home-aside">
           <p class="home-aside-label">How it works</p>
           <ol class="home-steps">
-            <li>Pick what you want AI to read.</li>
+            <li>Pick what you want the AI to read.</li>
             <li>Write the directions it should follow.</li>
-            <li>Run it on each row and get responses in a new column.</li>
+            <li>Run on each row, get responses in a new column.</li>
           </ol>
         </div>
         <p class="home-question">What do you want to work on?</p>

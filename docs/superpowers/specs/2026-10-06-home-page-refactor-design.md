@@ -37,7 +37,7 @@ Top to bottom:
 
 | Element | Content |
 |---|---|
-| `.home-aside` | Gray box: `.home-aside-label` "How it works", then `ol.home-steps`: 1. "Pick what you want AI to read." 2. "Write the directions it should follow." 3. "Run it on each row and get responses in a new column." |
+| `.home-aside` | Gray box: `.home-aside-label` "How it works", then `ol.home-steps`: 1. "Pick what you want the AI to read." 2. "Write the directions it should follow." 3. "Run on each row, get responses in a new column." |
 | `.home-question` | "What do you want to work on?" |
 | `.home-choice#btn-guided-columns` | 📄 **Columns in this sheet** / "Text, links, or Drive files already in your spreadsheet" |
 | `.home-choice#btn-guided-folder` | 📂 **A Drive folder** / "Import a folder, one file per row" |

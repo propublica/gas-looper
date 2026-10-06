@@ -47,9 +47,9 @@ describe("ToolListPanel — entry question", () => {
       (li) => li.textContent,
     );
     expect(steps).toEqual([
-      "Pick what you want AI to read.",
+      "Pick what you want the AI to read.",
       "Write the directions it should follow.",
-      "Run it on each row and get responses in a new column.",
+      "Run on each row, get responses in a new column.",
     ]);
   });
 

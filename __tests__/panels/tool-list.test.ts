@@ -35,48 +35,81 @@ beforeEach(() => {
   (jobStoreModule.jobStore.dispatch as jest.Mock).mockResolvedValue(undefined);
 });
 
-describe("ToolListPanel", () => {
-  it("shows the Looper name and version in the footer", () => {
+describe("ToolListPanel — entry question", () => {
+  it("asks what the user wants to work on", () => {
     const c = mountPanel();
-    expect(c.querySelector(".status-footer")!.textContent).toContain("Looper v");
+    expect(c.querySelector(".home-question")!.textContent).toBe("What do you want to work on?");
+    expect(c.querySelector(".home-help")!.textContent).toBe(
+      "AI will read each row, one at a time.",
+    );
   });
 
-  it("clicking Guided AI Inference navigates to guided-ai-inference", () => {
+  it("renders the two choices with their descriptions, columns first", () => {
     const c = mountPanel();
-    c.querySelector<HTMLButtonElement>("#btn-guided-ai")!.click();
-    expect(mockNav.navigate).toHaveBeenCalledWith("guided-ai-inference");
+    const choices = Array.from(c.querySelectorAll(".home-choice")).map((el) => [
+      el.id,
+      el.querySelector(".home-choice-name")!.textContent,
+      el.querySelector(".home-choice-sub")!.textContent,
+    ]);
+    expect(choices).toEqual([
+      [
+        "btn-guided-columns",
+        "Columns in this sheet",
+        "Text, links, or Drive files already in your spreadsheet",
+      ],
+      ["btn-guided-folder", "A Drive folder", "Import a folder, one file per row"],
+    ]);
   });
 
-  it("clicking Run AI navigates to configure-ai-run", () => {
+  it("'Columns in this sheet' opens Guided preset to column input, resuming earlier work", () => {
     const c = mountPanel();
-    c.querySelector<HTMLButtonElement>("#btn-run-ai")!.click();
+    c.querySelector<HTMLButtonElement>("#btn-guided-columns")!.click();
+    expect(mockNav.navigate).toHaveBeenCalledWith(
+      "guided-ai-inference",
+      { startWith: "column" },
+      { resume: true },
+    );
+  });
+
+  it("'A Drive folder' opens Guided preset to Drive-folder input, resuming earlier work", () => {
+    const c = mountPanel();
+    c.querySelector<HTMLButtonElement>("#btn-guided-folder")!.click();
+    expect(mockNav.navigate).toHaveBeenCalledWith(
+      "guided-ai-inference",
+      { startWith: "drive-folder" },
+      { resume: true },
+    );
+  });
+
+  it("'Go Freeform' is a text link that navigates to configure-ai-run with no params", () => {
+    const c = mountPanel();
+    const link = c.querySelector<HTMLButtonElement>(".home-freeform #btn-run-ai")!;
+    expect(link.classList.contains("link-btn")).toBe(true);
+    expect(link.textContent).toBe("Go Freeform");
+    link.click();
     expect(mockNav.navigate).toHaveBeenCalledWith("configure-ai-run");
   });
+});
 
-  it("renders Guided AI Inference and Freeform AI Inference first, in that order", () => {
+describe("ToolListPanel — other tools", () => {
+  it("renders the other tools as rows with one-line descriptions, in order", () => {
     const c = mountPanel();
-    const ids = Array.from(c.querySelectorAll(".tool-btn")).map((btn) => btn.id);
-    expect(ids.slice(0, 2)).toEqual(["btn-guided-ai", "btn-run-ai"]);
-  });
-
-  it("renders the AI section header (not the old 'Main Tools' label)", () => {
-    const c = mountPanel();
-    const headers = Array.from(c.querySelectorAll("h3")).map((h) => h.textContent);
-    expect(headers).toContain("AI");
-    expect(headers).not.toContain("Main Tools");
-  });
-
-  it("renders short names with descriptive captions for the two AI buttons", () => {
-    const c = mountPanel();
-    const expectations: Array<[string, string, string]> = [
-      ["#btn-guided-ai", "Guided", "Not sure where to begin? Start here."],
-      ["#btn-run-ai", "Freeform", "Full control over inputs, prompts and settings"],
-    ];
-    for (const [selector, name, caption] of expectations) {
-      const btn = c.querySelector(selector)!;
-      expect(btn.querySelector(".tool-btn-name")!.textContent).toBe(name);
-      expect(btn.querySelector(".tool-btn-sub")!.textContent).toBe(caption);
-    }
+    expect(c.querySelector(".home-tools h3")!.textContent).toBe("Other tools");
+    const rows = Array.from(c.querySelectorAll(".tool-row")).map((row) => [
+      row.id,
+      row.querySelector(".tool-row-name")!.textContent,
+      row.querySelector(".tool-row-sub")!.textContent,
+    ]);
+    expect(rows).toEqual([
+      [
+        "btn-import-drive-links",
+        "Import Drive Links",
+        "Add a folder's files to your sheet, by file type",
+      ],
+      ["btn-extract-text", "Extract Text", "Pull text from Docs, PDFs, and images"],
+      ["btn-sample-rows", "Sample Rows", "Pick a random set to check by hand"],
+      ["btn-format-markdown", "Format Markdown", "Turn AI **formatting** into rich text"],
+    ]);
   });
 
   it("clicking Import Drive Links navigates to import-drive-links panel", () => {
@@ -85,7 +118,13 @@ describe("ToolListPanel", () => {
     expect(mockNav.navigate).toHaveBeenCalledWith("import-drive-links");
   });
 
-  it("clicking Sample Rows calls runTool with 'sampleRowsToEvaluation' and a jobId", () => {
+  it("clicking Extract Text navigates to extract-text panel", () => {
+    const c = mountPanel();
+    c.querySelector<HTMLButtonElement>("#btn-extract-text")!.click();
+    expect(mockNav.navigate).toHaveBeenCalledWith("extract-text");
+  });
+
+  it("clicking Sample Rows dispatches a job labelled '🎲 Sample Rows' (no description)", () => {
     (services.runTool as jest.Mock).mockResolvedValue(undefined);
     const c = mountPanel();
     c.querySelector<HTMLButtonElement>("#btn-sample-rows")!.click();
@@ -93,22 +132,14 @@ describe("ToolListPanel", () => {
       "sampleRowsToEvaluation",
       expect.stringMatching(/^sampleRowsToEvaluation-\d+$/),
     );
+    expect(jobStoreModule.jobStore.dispatch).toHaveBeenCalledWith(
+      expect.stringMatching(/^sampleRowsToEvaluation-\d+$/),
+      "🎲 Sample Rows",
+      expect.anything(),
+    );
   });
 
-  it("clicking Extract Text navigates to extract-text panel", () => {
-    const c = mountPanel();
-    c.querySelector<HTMLButtonElement>("#btn-extract-text")!.click();
-    expect(mockNav.navigate).toHaveBeenCalledWith("extract-text");
-  });
-
-  it("clicking Format Markdown calls services.formatMarkdownSelection", () => {
-    (services.formatMarkdownSelection as jest.Mock).mockResolvedValue(undefined);
-    const c = mountPanel();
-    c.querySelector<HTMLButtonElement>("#btn-format-markdown")!.click();
-    expect(services.formatMarkdownSelection).toHaveBeenCalledTimes(1);
-  });
-
-  it("disables Format Markdown button while in-flight and re-enables on success", async () => {
+  it("disables Format Markdown and shows 'Formatting...' while in flight, then restores", async () => {
     let resolve!: () => void;
     (services.formatMarkdownSelection as jest.Mock).mockReturnValue(
       new Promise<void>((res) => {
@@ -120,16 +151,26 @@ describe("ToolListPanel", () => {
 
     btn.click();
     expect(btn.disabled).toBe(true);
-    expect(btn.textContent).toContain("Formatting...");
+    expect(btn.querySelector(".tool-row-name")!.textContent).toBe("Formatting...");
+    expect(btn.querySelector(".tool-row-sub")).not.toBeNull();
 
     resolve();
     await Promise.resolve();
     await Promise.resolve();
     expect(btn.disabled).toBe(false);
-    expect(btn.textContent).toContain("Format Markdown");
+    expect(btn.querySelector(".tool-row-name")!.textContent).toBe("Format Markdown");
   });
 
-  it("re-enables Format Markdown button and alerts on error", async () => {
+  it("ignores a second Format Markdown click while the first is in flight", () => {
+    (services.formatMarkdownSelection as jest.Mock).mockReturnValue(new Promise<void>(() => {}));
+    const c = mountPanel();
+    const btn = c.querySelector<HTMLButtonElement>("#btn-format-markdown")!;
+    btn.click();
+    btn.click();
+    expect(services.formatMarkdownSelection).toHaveBeenCalledTimes(1);
+  });
+
+  it("re-enables Format Markdown and alerts on error", async () => {
     let reject!: (err: Error) => void;
     (services.formatMarkdownSelection as jest.Mock).mockReturnValue(
       new Promise<void>((_, rej) => {
@@ -142,7 +183,6 @@ describe("ToolListPanel", () => {
 
     const c = mountPanel();
     const btn = c.querySelector<HTMLButtonElement>("#btn-format-markdown")!;
-
     btn.click();
     expect(btn.disabled).toBe(true);
 
@@ -150,15 +190,36 @@ describe("ToolListPanel", () => {
     await Promise.resolve();
     await Promise.resolve();
     expect(btn.disabled).toBe(false);
+    expect(btn.querySelector(".tool-row-name")!.textContent).toBe("Format Markdown");
     expect(mockAlert).toHaveBeenCalledWith("GAS error");
 
     globalThis.alert = origAlert;
   });
+});
 
-  it("unmount() returns undefined", () => {
-    document.body.innerHTML = '<div id="app"></div>';
-    const panel = new ToolListPanel();
-    panel.mount(document.getElementById("app")!, mockNav);
-    expect(panel.unmount()).toBeUndefined();
+describe("ToolListPanel — footer", () => {
+  it("links 'Why one row at a time?' to the IRE post in a new tab", () => {
+    const c = mountPanel();
+    const link = c.querySelector<HTMLAnchorElement>(".home-footer a")!;
+    expect(link.textContent).toBe("Why one row at a time?");
+    expect(link.getAttribute("href")).toBe(
+      "https://www.ire.org/2026/08/13/using-llms-in-data-journalism-can-be-trustworthy-if-these-five-elements-are-in-your-methodology/",
+    );
+    expect(link.target).toBe("_blank");
+    expect(link.rel).toBe("noopener");
   });
+
+  it("shows the Looper version placeholder exactly once", () => {
+    const c = mountPanel();
+    const footer = c.querySelector(".home-footer")!;
+    expect(footer.textContent).toContain("Looper v{{VERSION}}");
+    expect(c.innerHTML.split("{{VERSION}}")).toHaveLength(2);
+  });
+});
+
+it("unmount() returns undefined", () => {
+  document.body.innerHTML = '<div id="app"></div>';
+  const panel = new ToolListPanel();
+  panel.mount(document.getElementById("app")!, mockNav);
+  expect(panel.unmount()).toBeUndefined();
 });

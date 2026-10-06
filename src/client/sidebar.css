@@ -56,51 +56,11 @@ h3 {
   margin: 0 0 12px 4px;
 }
 
-.tool-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  border-radius: 24px;
-  border: 1px solid var(--border-color);
-  background: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: var(--font-family);
-  font-size: var(--font-size-300);
-  font-weight: 500;
-  color: var(--text-main);
-}
-
-.tool-btn:hover {
-  background-color: var(--hover-blue);
-  border-color: transparent;
-  color: var(--primary-blue);
-}
-
-.tool-btn:active {
-  background-color: #e8eaed;
-  transform: scale(0.98);
-}
-
 .icon {
   margin-right: 12px;
   font-size: var(--font-size-500);
   width: 24px;
   text-align: center;
-}
-
-.status-footer {
-  margin-top: 40px;
-  padding: 16px;
-  border-top: 1px solid #eee;
-  font-size: var(--font-size-100);
-  font-style: italic;
-  color: var(--text-secondary);
-  text-align: center;
-  line-height: 1.5;
 }
 
 .loading {
@@ -532,36 +492,125 @@ h3 {
   margin-left: 1px;
 }
 
-/* ── Tool list button hierarchy ── */
+/* ── Home page (ToolListPanel) ── */
 
-.tool-btn-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 2px;
+.home-question {
+  font-size: var(--font-size-400);
+  font-weight: 500;
+  margin: 0 0 4px 0;
 }
 
-.tool-btn-sub {
+.home-help {
   font-size: var(--font-size-200);
   color: var(--text-secondary);
-  font-weight: 400;
-  line-height: 1.3;
+  line-height: 1.45;
+  margin: 0 0 12px 0;
 }
 
-.tool-btn:hover .tool-btn-sub {
-  color: var(--primary-blue);
-  opacity: 0.8;
-}
-
-/* Buttons with a stacked title+caption (this pattern, not the plain
-           single-line ones below) should align the icon with the title line,
-           not center it against the whole two-line block. */
-.tool-btn:has(.tool-btn-text) {
+.home-choice {
+  width: 100%;
+  display: flex;
+  gap: 12px;
   align-items: flex-start;
+  text-align: left;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-family: var(--font-family);
+  color: var(--text-main);
 }
-.tool-btn:has(.tool-btn-text) .icon {
+
+.home-choice:hover {
+  border-color: var(--primary-blue);
+  background: rgba(26, 115, 232, 0.06);
+}
+
+.home-choice .icon,
+.tool-row .icon {
+  margin: 0;
+  font-size: var(--font-size-400);
+  width: 20px;
+}
+
+.home-choice-name {
+  display: block;
+  font-size: var(--font-size-300);
+  font-weight: 500;
+}
+
+.home-choice-sub {
+  display: block;
+  font-size: var(--font-size-200);
+  color: var(--text-secondary);
+  line-height: 1.4;
   margin-top: 2px;
+}
+
+.home-freeform {
+  font-size: var(--font-size-200);
+  color: var(--text-secondary);
+  margin: 10px 0 0 4px;
+}
+
+.home-freeform .link-btn {
+  padding: 0;
+}
+
+.home-tools {
+  margin-top: 28px;
+}
+
+.tool-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-family);
+  font-size: var(--font-size-300);
+  color: var(--text-main);
+}
+
+.tool-row:hover {
+  background: var(--hover-blue);
+  color: var(--primary-blue);
+}
+
+.tool-row:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.tool-row-name {
+  display: block;
+}
+
+.tool-row-sub {
+  display: block;
+  font-size: var(--font-size-200);
+  color: var(--text-secondary);
+}
+
+.home-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 28px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+  font-size: var(--font-size-100);
+  color: var(--text-secondary);
+}
+
+.home-footer a {
+  color: var(--text-secondary);
 }
 
 .field-helper {

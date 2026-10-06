@@ -93,12 +93,20 @@ export type PanelId =
   | "import-drive-links"
   | "extract-text";
 
+export interface NavigateOptions {
+  /** Treat `params` as a suggestion rather than a command: the panel also
+   * receives its cached savedState and decides which wins. Without this,
+   * explicit params mean a fresh panel (e.g. Guided's "Switch to Freeform"
+   * handoff must replace leftover Freeform state). */
+  resume?: boolean;
+}
+
 /**
  * Passed to each panel's mount() so panels can trigger navigation
  * without importing the router directly.
  */
 export interface NavigationContext {
-  navigate(panelId: PanelId, params?: unknown): void;
+  navigate(panelId: PanelId, params?: unknown, options?: NavigateOptions): void;
   back(): void;
   canGoBack(): boolean;
 }

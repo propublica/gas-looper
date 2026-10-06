@@ -32,6 +32,8 @@ HtmlService can only serve `.html` files. A custom Rollup plugin inlines all JS 
 
 The client uses a lightweight navigation system: `Router` (`src/client/router.ts`) manages a push/pop navigation stack, and each `Panel` implementation handles its own render and state. Guided AI Inference is a step-by-step workflow built on top of Run AI: `StepFlow` (`src/client/components/step-flow.ts`) walks the user through gathering inputs and writing a system prompt (via the `fillColumns` server call, which writes spreadsheet columns) before launching an AI run with the shared `RunControls` component.
 
+When a panel is navigated to, it can receive two things: **params** (what the caller wants) and **saved state** (what was on screen when the user last left it). By default, explicit params are a command and the panel starts fresh with them. That's how Guided's "Switch to Freeform" hands over its config. A caller that passes `{ resume: true }` marks its params as a suggestion instead: the panel gets its saved state as well and decides which wins. The home page uses this to open Guided with step 1 preset to column or Drive-folder input without wiping earlier Guided work.
+
 ## Historical Design Records
 
 `docs/plans/` and `docs/superpowers/` (its `specs/` and `plans/` subdirectories) hold dated design docs and implementation plans written before past features and refactors. They're a record of *why* a decision was made, not maintained documentation — treat each one as frozen at the date in its filename, not a description of the current codebase.

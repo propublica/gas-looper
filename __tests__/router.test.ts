@@ -186,6 +186,78 @@ describe("Router", () => {
     expect(secondMount.savedState).toBeUndefined(); // cache bypassed entirely
   });
 
+  it("navigate() with params and { resume: true } passes the new params AND the cached state", () => {
+    const home = makePanel("home");
+    const guided = makePanel("guided");
+    let nav: NavigationContext | null = null;
+    home.mount = function (container, n) {
+      nav = n;
+      container.innerHTML = "<div data-panel='home'></div>";
+    };
+    const router = new Router(
+      container,
+      new Map([
+        ["tool-list", home],
+        ["guided-ai-inference", guided],
+      ]),
+    );
+    router.start("tool-list");
+    nav!.navigate("guided-ai-inference", { startWith: "column" }, { resume: true });
+    (guided as ReturnType<typeof makePanel>).unmountReturn = { activeStepIndex: 1 };
+    router.back();
+    nav!.navigate("guided-ai-inference", { startWith: "drive-folder" }, { resume: true });
+
+    const calls = (guided as ReturnType<typeof makePanel>).mountCalls;
+    const secondMount = calls[1] as { params: unknown; savedState: unknown };
+    expect(secondMount.params).toEqual({ startWith: "drive-folder" });
+    expect(secondMount.savedState).toEqual({ activeStepIndex: 1 });
+  });
+
+  it("navigate() with { resume: true } and nothing cached passes savedState undefined", () => {
+    const home = makePanel("home");
+    const guided = makePanel("guided");
+    const router = new Router(
+      container,
+      new Map([
+        ["tool-list", home],
+        ["guided-ai-inference", guided],
+      ]),
+    );
+    router.start("tool-list");
+    router.navigate("guided-ai-inference", { startWith: "column" }, { resume: true });
+
+    const firstMount = (guided as ReturnType<typeof makePanel>).mountCalls[0] as {
+      params: unknown;
+      savedState: unknown;
+    };
+    expect(firstMount.params).toEqual({ startWith: "column" });
+    expect(firstMount.savedState).toBeUndefined();
+  });
+
+  it("back() after a resume navigate remounts with the same params and the latest state", () => {
+    const home = makePanel("home");
+    const guided = makePanel("guided");
+    const freeform = makePanel("freeform");
+    const router = new Router(
+      container,
+      new Map([
+        ["tool-list", home],
+        ["guided-ai-inference", guided],
+        ["configure-ai-run", freeform],
+      ]),
+    );
+    router.start("tool-list");
+    router.navigate("guided-ai-inference", { startWith: "column" }, { resume: true });
+    (guided as ReturnType<typeof makePanel>).unmountReturn = { activeStepIndex: 2 };
+    router.navigate("configure-ai-run", { promptCols: ["a"] }); // "Switch to Freeform"
+    router.back();
+
+    const calls = (guided as ReturnType<typeof makePanel>).mountCalls;
+    const remount = calls[1] as { params: unknown; savedState: unknown };
+    expect(remount.params).toEqual({ startWith: "column" });
+    expect(remount.savedState).toEqual({ activeStepIndex: 2 });
+  });
+
   it("navigate() provides a NavigationContext whose navigate/back/canGoBack delegate to router", () => {
     const home = makePanel("home");
     const ai = makePanel("ai");

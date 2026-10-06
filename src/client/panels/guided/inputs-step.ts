@@ -16,6 +16,10 @@ export interface InputsStepResult {
   promptCols: PromptColumnSpec[];
 }
 
+function isFilled(row: InputRow): boolean {
+  return row.kind === "column" ? row.colTitle !== "" : row.url !== "";
+}
+
 export class InputsStep implements Step<InputsStepSavedState> {
   readonly title = "Gather your inputs";
   readonly flavorText = "The content the AI works on, one row at a time.";
@@ -27,8 +31,14 @@ export class InputsStep implements Step<InputsStepSavedState> {
   private nextFolderNumber = 1;
   private continueButton: AsyncActionButton | null = null;
 
-  constructor(headers: string[]) {
+  private readonly startWith?: InputRow["kind"];
+
+  /** `startWith` comes from the home page's "Columns in this sheet" / "A
+   * Drive folder" choices. It only applies while step 1 has no filled-in
+   * rows -- real work always wins over the preset. */
+  constructor(headers: string[], startWith?: InputRow["kind"]) {
     this.headers = headers;
+    this.startWith = startWith;
   }
 
   getResult(): InputsStepResult | null {
@@ -60,9 +70,7 @@ export class InputsStep implements Step<InputsStepSavedState> {
   }
 
   hydrate(savedState: InputsStepSavedState): void {
-    const rows = savedState.rows.filter((r) =>
-      r.kind === "column" ? r.colTitle !== "" : r.url !== "",
-    );
+    const rows = savedState.rows.filter(isFilled);
     this.result = { promptCols: rows.map((r) => ({ col: r.colTitle, kind: "auto" as const })) };
   }
 
@@ -77,7 +85,11 @@ export class InputsStep implements Step<InputsStepSavedState> {
       </div>
       <button type="button" class="btn-run" id="gi-continue">Import &amp; Continue</button>
     `;
-    for (const row of savedState?.rows ?? []) this.addRow(row);
+    const seed = this.seedRow(savedState);
+    for (const row of seed ? [seed] : (savedState?.rows ?? [])) this.addRow(row);
+    if (seed?.kind === "drive-folder") {
+      container.querySelector<HTMLInputElement>(".guided-input-folder-url")!.focus();
+    }
     this.nextFolderNumber = this.computeNextFolderNumber();
     this.continueButton = new AsyncActionButton(
       container.querySelector<HTMLButtonElement>("#gi-continue")!,
@@ -112,6 +124,14 @@ export class InputsStep implements Step<InputsStepSavedState> {
     for (const { tokenInput } of this.rows) {
       tokenInput?.destroy();
     }
+  }
+
+  /** The row to show in place of savedState's rows, or null to keep them. */
+  private seedRow(savedState?: InputsStepSavedState): InputRow | null {
+    if (!this.startWith || savedState?.rows.some(isFilled)) return null;
+    return this.startWith === "column"
+      ? { kind: "column", colTitle: "" }
+      : { kind: "drive-folder", url: "", colTitle: "Drive Link" };
   }
 
   private computeNextFolderNumber(): number {
@@ -180,9 +200,7 @@ export class InputsStep implements Step<InputsStepSavedState> {
   }
 
   private handleContinue(ctx: StepContext): void {
-    const rows = this.currentRows().filter((r) =>
-      r.kind === "column" ? r.colTitle !== "" : r.url !== "",
-    );
+    const rows = this.currentRows().filter(isFilled);
     if (rows.length === 0) {
       globalThis.alert("Please add at least one column or Drive folder before continuing.");
       return;

@@ -10,9 +10,16 @@ Make the sidebar home page start from what a reporter already has, so first-time
 
 - Copy, layout, and look follow the final mockup from the AI-129 brainstorm (question-led, two choice cards). Existing sidebar look, no new tokens or colors, emoji kept, no marketing copy.
 - Each home-page choice opens Guided with step 1 preset to that input kind.
-- **Earlier Guided work is never wiped by a home-page click.** If any step-1 row is filled in, Guided resumes as it was and the preset is ignored.
+- **A home-page choice always opens a fresh Guided** with that choice honored. Earlier Guided progress is not restored from the home page. *(Revised after QA; see "Revision" below.)*
 - With no filled-in rows, step 1 opens with one empty row of the chosen kind. Both "+ Column" and "+ Drive folder" stay.
 - "Go Freeform" behaves like today's Freeform button, including restoring earlier Freeform state.
+
+## Revision (2026-10-06, after QA)
+
+The first version resumed earlier Guided work through the home page, via an opt-in `{ resume: true }` option on `Router.navigate`. In QA, coming back to a half-filled Guided after clicking a home-page choice felt awkward, because the click could be ignored. The resume option and its router change were removed. Each choice now opens a fresh Guided.
+
+- **Kept as before:** Freeform still restores through "Go Freeform". The back stack still restores (Guided → Switch to Freeform → Back). Test-result persistence (AI-87) is unchanged.
+- **Accepted cost:** a detour through the home page mid-flow (e.g. to Extract Text) restarts Guided. Anything Guided already wrote to the sheet (Drive Link and System Prompt columns) stays there, and a lost Test result brings back the "without testing first" prompt.
 
 ## Out of scope
 
@@ -53,8 +60,8 @@ The footer link points at the IRE post (`https://www.ire.org/2026/08/13/using-ll
 
 | Click | Action |
 |---|---|
-| Columns in this sheet | `nav.navigate("guided-ai-inference", { startWith: "column" }, { resume: true })` |
-| A Drive folder | `nav.navigate("guided-ai-inference", { startWith: "drive-folder" }, { resume: true })` |
+| Columns in this sheet | `nav.navigate("guided-ai-inference", { startWith: "column" })` |
+| A Drive folder | `nav.navigate("guided-ai-inference", { startWith: "drive-folder" })` |
 | Go Freeform | `nav.navigate("configure-ai-run")` (unchanged) |
 | Import Drive Links / Extract Text | navigate to their panels (unchanged) |
 | Sample Rows | dispatch `sampleRowsToEvaluation` with the explicit job label `"🎲 Sample Rows"` |
@@ -68,29 +75,20 @@ The Sample Rows label used to come from the button's `textContent`, which would 
 - Add one "Home page" block: `.home-question`, `.home-help`, `.home-choice` (+ `:hover`, `-name`, `-sub`), `.home-freeform` (+ `.link-btn` with no padding), `.home-tools`, `.tool-row` (+ `:hover`, `:disabled`, `-sub`), shared `.home-choice .icon, .tool-row .icon`, `.home-footer` (+ `a`). Values come from the mockup.
 - The choice-card hover background uses the existing `rgba(26, 115, 232, 0.06)` instead of the mockup's new `#f8fbff`. The footer border keeps the existing `#eee`.
 
-## 2. Opening Guided with a preset, and resuming
+## 2. Opening Guided with a preset
 
-### Principle
+### Router
 
-A panel receives two inputs: **params** (what the caller wants) and **savedState** (what was on screen when the person last left). Today the router treats them as either/or: explicit params mean a fresh panel. That fits **command** params, like Guided's "Switch to Freeform" handoff, which must replace leftover Freeform state.
-
-The home page's preset is a **suggestion** that only matters when there's no existing work. A caller passes `{ resume: true }` to say its params are a suggestion: the router hands the panel both params and saved state, and the panel decides.
-
-### Router (`src/client/router.ts`, `src/client/types.ts`)
-
-- `NavigationContext.navigate(panelId, params?, options?: { resume?: boolean })`.
-- `Router.navigate` reads `lastState` when `params === undefined` **or** `options?.resume`. Explicit params still win over cached params, and the cached `savedState` is passed through and stored on the stack entry.
-- `makeNav` forwards `options`.
-- The `lastState` doc comment is updated to describe the `resume` exception.
+No change. Explicit params already bypass the router's per-panel cache, so a home-page choice always mounts a fresh Guided. `back()` still remounts a panel from its stack entry, which holds both its params and its latest saved state.
 
 ### Guided (`src/client/panels/guided-ai-inference.ts`)
 
 - Export `GuidedParams = { startWith: InputRow["kind"] }` and implement `Panel<GuidedParams, StepFlowSavedState>`.
-- Pass `params?.startWith` to the `InputsStep` constructor. Saved state goes to `StepFlow` unchanged, so Guided makes no resume decision itself.
+- Pass `params?.startWith` to the `InputsStep` constructor. Saved state goes to `StepFlow` unchanged.
 
 ### InputsStep (`src/client/panels/guided/inputs-step.ts`)
 
-InputsStep owns the "is there real work?" rule, because it defines what a filled-in row is.
+InputsStep owns the "is there real work?" rule, because it defines what a filled-in row is. The rule matters on Back from Freeform, where Guided gets its preset params and its saved state together.
 
 - A module-level `isFilled(row)` helper (column has a `colTitle`, folder has a `url`) replaces the duplicated predicate in `hydrate()` and `handleContinue()`.
 - The constructor takes an optional `startWith`.
@@ -100,37 +98,33 @@ InputsStep owns the "is there real work?" rule, because it defines what a filled
 
 ### Paths
 
-| # | Earlier Guided state | Entry | Result |
-|---|---|---|---|
-| a | None | Either choice | Seeded row of that kind |
-| b | Only empty rows | Different choice | Seed replaces the empty row |
-| c | Filled row, step 1 open | Different choice | Rows restored, no seed |
-| d | Filled row | Same choice | Rows restored, no extra row |
-| e | Step 1 completed (on step 2 or 3) | Either choice | Whole flow restored at the current step |
-| f | Mixed column + folder rows | Either choice | Both restored |
-| g | Folder URL typed, not imported | Either choice | URL restored |
-| h | Any | Guided → Switch to Freeform → Back | Guided as left (back stack, unchanged) |
-| i | Old Freeform state | Guided → Switch to Freeform | Handoff config overrides old Freeform state (no `resume`) |
+| # | Situation | Result |
+|---|---|---|
+| a | Home → either choice | Fresh Guided, seeded row of that kind |
+| b | Guided with progress → home → either choice | Fresh Guided, seeded row of that kind; earlier progress not restored |
+| c | Guided → Switch to Freeform → Back, step 1 has filled rows | Rows restored, no seed |
+| d | Guided → Switch to Freeform → Back, on step 2 or 3 | Whole flow restored at that step |
+| e | Old Freeform state, then Guided → Switch to Freeform | Handoff config overrides old Freeform state |
 
 ## 3. Testing
 
 Written test-first.
 
-- **`__tests__/router.test.ts`**: with `resume`, the panel receives new params and cached saved state. With `resume` and nothing cached, saved state is undefined. Without `resume`, explicit params still drop the cache.
+- **`__tests__/router.test.ts`**: `back()` remounts a panel with its original params and latest saved state. The existing test that explicit params bypass the cache stays.
 - **`__tests__/panels/guided/inputs-step.test.ts`**:
   - Seeds a column row.
   - Seeds a focused folder row, and the next added folder is titled "Drive Link 2".
   - Filled saved rows are restored instead of seeded.
   - All-empty saved rows are replaced by the seed.
-  - A typed-but-unimported folder URL counts as filled. *(g)*
+  - A typed-but-unimported folder URL counts as filled.
   - Nothing is seeded without `startWith`.
 - **`__tests__/panels/guided-ai-inference.test.ts`**:
   - `startWith` reaches step 1.
-  - A filled row plus a different preset restores the row.
-  - A flow saved on step 2 or 3 plus a preset reopens on that step. *(e)*
+  - A filled row plus a preset restores the row (Back from Freeform). *(c)*
+  - A flow saved on step 2 or 3 plus a preset reopens on that step (Back from Freeform). *(d)*
 - **`__tests__/panels/tool-list.test.ts`**, rewritten:
   - Question copy.
-  - Each choice's `navigate` call, including `{ resume: true }`.
+  - Each choice's `navigate` call: exactly `("guided-ai-inference", { startWith })`, with no third argument.
   - Bare Freeform navigate.
   - Other-tools order and copy.
   - Footer link text, `target="_blank"`, and version.
@@ -140,7 +134,6 @@ Written test-first.
 
 ## 4. Docs
 
-- **`docs/architecture.md`**, Panel / Router System: a sentence or two on command vs. suggestion params and `resume`.
 - **Threat model and `docs/permissions.md`**: no change. No new RPC, data flow, OAuth scope, or dependency. The only addition is a static outbound link the user clicks.
 
 ## 5. Manual QA (dev sheet)
@@ -148,11 +141,10 @@ Written test-first.
 The dev sheet also has the Marketplace Looper installed, which can mask branch changes. Make sure you are testing the branch build.
 
 1. The home page matches the mockup, with working hover states on cards and rows.
-2. **Fresh:** "Columns in this sheet" opens one empty column picker. Back, then "A Drive folder" opens one folder box with the cursor in it. *(a, b)*
-3. **Filled step 1:** pick a column and type a folder URL without importing. Back, then click each choice in turn: both rows survive, no extra row. *(c, d, f, g)*
-4. **Completed steps:** finish steps 1 and 2. Back, then click either choice: Guided reopens on step 3 with the prompt intact. *(e)*
-5. **Back stack:** from step 3, "Switch to Freeform", then Back: Guided is as left. *(h)*
-6. **Freeform handoff wins:** open Freeform and set some columns, go home, open Guided, "Switch to Freeform": Freeform shows Guided's config. *(i)*
-7. "Go Freeform" opens Freeform, and Freeform → Back → Go Freeform restores its earlier state.
-8. Other tools still work: Sample Rows shows "🎲 Sample Rows" in the job strip, and Format Markdown shows "Formatting..." while running.
-9. "Why one row at a time?" opens the IRE post in a new tab, and the footer shows the right version.
+2. **Fresh:** "Columns in this sheet" opens one empty column picker. Back, then "A Drive folder" opens one folder box with the cursor in it. *(a)*
+3. **Always fresh from home:** pick a column in step 1 (or finish steps 1 and 2). Back, then click either choice: Guided starts fresh with that choice's row. *(b)*
+4. **Back stack:** finish steps 1 and 2, then "Switch to Freeform", then Back: Guided is as left, on step 3. *(c, d)*
+5. **Freeform handoff wins:** open Freeform and set some columns, go home, open Guided, "Switch to Freeform": Freeform shows Guided's config. *(e)*
+6. "Go Freeform" opens Freeform, and Freeform → Back → Go Freeform restores its earlier state.
+7. Other tools still work: Sample Rows shows "🎲 Sample Rows" in the job strip, and Format Markdown shows "Formatting..." while running.
+8. "Why one row at a time?" opens the IRE post in a new tab, and the footer shows the right version.

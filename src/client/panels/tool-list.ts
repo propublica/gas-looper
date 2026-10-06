@@ -18,10 +18,11 @@ export class ToolListPanel implements Panel {
   }
 
   private wireEvents(container: HTMLElement, nav: NavigationContext): void {
-    // A preset is a suggestion: { resume: true } lets earlier Guided work win.
+    // Explicit params mean a fresh Guided every time: the chosen kind is
+    // always honored, and earlier Guided progress isn't restored from home.
     const openGuided = (startWith: GuidedParams["startWith"]): void => {
       const params: GuidedParams = { startWith };
-      nav.navigate("guided-ai-inference", params, { resume: true });
+      nav.navigate("guided-ai-inference", params);
     };
     container.querySelector("#btn-guided-columns")?.addEventListener("click", () => {
       openGuided("column");

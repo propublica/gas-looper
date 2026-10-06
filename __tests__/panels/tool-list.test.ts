@@ -61,24 +61,24 @@ describe("ToolListPanel — entry question", () => {
     ]);
   });
 
-  it("'Columns in this sheet' opens Guided preset to column input, resuming earlier work", () => {
+  it("'Columns in this sheet' opens a fresh Guided preset to column input", () => {
     const c = mountPanel();
     c.querySelector<HTMLButtonElement>("#btn-guided-columns")!.click();
-    expect(mockNav.navigate).toHaveBeenCalledWith(
+    expect(mockNav.navigate).toHaveBeenCalledTimes(1);
+    expect((mockNav.navigate as jest.Mock).mock.calls[0]).toEqual([
       "guided-ai-inference",
       { startWith: "column" },
-      { resume: true },
-    );
+    ]);
   });
 
-  it("'A Drive folder' opens Guided preset to Drive-folder input, resuming earlier work", () => {
+  it("'A Drive folder' opens a fresh Guided preset to Drive-folder input", () => {
     const c = mountPanel();
     c.querySelector<HTMLButtonElement>("#btn-guided-folder")!.click();
-    expect(mockNav.navigate).toHaveBeenCalledWith(
+    expect(mockNav.navigate).toHaveBeenCalledTimes(1);
+    expect((mockNav.navigate as jest.Mock).mock.calls[0]).toEqual([
       "guided-ai-inference",
       { startWith: "drive-folder" },
-      { resume: true },
-    );
+    ]);
   });
 
   it("'Go Freeform' is a text link that navigates to configure-ai-run with no params", () => {

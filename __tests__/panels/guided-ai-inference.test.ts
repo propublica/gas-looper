@@ -414,7 +414,7 @@ describe("GuidedAIInferencePanel — startWith preset", () => {
     expect(container.querySelector(".guided-input-folder-url")).not.toBeNull();
   });
 
-  it("restores a filled-in step 1 even when reopened with a different preset", async () => {
+  it("restores a filled-in step 1 when remounted with saved state (Back from Freeform)", async () => {
     const { container, panel } = await mountWithPreset("column");
     pickSeededColumn(container);
     const saved = panel.unmount();
@@ -425,7 +425,7 @@ describe("GuidedAIInferencePanel — startWith preset", () => {
     expect(container2.querySelector(".guided-input-col-picker")!.textContent).toContain("NoteCol");
   });
 
-  it("reopens on the step the user reached, ignoring the preset", async () => {
+  it("reopens on the step the user reached when remounted with saved state (Back from Freeform)", async () => {
     (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const { container, panel } = await mountWithPreset("column");
     pickSeededColumn(container);

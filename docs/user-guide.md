@@ -1,27 +1,16 @@
-# SSI Toolkit — User Guide
+# Looper — User Guide
 
-The SSI Toolkit is a Google Sheets sidebar for AI-assisted investigations. This guide covers each tool available in this alpha round: **Run AI Inference**, **Import Drive Links**, **Extract Text**, **Sample Rows**, and **Format Markdown**.
+Tips and tricks for using Looper's tools effectively: **Run AI Inference**, **Import Drive Links**, **Extract Text**, **Sample Rows**, and **Format Markdown**.
 
-Recipes (the curated, one-click AI workflows) also appear in the sidebar, but they're still being refined and aren't part of this alpha round — feel free to ignore that button for now.
+Don't have Looper yet? See [Get started](../README.md#get-started) in the README.
 
-## Installing the add-on
-
-The following steps only apply if your organization distributes SSI Toolkit as a **Google Workspace Editor add-on** (installed once, available across every Sheet you open). If you're working with a **container-bound** copy of the toolkit (attached directly to one specific Sheet), the menu referenced below should appear automatically.
-
-1. Open your organization's Marketplace listing for the add-on: `<Marketplace URL — ask your admin>`
-2. Click **Install**, and grant the requested permissions when prompted.
-
-Open the sidebar using the **📐 Open SSI Toolkit** menu option. If installed as an Editor add-on, the SSI Toolkit will be available as an item under **Extensions**.
-
-### Don't have an org-wide install?
-
-You can get your own personal copy instead — no admin required. Open our [template Sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing), click **Request access** if prompted (we approve these individually — see the note on the template's Start Here tab), then **File → Make a copy**. See the main [README](../README.md#get-your-own-copy) for the full walkthrough, including setting your own Gemini API key.
+Already have it? Open the sidebar from **➰ Looper → ➰ Open Looper** (under **Extensions** if your organization installed it as an add-on).
 
 ## But first, don't forget about other spreadsheet tools
 
-SSI is best leveraged in conjunction with all the trappings of traditional spreadsheet work. Don't forget about [functions](https://support.google.com/docs/table/25273?hl=en) (`=IF()`, `=CONCAT()`, etc), column [filters and sorts](https://support.google.com/docs/answer/3540681?hl=en&co=GENIE.Platform%3DDesktop), [data validation rules](https://spreadsheetpoint.com/data-validation-google-sheets/), your [conditional formatting](https://support.google.com/docs/answer/78413?hl=en&co=GENIE.Platform%3DDesktop), [pivot tables](https://support.google.com/docs/answer/1272900?hl=en&co=GENIE.Platform%3DDesktop), etc. These remain powerful tools in your toolkit. The more you use them, the more likely you are to get reliable results. Remember, **we get better results when we ask the AI to do less**.
+Looper is best leveraged in conjunction with all the trappings of traditional spreadsheet work. Don't forget about [functions](https://support.google.com/docs/table/25273?hl=en) (`=IF()`, `=CONCAT()`, etc), column [filters and sorts](https://support.google.com/docs/answer/3540681?hl=en&co=GENIE.Platform%3DDesktop), [data validation rules](https://spreadsheetpoint.com/data-validation-google-sheets/), your [conditional formatting](https://support.google.com/docs/answer/78413?hl=en&co=GENIE.Platform%3DDesktop), [pivot tables](https://support.google.com/docs/answer/1272900?hl=en&co=GENIE.Platform%3DDesktop), etc. These remain powerful tools in your toolkit. The more you use them, the more likely you are to get reliable results. Remember, **we get better results when we ask the AI to do less**.
 
-And don't forget about existing AI-powered features of Google Sheets. The [`=AI()` function](https://support.google.com/docs/answer/15877199?hl=en) lacks the full featureset of the SSI Toolkit, but is still great for simple text classification or other small tasks — and it's free to use, subject to usage limits. The embedded Gemini chat window is great for helping write those thorny spreadsheet functions like `=IFERROR(SPLIT(REGEXREPLACE($O11, "[\s\S]*?""contextual_snippet"":\s*""([^""]+)""|[\s\S]+", "$1|"), "|"), "")`
+And don't forget about existing AI-powered features of Google Sheets. The [`=AI()` function](https://support.google.com/docs/answer/15877199?hl=en) lacks the full featureset of Looper, but is still great for simple text classification or other small tasks — and it's free to use, subject to usage limits. The embedded Gemini chat window is great for helping write those thorny spreadsheet functions like `=IFERROR(SPLIT(REGEXREPLACE($O11, "[\s\S]*?""contextual_snippet"":\s*""([^""]+)""|[\s\S]+", "$1|"), "|"), "")`
 
 ## 📂 Import Drive Links
 
@@ -144,7 +133,7 @@ A run came back full of `**asterisks**` and `## hashes` as literal text because 
 
 ## Working the tools together
 
-Chain the SSI Toolkit and Google Sheets functions together to accomplish whatever your reporting situation requires.
+Chain Looper and Google Sheets functions together to accomplish whatever your reporting situation requires.
 
 Say you have a document dump in Google Drive and you want to research it across a few different categories. Here's how these tools work together to create a filterable, sortable, reportable spreadsheet:
 

@@ -3,9 +3,9 @@
  * setRichTextValue/setRichTextValues in src/server/. Every Apps Script write
  * of content that the acting user did not directly type into that specific
  * cell (AI output, Drive-extracted text, a re-write of existing cell
- * content, a recipe form-field value) must go through one of the four
+ * content, a Guided prompt-step value) must go through one of the four
  * writeSafe* primitives below. Enforced by an ESLint rule — see
- * eslint.config.mjs. See docs/threat_models/ssi-toolkit-threat-model.md, T6.
+ * eslint.config.mjs. See docs/threat_models/looper-threat-model.md, T6.
  */
 
 // Sheets functions that make outbound HTTP requests — the exfiltration vector for formula injection.
@@ -29,7 +29,7 @@ const WEB_FETCH_PATTERN = /\b(image|importdata|importxml|importhtml|importrange|
 export function sanitizeForCell(value: string): string {
   if (!value.length || !/^[=+-]/.test(value[0])) return value;
   if (WEB_FETCH_PATTERN.test(value)) {
-    return "[SSI Error: AI response contained an external request formula — output rejected]";
+    return "[Error: AI response contained an external request formula — output rejected]";
   }
   return `'${value}`;
 }

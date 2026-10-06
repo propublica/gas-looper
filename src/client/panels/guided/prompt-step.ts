@@ -1,6 +1,6 @@
 import type { Step, StepContext } from "../../types";
 import { AsyncActionButton } from "../../components/async-action-button";
-import { prepRecipe } from "../../services";
+import { fillColumns } from "../../services";
 
 export const SYSTEM_PROMPT_COLUMN_TITLE = "System Prompt";
 
@@ -147,7 +147,7 @@ export class PromptStep implements Step<PromptStepSavedState> {
     }
     ctx.onBusyChange(true);
     this.continueButton!.setLoading();
-    prepRecipe({
+    fillColumns({
       cols: [
         {
           colTitle: SYSTEM_PROMPT_COLUMN_TITLE,

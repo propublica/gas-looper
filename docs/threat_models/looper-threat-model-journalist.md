@@ -1,8 +1,8 @@
-# SSI Toolkit — Journalist Threat Model
+# Looper — Journalist Threat Model
 
 | Field | Value |
 | --- | --- |
-| Project | SSI Toolkit (Google Apps Script add-on for Google Sheets) |
+| Project | Looper (Google Apps Script add-on for Google Sheets) |
 | Scope | Journalist-facing bad outcomes — misuse patterns and workflow failures |
 | Version | 1.0 |
 | Last updated | 2026-06-16 |
@@ -34,9 +34,9 @@
 | ID | Bad Outcome | Tags | Mitigation | Description |
 | --- | --- | --- | --- | --- |
 | BO01 | Poor problem decomposition | OW JH | Educate, Reduce | The reporter cannot translate their reporting question into discrete computational steps. They ask the AI to do too much in one pass, struggle to identify which steps are inference-appropriate vs. spreadsheet-appropriate, and end up with outputs too poorly formatted to act on. |
-| BO02 | Wrong tool for the job | OW | Educate | The reporter reaches for SSI on a task better suited to NotebookLM, Gemini chat, a database query, or a simple regex. They get mediocre results from a tool optimized for something else. |
+| BO02 | Wrong tool for the job | OW | Educate | The reporter reaches for Looper on a task better suited to NotebookLM, Gemini chat, a database query, or a simple regex. They get mediocre results from a tool optimized for something else. |
 | BO03 | AI over-reliance (manual or expert would be better) | OW JH | Educate | The reporter uses AI where manual review or a subject-matter expert would be faster, cheaper, and more reliable. They trust the tool's authority over their own or a colleague's judgment. |
-| BO04 | Data sensitivity not assessed before tool selection | CR | Educate, Reduce | The reporter holds confidential documents, source-identifying materials, embargoed information, or data subject to organizational or legal restrictions on where it may be processed. They decide to use SSI Toolkit without considering that the tool routes content to Google's Gemini servers — outside their organization's controlled infrastructure. The evaluation of whether to use the tool happens without accounting for the external data-handling path. Materials that should never leave a restricted environment are sent to an external AI service before the reporter recognizes this as a problem. |
+| BO04 | Data sensitivity not assessed before tool selection | CR | Educate, Reduce | The reporter holds confidential documents, source-identifying materials, embargoed information, or data subject to organizational or legal restrictions on where it may be processed. They decide to use Looper without considering that the tool routes content to Google's Gemini servers — outside their organization's controlled infrastructure. The evaluation of whether to use the tool happens without accounting for the external data-handling path. Materials that should never leave a restricted environment are sent to an external AI service before the reporter recognizes this as a problem. |
 
 ---
 

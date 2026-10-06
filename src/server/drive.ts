@@ -31,7 +31,7 @@ export function checkDriveService(ui: GoogleAppsScript.Base.Ui): boolean {
 }
 
 /** Prefix applied to temp OCR docs so orphaned ones are identifiable in Drive (T15/R19). */
-const TEMP_OCR_DOC_PREFIX = "[SSI-TEMP] ";
+const TEMP_OCR_DOC_PREFIX = "[LOOPER-TEMP] ";
 
 export interface ExtractTextResult {
   text: string;

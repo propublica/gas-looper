@@ -1,8 +1,8 @@
 import type {
   ExtractTextConfig,
   ImportDriveLinksConfig,
-  PrepRecipeParams,
-  PrepRecipeResult,
+  FillColumnsParams,
+  FillColumnsResult,
   RunConfig,
   RunStats,
 } from "../shared/types";
@@ -67,12 +67,12 @@ export function runTool(fn: string, jobId?: string): Promise<void> {
   });
 }
 
-export function prepRecipe(params: PrepRecipeParams): Promise<PrepRecipeResult> {
+export function fillColumns(params: FillColumnsParams): Promise<FillColumnsResult> {
   return new Promise((resolve, reject) => {
     google.script.run
-      .withSuccessHandler((result: unknown) => resolve(normalizeNulls(result) as PrepRecipeResult))
+      .withSuccessHandler((result: unknown) => resolve(normalizeNulls(result) as FillColumnsResult))
       .withFailureHandler((err: Error) => reject(err))
-      .prepRecipe(params);
+      .fillColumns(params);
   });
 }
 

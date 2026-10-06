@@ -1,5 +1,5 @@
 /**
- * index.ts — Entry point for SSI Drive & AI Tools.
+ * index.ts — Entry point for Looper.
  *
  * This file contains the top-level tool functions (the ones users invoke
  * from the menu) and exposes them to Apps Script via globalThis.
@@ -8,7 +8,6 @@
  * assign to `global.*` — that's the contract with Rollup's IIFE output.
  */
 
-export { SSI } from "./customFunctions";
 import { callGeminiAPIBatch } from "./api";
 import { computeRunStats } from "./cost-tracking";
 import { buildConfigSnapshot } from "../shared/run-stats";
@@ -34,7 +33,6 @@ import {
   resolveColumns,
   writeJobProgress,
   writeRunStats,
-  interpolateTemplate,
   flattenArg,
   markAIOutputRange,
   resolveGroundingUris,
@@ -51,8 +49,8 @@ import { CONFIG } from "./config";
 import type {
   RunConfig,
   RunStats,
-  PrepRecipeParams,
-  PrepRecipeResult,
+  FillColumnsParams,
+  FillColumnsResult,
   ImportDriveLinksConfig,
   ExtractTextConfig,
 } from "../shared/types";
@@ -63,10 +61,7 @@ import type { DriveFileInfo, PromptInput, GeminiRequest } from "./types";
 // ==========================================
 
 export function onOpen(): void {
-  SpreadsheetApp.getUi()
-    .createMenu("📐 SSI Toolkit")
-    .addItem("📐 Open SSI Toolkit", "showSidebar")
-    .addToUi();
+  SpreadsheetApp.getUi().createMenu("➰ Looper").addItem("➰ Open Looper", "showSidebar").addToUi();
 }
 
 /**
@@ -97,7 +92,7 @@ export function getGeminiGemUrl(): string | null {
 
 export function showSidebar(): void {
   const html = HtmlService.createTemplateFromFile("Sidebar");
-  const output = html.evaluate().setTitle("SSI Toolkit").setWidth(300);
+  const output = html.evaluate().setTitle("Looper").setWidth(300);
   SpreadsheetApp.getUi().showSidebar(output);
 }
 
@@ -196,7 +191,7 @@ export function extractText(config: ExtractTextConfig, jobId?: string): void {
     }
 
     // T15/R19: a temp OCR doc that failed automatic cleanup is named with the
-    // [SSI-TEMP] prefix (extractTextUniversal), so it's identifiable in Drive
+    // [LOOPER-TEMP] prefix (extractTextUniversal), so it's identifiable in Drive
     // even if this alert is missed.
     if (orphanedTempDocNames.length > 0) {
       const plural = orphanedTempDocNames.length > 1;
@@ -654,21 +649,19 @@ export function runTool(functionName: string, jobId?: string): void {
 }
 
 // ==========================================
-// RECIPE PREP
+// COLUMN FILL
 // ==========================================
 
-export function prepRecipe({ cols, inputValues }: PrepRecipeParams): PrepRecipeResult {
-  return withErrorScrubbing("Recipe Setup", () => {
+export function fillColumns({ cols, inputValues }: FillColumnsParams): FillColumnsResult {
+  return withErrorScrubbing("Fill Columns", () => {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     const hasFolderSpec = cols.some((col) => col.fillStrategy.kind === "list-drive-folder");
     // When nothing in this call determines a row count from an actual listing
     // (no list-drive-folder spec), fall back to however many rows the sheet
-    // already has data in. Without this, a fill-value/template-only call (e.g.
-    // Guided AI Inference's system-prompt step, writing into a column
-    // alongside pre-existing data) silently wrote exactly 1 row regardless of
-    // the sheet's real size. Existing list-drive-folder-driven recipes are
-    // unaffected: numRows still starts at 1 and is only ever raised by the
-    // folder scan below, exactly as before.
+    // already has data in — e.g. Guided AI Inference's system-prompt step,
+    // writing a fill-value column alongside pre-existing data. With a
+    // list-drive-folder spec, numRows starts at 1 and is only ever raised by
+    // the folder scan below.
     let numRows = hasFolderSpec ? 1 : Math.max(1, sheet.getLastRow() - 1);
 
     // Pass 1: scan Drive folders, cache results, determine numRows
@@ -705,18 +698,6 @@ export function prepRecipe({ cols, inputValues }: PrepRecipeParams): PrepRecipeR
             Array(numRows).fill(col.fillStrategy.value) as string[],
             SpreadsheetApp.WrapStrategy.CLIP,
           );
-          break;
-        case "template": {
-          const resolved = interpolateTemplate(col.fillStrategy.template, inputValues);
-          writeColumn(
-            sheet,
-            colIdx,
-            Array(numRows).fill(resolved) as string[],
-            SpreadsheetApp.WrapStrategy.CLIP,
-          );
-          break;
-        }
-        case "create-empty":
           break;
       }
     }

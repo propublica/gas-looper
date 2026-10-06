@@ -3,7 +3,7 @@
  */
 
 jest.mock("../../../src/client/services", () => ({
-  prepRecipe: jest.fn(),
+  fillColumns: jest.fn(),
 }));
 
 import {
@@ -12,7 +12,7 @@ import {
 } from "../../../src/client/panels/guided/inputs-step";
 import * as services from "../../../src/client/services";
 import type { StepContext } from "../../../src/client/types";
-import type { PrepColSpec } from "../../../src/shared/types";
+import type { FillColumnSpec } from "../../../src/shared/types";
 
 function makeContainer(): HTMLElement {
   document.body.innerHTML = '<div id="app"></div>';
@@ -83,13 +83,13 @@ describe("InputsStep — column rows", () => {
     container.querySelector<HTMLButtonElement>("#gi-continue")!.click();
     await Promise.resolve();
 
-    expect(services.prepRecipe).not.toHaveBeenCalled();
+    expect(services.fillColumns).not.toHaveBeenCalled();
     expect(ctx.onComplete).toHaveBeenCalledTimes(1);
     expect(step.getResult()?.promptCols).toEqual([{ col: "col_a", kind: "auto" }]);
   });
 
   it("removing a row before continuing excludes it", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const container = makeContainer();
     const step = new InputsStep(["col_a"]);
     const ctx = makeCtx();
@@ -123,7 +123,7 @@ describe("InputsStep — column rows", () => {
 
     expect(globalThis.alert).toHaveBeenCalledWith(expect.stringContaining("at least one"));
     expect(ctx.onComplete).not.toHaveBeenCalled();
-    expect(services.prepRecipe).not.toHaveBeenCalled();
+    expect(services.fillColumns).not.toHaveBeenCalled();
   });
 
   it("alerts when the only added row is left incomplete (column never picked)", () => {
@@ -154,8 +154,8 @@ describe("InputsStep — drive-folder rows", () => {
     expect(urlInputs).toHaveLength(2);
   });
 
-  it("calls prepRecipe with one PrepColSpec per folder row, then onComplete", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+  it("calls fillColumns with one FillColumnSpec per folder row, then onComplete", async () => {
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const container = makeContainer();
     const step = new InputsStep([]);
     const ctx = makeCtx();
@@ -168,7 +168,7 @@ describe("InputsStep — drive-folder rows", () => {
     await Promise.resolve();
     await Promise.resolve();
 
-    expect(services.prepRecipe).toHaveBeenCalledWith({
+    expect(services.fillColumns).toHaveBeenCalledWith({
       cols: [
         {
           colTitle: "Drive Link",
@@ -182,7 +182,7 @@ describe("InputsStep — drive-folder rows", () => {
   });
 
   it("reverts the continue button to idle on success too -- StepFlow can re-expand this step's DOM later without a mount(), so a leftover loading state would otherwise stay stuck", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const container = makeContainer();
     const step = new InputsStep([]);
     step.mount(container, makeCtx());
@@ -198,11 +198,11 @@ describe("InputsStep — drive-folder rows", () => {
     expect(continueBtn.textContent).toBe("Import & Continue");
   });
 
-  it("shows a loading state on the continue button while prepRecipe is in flight, then reverts to idle on failure", async () => {
-    let rejectPrepRecipe!: (err: Error) => void;
-    (services.prepRecipe as jest.Mock).mockReturnValue(
+  it("shows a loading state on the continue button while fillColumns is in flight, then reverts to idle on failure", async () => {
+    let rejectFillColumns!: (err: Error) => void;
+    (services.fillColumns as jest.Mock).mockReturnValue(
       new Promise((_resolve, reject) => {
-        rejectPrepRecipe = reject;
+        rejectFillColumns = reject;
       }),
     );
     globalThis.alert = jest.fn();
@@ -220,15 +220,15 @@ describe("InputsStep — drive-folder rows", () => {
     expect(continueBtn.disabled).toBe(true);
     expect(continueBtn.textContent).toContain("Importing...");
 
-    rejectPrepRecipe(new Error("boom"));
+    rejectFillColumns(new Error("boom"));
     for (let i = 0; i < 5; i++) await Promise.resolve();
 
     expect(continueBtn.disabled).toBe(false);
     expect(continueBtn.textContent).toBe("Import & Continue");
   });
 
-  it("calls ctx.onError and alerts (does not call onComplete) when prepRecipe rejects", async () => {
-    (services.prepRecipe as jest.Mock).mockRejectedValue(new Error("Drive down"));
+  it("calls ctx.onError and alerts (does not call onComplete) when fillColumns rejects", async () => {
+    (services.fillColumns as jest.Mock).mockRejectedValue(new Error("Drive down"));
     globalThis.alert = jest.fn();
     const container = makeContainer();
     const step = new InputsStep([]);
@@ -247,7 +247,7 @@ describe("InputsStep — drive-folder rows", () => {
   });
 
   it("avoids title collisions when removing and re-adding folder rows", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
     const container = makeContainer();
     const step = new InputsStep([]);
     const ctx = makeCtx();
@@ -277,8 +277,8 @@ describe("InputsStep — drive-folder rows", () => {
     await Promise.resolve();
     await Promise.resolve();
 
-    const call = (services.prepRecipe as jest.Mock).mock.calls[0][0];
-    const colTitles = (call.cols as PrepColSpec[]).map((col) => col.colTitle);
+    const call = (services.fillColumns as jest.Mock).mock.calls[0][0];
+    const colTitles = (call.cols as FillColumnSpec[]).map((col) => col.colTitle);
     expect(colTitles).toEqual(["Drive Link 2", "Drive Link 3"]);
     // Ensure no duplicates
     expect(new Set(colTitles).size).toBe(colTitles.length);
@@ -391,7 +391,7 @@ describe("InputsStep — setInteractive", () => {
 
 describe("InputsStep — onBusyChange", () => {
   it("reports busy true before the Drive-folder request and false after it resolves", async () => {
-    (services.prepRecipe as jest.Mock).mockResolvedValue(undefined);
+    (services.fillColumns as jest.Mock).mockResolvedValue(undefined);
     const container = makeContainer();
     const step = new InputsStep(["col_a"]);
     const ctx = makeCtx();
@@ -410,7 +410,7 @@ describe("InputsStep — onBusyChange", () => {
   });
 
   it("reports busy false after a failed request", async () => {
-    (services.prepRecipe as jest.Mock).mockRejectedValue(new Error("boom"));
+    (services.fillColumns as jest.Mock).mockRejectedValue(new Error("boom"));
     globalThis.alert = jest.fn();
     const container = makeContainer();
     const step = new InputsStep(["col_a"]);
@@ -441,5 +441,72 @@ describe("InputsStep — onBusyChange", () => {
 
     expect(ctx.onBusyChange).not.toHaveBeenCalled();
     expect(ctx.onComplete).toHaveBeenCalled();
+  });
+});
+
+describe("InputsStep — startWith seed", () => {
+  it("seeds one empty column row on a fresh mount", () => {
+    const container = makeContainer();
+    new InputsStep(["col_a"], "column").mount(container, makeCtx());
+    expect(container.querySelectorAll(".guided-input-row")).toHaveLength(1);
+    expect(container.querySelector(".guided-input-col-picker")).not.toBeNull();
+  });
+
+  it("seeds a column row even when the sheet has no headers", () => {
+    const container = makeContainer();
+    new InputsStep([], "column").mount(container, makeCtx());
+    expect(container.querySelectorAll(".guided-input-col-picker")).toHaveLength(1);
+  });
+
+  it("seeds one empty Drive-folder row whose URL box has focus", () => {
+    const container = makeContainer();
+    new InputsStep([], "drive-folder").mount(container, makeCtx());
+    const urlInputs = container.querySelectorAll<HTMLInputElement>(".guided-input-folder-url");
+    expect(urlInputs).toHaveLength(1);
+    expect(document.activeElement).toBe(urlInputs[0]);
+  });
+
+  it("keeps both add buttons, and a folder added after the seed is 'Drive Link 2'", () => {
+    const container = makeContainer();
+    const step = new InputsStep([], "drive-folder");
+    step.mount(container, makeCtx());
+    container.querySelector<HTMLButtonElement>("#gi-add-column")!.click();
+    container.querySelector<HTMLButtonElement>("#gi-add-folder")!.click();
+    const titles = step.unmount()!.savedState.rows.map((r) => r.colTitle);
+    expect(titles).toEqual(["Drive Link", "", "Drive Link 2"]);
+  });
+
+  it("restores saved rows instead of seeding (Back from Freeform)", () => {
+    const container = makeContainer();
+    const saved: InputsStepSavedState = {
+      rows: [
+        { kind: "column", colTitle: "col_a" },
+        {
+          kind: "drive-folder",
+          url: "https://drive.google.com/drive/folders/abc",
+          colTitle: "Drive Link",
+        },
+      ],
+    };
+    new InputsStep(["col_a"], "column").mount(container, makeCtx(), saved);
+    expect(container.querySelectorAll(".guided-input-row")).toHaveLength(2);
+    expect(container.querySelector<HTMLInputElement>(".guided-input-folder-url")!.value).toBe(
+      "https://drive.google.com/drive/folders/abc",
+    );
+  });
+
+  it("restores saved rows as they are, even all-empty ones, rather than seeding", () => {
+    const container = makeContainer();
+    const saved: InputsStepSavedState = { rows: [{ kind: "column", colTitle: "" }] };
+    new InputsStep(["col_a"], "drive-folder").mount(container, makeCtx(), saved);
+    expect(container.querySelectorAll(".guided-input-row")).toHaveLength(1);
+    expect(container.querySelector(".guided-input-col-picker")).not.toBeNull();
+    expect(container.querySelector(".guided-input-folder-url")).toBeNull();
+  });
+
+  it("does not seed without startWith", () => {
+    const container = makeContainer();
+    new InputsStep(["col_a"]).mount(container, makeCtx());
+    expect(container.querySelectorAll(".guided-input-row")).toHaveLength(0);
   });
 });

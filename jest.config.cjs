@@ -61,11 +61,6 @@ module.exports = {
       branches: 95,
       functions: 100,
     },
-    "./src/server/customFunctions.ts": {
-      statements: 90,
-      branches: 85,
-      functions: 100,
-    },
     "./src/server/inference.ts": {
       statements: 90,
       branches: 80,
@@ -99,11 +94,6 @@ module.exports = {
     "./src/client/components/row-range.ts": {
       statements: 90,
       branches: 85,
-      functions: 100,
-    },
-    "./src/client/components/lockable-field.ts": {
-      statements: 95,
-      branches: 90,
       functions: 100,
     },
     "./src/client/components/run-controls.ts": {
@@ -148,21 +138,6 @@ module.exports = {
       statements: 90,
       branches: 70,
       functions: 85,
-    },
-    "./src/client/components/recipe-prep-cook.ts": {
-      statements: 90,
-      branches: 95,
-      functions: 88,
-    },
-    "./src/client/panels/recipe.ts": {
-      statements: 88,
-      branches: 72,
-      functions: 72,
-    },
-    "./src/client/panels/recipes-list.ts": {
-      statements: 95,
-      branches: 70,
-      functions: 100,
     },
     "./src/client/panels/import-drive-links.ts": {
       statements: 95,

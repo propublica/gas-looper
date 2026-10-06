@@ -29,8 +29,8 @@ describe("constants", () => {
     expect(API_KEY_PROPERTY).toBe("GEMINI_API_KEY");
   });
 
-  // Pinned wording: customFunctions.test.ts asserts /\[SSI Error:.*GEMINI_API_KEY/
-  // against the message this constant produces.
+  // Pinned wording: this message is a DomainError shown to users verbatim, and
+  // api.test.ts asserts /GEMINI_API_KEY/ against it.
   it("uses the established missing-key wording", () => {
     expect(MISSING_API_KEY_MESSAGE).toBe("GEMINI_API_KEY script property not set");
   });

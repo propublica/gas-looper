@@ -186,6 +186,30 @@ describe("Router", () => {
     expect(secondMount.savedState).toBeUndefined(); // cache bypassed entirely
   });
 
+  it("back() remounts a panel with its original params and its latest state", () => {
+    const home = makePanel("home");
+    const guided = makePanel("guided");
+    const freeform = makePanel("freeform");
+    const router = new Router(
+      container,
+      new Map([
+        ["tool-list", home],
+        ["guided-ai-inference", guided],
+        ["configure-ai-run", freeform],
+      ]),
+    );
+    router.start("tool-list");
+    router.navigate("guided-ai-inference", { startWith: "column" });
+    (guided as ReturnType<typeof makePanel>).unmountReturn = { activeStepIndex: 2 };
+    router.navigate("configure-ai-run", { promptCols: ["a"] }); // "Switch to Freeform"
+    router.back();
+
+    const calls = (guided as ReturnType<typeof makePanel>).mountCalls;
+    const remount = calls[1] as { params: unknown; savedState: unknown };
+    expect(remount.params).toEqual({ startWith: "column" });
+    expect(remount.savedState).toEqual({ activeStepIndex: 2 });
+  });
+
   it("navigate() provides a NavigationContext whose navigate/back/canGoBack delegate to router", () => {
     const home = makePanel("home");
     const ai = makePanel("ai");
@@ -200,11 +224,11 @@ describe("Router", () => {
       new Map([
         ["tool-list", home],
         ["configure-ai-run", ai],
-        ["recipes-list", spy],
+        ["extract-text", spy],
       ]),
     );
     router.start("tool-list");
-    router.navigate("recipes-list");
+    router.navigate("extract-text");
     expect(capturedNav).not.toBeNull();
 
     // Verify delegates actually invoke router methods.

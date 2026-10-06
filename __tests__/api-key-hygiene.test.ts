@@ -7,7 +7,7 @@
  * will copy an existing `?key=` snippet from a tutorial, and nothing else in the
  * suite would notice.
  *
- * See docs/threat_models/ssi-toolkit-threat-model.md (T17) and
+ * See docs/threat_models/looper-threat-model.md (T17) and
  * docs/superpowers/specs/2026-07-29-t17-api-key-header-design.md
  */
 

@@ -1,10 +1,10 @@
 /**
- * Shared types for the SSI Toolkit.
+ * Shared types for Looper.
  *
  * IMPORTANT: This file is the client↔server RPC boundary.
  * Only types that cross google.script.run calls belong here.
  * - Server-only types (Gemini API shapes, AppConfig): src/server/types.ts
- * - Client-only types (UI, panels, recipes): src/client/types.ts
+ * - Client-only types (UI, panels): src/client/types.ts
  */
 
 // ── Tool vocabulary ─────────────────────────────────────────────
@@ -49,9 +49,6 @@ export interface RunConfig {
    * When true, runBatchAI applies markdown parsing and rich text formatting to the output
    * column. When false (default), result.text is written directly via setValue.
    * The grounding column is unaffected by this setting.
-   *
-   * Recipes pre-set this via RecipeSettings (client-only) — it flows into RunConfig
-   * through buildRunConfig() without any server echo.
    */
   applyMarkdown?: boolean;
   /**
@@ -64,25 +61,23 @@ export interface RunConfig {
   model?: ModelId;
 }
 
-// ── Recipes ─────────────────────────────────────────────────────
+// ── Column fill ─────────────────────────────────────────────────
 
 export type FillStrategy =
   | { kind: "list-drive-folder"; inputId: string }
-  | { kind: "fill-value"; value: string }
-  | { kind: "template"; template: string }
-  | { kind: "create-empty" };
+  | { kind: "fill-value"; value: string };
 
-export interface PrepColSpec {
+export interface FillColumnSpec {
   colTitle: string;
   fillStrategy: FillStrategy;
 }
 
-export interface PrepRecipeParams {
-  cols: PrepColSpec[];
+export interface FillColumnsParams {
+  cols: FillColumnSpec[];
   inputValues: Record<string, string>;
 }
 
-export interface PrepRecipeResult {
+export interface FillColumnsResult {
   rowRange: { start: number; end: number };
 }
 

@@ -205,9 +205,9 @@ export class ConfigureAIRunPanel implements Panel<Partial<RunConfig>, SavedState
 
   private wireNavButtons(container: HTMLElement): void {
     container.querySelector("#back-btn")?.addEventListener("click", () => this.nav?.back());
-    container.querySelector("#browse-recipes-link")?.addEventListener("click", (e) => {
+    container.querySelector("#try-guided-link")?.addEventListener("click", (e) => {
       e.preventDefault();
-      this.nav?.navigate("recipes-list");
+      this.nav?.navigate("guided-ai-inference");
     });
     container.querySelector("#refresh-btn")?.addEventListener("click", () => {
       const btn = container.querySelector<HTMLButtonElement>("#refresh-btn")!;
@@ -255,7 +255,7 @@ export class ConfigureAIRunPanel implements Panel<Partial<RunConfig>, SavedState
       <p class="panel-loader__message"></p>
     </div>
     <div id="no-headers-msg" class="no-headers-msg" style="display:none">
-      No columns found.<br><br><br>Not sure where to begin? <a id="browse-recipes-link" href="#">Browse recipes</a> to get started.
+      No columns found.<br><br><br>Not sure where to begin? <a id="try-guided-link" href="#">Try Guided</a> to get started.
     </div>
     <div id="config-form" style="display:none">
       <div class="field-group">

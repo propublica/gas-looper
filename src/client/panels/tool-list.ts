@@ -1,6 +1,11 @@
 import type { NavigationContext, Panel } from "../types";
+import type { GuidedParams } from "./guided-ai-inference";
 import { runTool, formatMarkdownSelection } from "../services";
 import { jobStore } from "../job-store";
+
+// Placeholder until our own post on row-by-row AI is published.
+const WHY_ONE_ROW_URL =
+  "https://www.ire.org/2026/08/13/using-llms-in-data-journalism-can-be-trustworthy-if-these-five-elements-are-in-your-methodology/";
 
 export class ToolListPanel implements Panel {
   mount(container: HTMLElement, nav: NavigationContext): void {
@@ -13,90 +18,121 @@ export class ToolListPanel implements Panel {
   }
 
   private wireEvents(container: HTMLElement, nav: NavigationContext): void {
-    container.querySelector("#btn-guided-ai")?.addEventListener("click", () => {
-      nav.navigate("guided-ai-inference");
+    // Explicit params mean a fresh Guided every time: the chosen kind is
+    // always honored, and earlier Guided progress isn't restored from home.
+    const openGuided = (startWith: GuidedParams["startWith"]): void => {
+      const params: GuidedParams = { startWith };
+      nav.navigate("guided-ai-inference", params);
+    };
+    container.querySelector("#btn-guided-columns")?.addEventListener("click", () => {
+      openGuided("column");
+    });
+    container.querySelector("#btn-guided-folder")?.addEventListener("click", () => {
+      openGuided("drive-folder");
     });
     container.querySelector("#btn-run-ai")?.addEventListener("click", () => {
       nav.navigate("configure-ai-run");
     });
-    container.querySelector("#btn-recipes")?.addEventListener("click", () => {
-      nav.navigate("recipes-list");
+    // Collapsed on every mount so the two Guided choices stay the focus.
+    container.querySelector("#more-tools-toggle")?.addEventListener("click", () => {
+      const toggle = container.querySelector<HTMLButtonElement>("#more-tools-toggle")!;
+      const content = container.querySelector<HTMLElement>("#more-tools-content")!;
+      content.hidden = !content.hidden;
+      toggle.setAttribute("aria-expanded", String(!content.hidden));
     });
     container.querySelector("#btn-import-drive-links")?.addEventListener("click", () => {
       nav.navigate("import-drive-links");
     });
-    container.querySelector("#btn-sample-rows")?.addEventListener("click", (e) => {
-      this.dispatchTool(e as MouseEvent, "sampleRowsToEvaluation");
-    });
     container.querySelector("#btn-extract-text")?.addEventListener("click", () => {
       nav.navigate("extract-text");
     });
+    container.querySelector("#btn-sample-rows")?.addEventListener("click", () => {
+      this.dispatchTool("sampleRowsToEvaluation", "🎲 Sample Rows");
+    });
     container.querySelector("#btn-format-markdown")?.addEventListener("click", () => {
       const btn = container.querySelector<HTMLButtonElement>("#btn-format-markdown")!;
-      const originalHtml = btn.innerHTML;
+      const name = btn.querySelector(".tool-row-name")!;
       btn.disabled = true;
-      btn.innerHTML = '<span class="icon">📝</span> Formatting...';
+      name.textContent = "Formatting...";
       formatMarkdownSelection()
         .catch((err: Error) => globalThis.alert(err.message))
         .finally(() => {
           btn.disabled = false;
-          btn.innerHTML = originalHtml;
+          name.textContent = "Format Markdown";
         });
     });
   }
 
-  private dispatchTool(e: MouseEvent, fn: string): void {
-    const btn = e.currentTarget as HTMLButtonElement;
+  private dispatchTool(fn: string, label: string): void {
     const jobId = `${fn}-${Date.now()}`;
-    const label = btn.textContent?.trim() ?? fn;
     jobStore
       .dispatch(jobId, label, runTool(fn, jobId))
       .catch((err: Error) => globalThis.alert(err.message));
   }
 
   private template(): string {
+    const choice = (id: string, icon: string, name: string, sub: string): string => `
+      <button id="${id}" class="home-choice">
+        <span class="icon">${icon}</span>
+        <span>
+          <span class="home-choice-name">${name}</span>
+          <span class="home-choice-sub">${sub}</span>
+        </span>
+      </button>`;
+    const toolRow = (id: string, icon: string, name: string, sub: string): string => `
+      <button id="${id}" class="tool-row">
+        <span class="icon">${icon}</span>
+        <span>
+          <span class="tool-row-name">${name}</span>
+          <span class="tool-row-sub">${sub}</span>
+        </span>
+      </button>`;
     return `
-      <div class="section">
-        <h3>AI</h3>
-        <button id="btn-guided-ai" class="tool-btn">
-          <span class="icon">🧭</span>
-          <div class="tool-btn-text">
-            <span class="tool-btn-name">Guided</span>
-            <span class="tool-btn-sub">Not sure where to begin? Start here.</span>
+      <div class="home">
+        <div class="home-aside">
+          <p class="home-aside-label">How it works</p>
+          <ol class="home-steps">
+            <li>Pick what you want the AI to read.</li>
+            <li>Write the directions it should follow.</li>
+            <li>Run on each row, get responses in a new column.</li>
+          </ol>
+        </div>
+        <p class="home-question">What do you want to work on?</p>
+        ${choice(
+          "btn-guided-columns",
+          "📄",
+          "Columns in this sheet",
+          "Text, links, or Drive files already in your spreadsheet",
+        )}
+        ${choice("btn-guided-folder", "📂", "A Drive folder", "Import a folder, one file per row")}
+        <p class="home-freeform">Already know what to do? <button id="btn-run-ai" class="link-btn">Go Freeform</button></p>
+        <div class="home-tools">
+          <button type="button" id="more-tools-toggle" class="collapsible-header" aria-expanded="false" aria-controls="more-tools-content">
+            <span class="collapsible-label">More tools</span>
+            <span class="collapsible-summary">Import, Extract, Sample…</span>
+            <span class="collapsible-chevron">▶</span>
+          </button>
+          <div id="more-tools-content" class="collapsible-content" hidden>
+            ${toolRow(
+              "btn-import-drive-links",
+              "📂",
+              "Import Drive Links",
+              "Add a folder's files to your sheet, by file type",
+            )}
+            ${toolRow("btn-extract-text", "📜", "Extract Text", "Pull text from Docs, PDFs, and images")}
+            ${toolRow("btn-sample-rows", "🎲", "Sample Rows", "Pick a random set to check by hand")}
+            ${toolRow(
+              "btn-format-markdown",
+              "📝",
+              "Format Markdown",
+              "Turn AI **formatting** into rich text",
+            )}
           </div>
-        </button>
-        <button id="btn-run-ai" class="tool-btn">
-          <span class="icon">▶️</span>
-          <div class="tool-btn-text">
-            <span class="tool-btn-name">Freeform</span>
-            <span class="tool-btn-sub">Full control over inputs, prompts and settings</span>
-          </div>
-        </button>
-        <button id="btn-recipes" class="tool-btn">
-          <span class="icon">🥞</span>
-          <div class="tool-btn-text">
-            <span class="tool-btn-name">Recipes</span>
-            <span class="tool-btn-sub">Ready-made presets for common tasks</span>
-          </div>
-        </button>
-      </div>
-      <div class="section">
-        <h3>Extras</h3>
-        <button id="btn-import-drive-links" class="tool-btn">
-          <span class="icon">📂</span> Import Drive Links
-        </button>
-        <button id="btn-sample-rows" class="tool-btn">
-          <span class="icon">🎲</span> Sample Rows
-        </button>
-        <button id="btn-extract-text" class="tool-btn">
-          <span class="icon">📜</span> Extract Text
-        </button>
-        <button id="btn-format-markdown" class="tool-btn">
-          <span class="icon">📝</span> Format Markdown
-        </button>
-      </div>
-      <div class="status-footer">
-        <strong>SSI Toolkit v{{VERSION}}</strong>
+        </div>
+        <div class="home-footer">
+          <a href="${WHY_ONE_ROW_URL}" target="_blank" rel="noopener">Why one row at a time?</a>
+          <span>Looper v{{VERSION}}</span>
+        </div>
       </div>
     `;
   }

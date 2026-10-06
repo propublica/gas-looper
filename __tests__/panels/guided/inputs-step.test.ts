@@ -443,3 +443,70 @@ describe("InputsStep — onBusyChange", () => {
     expect(ctx.onComplete).toHaveBeenCalled();
   });
 });
+
+describe("InputsStep — startWith seed", () => {
+  it("seeds one empty column row on a fresh mount", () => {
+    const container = makeContainer();
+    new InputsStep(["col_a"], "column").mount(container, makeCtx());
+    expect(container.querySelectorAll(".guided-input-row")).toHaveLength(1);
+    expect(container.querySelector(".guided-input-col-picker")).not.toBeNull();
+  });
+
+  it("seeds a column row even when the sheet has no headers", () => {
+    const container = makeContainer();
+    new InputsStep([], "column").mount(container, makeCtx());
+    expect(container.querySelectorAll(".guided-input-col-picker")).toHaveLength(1);
+  });
+
+  it("seeds one empty Drive-folder row whose URL box has focus", () => {
+    const container = makeContainer();
+    new InputsStep([], "drive-folder").mount(container, makeCtx());
+    const urlInputs = container.querySelectorAll<HTMLInputElement>(".guided-input-folder-url");
+    expect(urlInputs).toHaveLength(1);
+    expect(document.activeElement).toBe(urlInputs[0]);
+  });
+
+  it("keeps both add buttons, and a folder added after the seed is 'Drive Link 2'", () => {
+    const container = makeContainer();
+    const step = new InputsStep([], "drive-folder");
+    step.mount(container, makeCtx());
+    container.querySelector<HTMLButtonElement>("#gi-add-column")!.click();
+    container.querySelector<HTMLButtonElement>("#gi-add-folder")!.click();
+    const titles = step.unmount()!.savedState.rows.map((r) => r.colTitle);
+    expect(titles).toEqual(["Drive Link", "", "Drive Link 2"]);
+  });
+
+  it("restores saved rows instead of seeding (Back from Freeform)", () => {
+    const container = makeContainer();
+    const saved: InputsStepSavedState = {
+      rows: [
+        { kind: "column", colTitle: "col_a" },
+        {
+          kind: "drive-folder",
+          url: "https://drive.google.com/drive/folders/abc",
+          colTitle: "Drive Link",
+        },
+      ],
+    };
+    new InputsStep(["col_a"], "column").mount(container, makeCtx(), saved);
+    expect(container.querySelectorAll(".guided-input-row")).toHaveLength(2);
+    expect(container.querySelector<HTMLInputElement>(".guided-input-folder-url")!.value).toBe(
+      "https://drive.google.com/drive/folders/abc",
+    );
+  });
+
+  it("restores saved rows as they are, even all-empty ones, rather than seeding", () => {
+    const container = makeContainer();
+    const saved: InputsStepSavedState = { rows: [{ kind: "column", colTitle: "" }] };
+    new InputsStep(["col_a"], "drive-folder").mount(container, makeCtx(), saved);
+    expect(container.querySelectorAll(".guided-input-row")).toHaveLength(1);
+    expect(container.querySelector(".guided-input-col-picker")).not.toBeNull();
+    expect(container.querySelector(".guided-input-folder-url")).toBeNull();
+  });
+
+  it("does not seed without startWith", () => {
+    const container = makeContainer();
+    new InputsStep(["col_a"]).mount(container, makeCtx());
+    expect(container.querySelectorAll(".guided-input-row")).toHaveLength(0);
+  });
+});

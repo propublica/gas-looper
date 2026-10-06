@@ -40,7 +40,7 @@ Top to bottom:
 | `.home-choice#btn-guided-columns` | 📄 **Columns in this sheet** / "Text, links, or Drive files already in your spreadsheet" |
 | `.home-choice#btn-guided-folder` | 📂 **A Drive folder** / "Import a folder, one file per row" |
 | `.home-freeform` | "Already know what to do?" + `.link-btn#btn-run-ai` "Go Freeform" |
-| `.home-tools` | "More tools" disclosure, collapsed on every mount: `#more-tools-toggle` (`.collapsible-header` with label "More tools", summary "Import Files, Extract text, Sample, Format", chevron) controlling `#more-tools-content` (`.collapsible-content`), which holds the four `.tool-row` buttons (below). Reuses the RunControls MODEL/TOOLS `.collapsible-*` styles. *(Added after QA so the tools don't compete with the two choices.)* |
+| `.home-tools` | "More tools" disclosure, collapsed on every mount: `#more-tools-toggle` (`.collapsible-header` with label "More tools", summary "Import, Extract, Sample…", chevron) controlling `#more-tools-content` (`.collapsible-content`), which holds the four `.tool-row` buttons (below). Reuses the RunControls MODEL/TOOLS `.collapsible-*` styles. *(Added after QA so the tools don't compete with the two choices.)* |
 | `.home-footer` | "Why one row at a time?" link + `Looper v{{VERSION}}` |
 
 More-tools rows, in this order, keeping today's ids:

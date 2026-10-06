@@ -97,7 +97,7 @@ describe("ToolListPanel — more tools", () => {
     const toggle = c.querySelector<HTMLButtonElement>("#more-tools-toggle")!;
     expect(toggle.querySelector(".collapsible-label")!.textContent).toBe("More tools");
     expect(toggle.querySelector(".collapsible-summary")!.textContent).toBe(
-      "Import Files, Extract text, Sample, Format",
+      "Import, Extract, Sample…",
     );
   });
 

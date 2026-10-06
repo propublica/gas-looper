@@ -101,7 +101,7 @@ export class ToolListPanel implements Panel {
       <div class="home-tools">
         <button type="button" id="more-tools-toggle" class="collapsible-header" aria-expanded="false" aria-controls="more-tools-content">
           <span class="collapsible-label">More tools</span>
-          <span class="collapsible-summary">Import Files, Extract text, Sample, Format</span>
+          <span class="collapsible-summary">Import, Extract, Sample…</span>
           <span class="collapsible-chevron">▶</span>
         </button>
         <div id="more-tools-content" class="collapsible-content" hidden>

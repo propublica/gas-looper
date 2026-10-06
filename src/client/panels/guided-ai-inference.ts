@@ -1,13 +1,20 @@
 import type { NavigationContext, Panel, StepFlowSavedState } from "../types";
 import type { RunConfig } from "../../shared/types";
 import { StepFlow } from "../components/step-flow";
-import { InputsStep } from "./guided/inputs-step";
+import { InputsStep, type InputRow } from "./guided/inputs-step";
 import { PromptStep } from "./guided/prompt-step";
 import { RunStep } from "./guided/run-step";
 import { getSheetHeaders, getGeminiGemUrl } from "../services";
 import { PanelLoader } from "../components/panel-loader";
 
-export class GuidedAIInferencePanel implements Panel<undefined, StepFlowSavedState> {
+export interface GuidedParams {
+  /** Which kind of input row step 1 opens with when it has no work yet.
+   * Sent by the home page with { resume: true }, so earlier progress
+   * arrives as savedState and wins (see InputsStep). */
+  startWith: InputRow["kind"];
+}
+
+export class GuidedAIInferencePanel implements Panel<GuidedParams, StepFlowSavedState> {
   private stepFlow: StepFlow | null = null;
   private inputsStep: InputsStep | null = null;
   private runStep: RunStep | null = null;
@@ -18,7 +25,7 @@ export class GuidedAIInferencePanel implements Panel<undefined, StepFlowSavedSta
   mount(
     container: HTMLElement,
     nav: NavigationContext,
-    _params?: undefined,
+    params?: GuidedParams,
     savedState?: StepFlowSavedState,
   ): void {
     this.nav = nav;
@@ -44,7 +51,7 @@ export class GuidedAIInferencePanel implements Panel<undefined, StepFlowSavedSta
       .then(
         ([headers, gemUrl]) => {
           const promptStep = new PromptStep(gemUrl);
-          const inputsStep = new InputsStep(headers);
+          const inputsStep = new InputsStep(headers, params?.startWith);
           this.inputsStep = inputsStep;
           const runStep = new RunStep(
             () => ({

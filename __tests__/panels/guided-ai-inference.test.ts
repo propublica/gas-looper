@@ -19,9 +19,12 @@ jest.mock("../../src/client/job-store", () => ({
   },
 }));
 
-import { GuidedAIInferencePanel } from "../../src/client/panels/guided-ai-inference";
+import {
+  GuidedAIInferencePanel,
+  type GuidedParams,
+} from "../../src/client/panels/guided-ai-inference";
 import * as services from "../../src/client/services";
-import type { NavigationContext } from "../../src/client/types";
+import type { NavigationContext, StepFlowSavedState } from "../../src/client/types";
 
 const mockNav: NavigationContext = {
   navigate: jest.fn(),
@@ -384,5 +387,61 @@ describe("GuidedAIInferencePanel — persistence", () => {
       }),
       expect.any(String),
     );
+  });
+});
+
+describe("GuidedAIInferencePanel — startWith preset", () => {
+  async function mountWithPreset(
+    startWith: GuidedParams["startWith"],
+    savedState?: StepFlowSavedState,
+  ): Promise<{ container: HTMLElement; panel: GuidedAIInferencePanel }> {
+    (services.getSheetHeaders as jest.Mock).mockResolvedValue(["NoteCol", "OtherCol"]);
+    const container = makeContainer();
+    const panel = new GuidedAIInferencePanel();
+    panel.mount(container, mockNav, { startWith }, savedState);
+    for (let i = 0; i < 5; i++) await Promise.resolve();
+    return { container, panel };
+  }
+
+  function pickSeededColumn(container: HTMLElement): void {
+    container.querySelector<HTMLElement>(".token-add-btn")!.click();
+    container.querySelector<HTMLElement>('.token-option[data-value="NoteCol"]')!.click();
+  }
+
+  it("opens step 1 with one row of the preset kind", async () => {
+    const { container } = await mountWithPreset("drive-folder");
+    expect(container.querySelectorAll(".guided-input-row")).toHaveLength(1);
+    expect(container.querySelector(".guided-input-folder-url")).not.toBeNull();
+  });
+
+  it("restores a filled-in step 1 even when reopened with a different preset", async () => {
+    const { container, panel } = await mountWithPreset("column");
+    pickSeededColumn(container);
+    const saved = panel.unmount();
+
+    const { container: container2 } = await mountWithPreset("drive-folder", saved);
+    expect(container2.querySelectorAll(".guided-input-row")).toHaveLength(1);
+    expect(container2.querySelector(".guided-input-folder-url")).toBeNull();
+    expect(container2.querySelector(".guided-input-col-picker")!.textContent).toContain("NoteCol");
+  });
+
+  it("reopens on the step the user reached, ignoring the preset", async () => {
+    (services.fillColumns as jest.Mock).mockResolvedValue({ rowRange: { start: 2, end: 5 } });
+    const { container, panel } = await mountWithPreset("column");
+    pickSeededColumn(container);
+    container.querySelector<HTMLButtonElement>("#gi-continue")!.click();
+    await Promise.resolve();
+    container.querySelector<HTMLTextAreaElement>("#gp-prompt-text")!.value = "Summarize this.";
+    container.querySelector<HTMLButtonElement>("#gp-continue")!.click();
+    for (let i = 0; i < 5; i++) await Promise.resolve();
+    const saved = panel.unmount();
+    expect(saved?.activeStepIndex).toBe(2);
+
+    const { container: container2 } = await mountWithPreset("drive-folder", saved);
+    const icons = container2.querySelectorAll(".step-icon");
+    expect(icons[0].textContent).toBe("✓");
+    expect(icons[1].textContent).toBe("✓");
+    expect(container2.querySelector("#run-btn")).not.toBeNull();
+    expect(container2.querySelector(".guided-input-folder-url")).toBeNull();
   });
 });

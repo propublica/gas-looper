@@ -36,12 +36,28 @@ beforeEach(() => {
 });
 
 describe("ToolListPanel — entry question", () => {
-  it("asks what the user wants to work on", () => {
+  it("introduces Looper's three steps as an ordered list", () => {
     const c = mountPanel();
-    expect(c.querySelector(".home-question")!.textContent).toBe("What do you want to work on?");
-    expect(c.querySelector(".home-help")!.textContent).toBe(
-      "AI will read each row, one at a time.",
-    );
+    expect(c.querySelector(".home-intro")!.textContent).toBe("Looper works in three steps:");
+    const steps = Array.from(c.querySelectorAll("ol.home-steps li")).map((li) => li.textContent);
+    expect(steps).toEqual([
+      "Pick what you want AI to read.",
+      "Write the directions it should follow.",
+      "Run it on each row and get responses in a new column.",
+    ]);
+  });
+
+  it("asks what the user wants to work on, after the steps", () => {
+    const c = mountPanel();
+    const question = c.querySelector(".home-question")!;
+    expect(question.textContent).toBe("What do you want to work on?");
+    const steps = c.querySelector(".home-steps")!;
+    expect(steps.compareDocumentPosition(question) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("no longer shows the old 'one row at a time' helper line", () => {
+    const c = mountPanel();
+    expect(c.querySelector(".home-help")).toBeNull();
   });
 
   it("renders the two choices with their descriptions, columns first", () => {

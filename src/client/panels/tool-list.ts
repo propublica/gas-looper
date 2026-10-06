@@ -88,8 +88,13 @@ export class ToolListPanel implements Panel {
         </span>
       </button>`;
     return `
+      <p class="home-intro">Looper works in three steps:</p>
+      <ol class="home-steps">
+        <li>Pick what you want AI to read.</li>
+        <li>Write the directions it should follow.</li>
+        <li>Run it on each row and get responses in a new column.</li>
+      </ol>
       <p class="home-question">What do you want to work on?</p>
-      <p class="home-help">AI will read each row, one at a time.</p>
       ${choice(
         "btn-guided-columns",
         "📄",

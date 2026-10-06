@@ -494,16 +494,28 @@ h3 {
 
 /* ── Home page (ToolListPanel) ── */
 
-.home-question {
-  font-size: var(--font-size-400);
-  font-weight: 500;
+.home-intro {
+  font-size: var(--font-size-300);
+  line-height: 1.45;
+  color: var(--text-main);
   margin: 0 0 4px 0;
 }
 
-.home-help {
-  font-size: var(--font-size-200);
-  color: var(--text-secondary);
+.home-steps {
+  font-size: var(--font-size-300);
   line-height: 1.45;
+  color: var(--text-main);
+  margin: 0 0 20px 0;
+  padding-left: 20px;
+}
+
+.home-steps li {
+  margin-bottom: 2px;
+}
+
+.home-question {
+  font-size: var(--font-size-400);
+  font-weight: 500;
   margin: 0 0 12px 0;
 }
 

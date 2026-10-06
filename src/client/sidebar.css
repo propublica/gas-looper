@@ -528,11 +528,14 @@ h3 {
   background: rgba(26, 115, 232, 0.06);
 }
 
+/* Fixed-width box so emoji of different glyph widths (📄 vs 📂) don't
+   push their titles out of line. */
 .home-choice .icon,
 .tool-row .icon {
   margin: 0;
   font-size: var(--font-size-400);
-  width: 20px;
+  flex: none;
+  width: 24px;
 }
 
 .home-choice-name {

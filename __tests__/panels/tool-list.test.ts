@@ -36,10 +36,16 @@ beforeEach(() => {
 });
 
 describe("ToolListPanel — entry question", () => {
-  it("introduces Looper's three steps as an ordered list", () => {
+  function follows(a: Element, b: Element): boolean {
+    return (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+  }
+
+  it("shows the three steps in a 'How it works' aside", () => {
     const c = mountPanel();
-    expect(c.querySelector(".home-intro")!.textContent).toBe("Looper works in three steps:");
-    const steps = Array.from(c.querySelectorAll("ol.home-steps li")).map((li) => li.textContent);
+    expect(c.querySelector(".home-aside .home-aside-label")!.textContent).toBe("How it works");
+    const steps = Array.from(c.querySelectorAll(".home-aside ol.home-steps li")).map(
+      (li) => li.textContent,
+    );
     expect(steps).toEqual([
       "Pick what you want AI to read.",
       "Write the directions it should follow.",
@@ -47,17 +53,26 @@ describe("ToolListPanel — entry question", () => {
     ]);
   });
 
-  it("asks what the user wants to work on, after the steps", () => {
+  it("drops the old intro sentence and helper line", () => {
+    const c = mountPanel();
+    expect(c.querySelector(".home-intro")).toBeNull();
+    expect(c.querySelector(".home-help")).toBeNull();
+  });
+
+  it("asks what the user wants to work on, between the aside and the choices", () => {
     const c = mountPanel();
     const question = c.querySelector(".home-question")!;
     expect(question.textContent).toBe("What do you want to work on?");
-    const steps = c.querySelector(".home-steps")!;
-    expect(steps.compareDocumentPosition(question) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(follows(c.querySelector(".home-aside")!, question)).toBe(true);
+    expect(follows(question, c.querySelector(".home-choice")!)).toBe(true);
   });
 
-  it("no longer shows the old 'one row at a time' helper line", () => {
+  it("renders inside a single .home wrapper whose last child is the footer", () => {
     const c = mountPanel();
-    expect(c.querySelector(".home-help")).toBeNull();
+    const homes = c.querySelectorAll(".home");
+    expect(homes).toHaveLength(1);
+    expect(c.children).toHaveLength(1);
+    expect(homes[0].lastElementChild!.classList.contains("home-footer")).toBe(true);
   });
 
   it("renders the two choices with their descriptions, columns first", () => {

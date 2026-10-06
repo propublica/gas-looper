@@ -8,9 +8,10 @@ Make the sidebar home page start from what a reporter already has, so first-time
 
 ## Decisions
 
-- Copy, layout, and look follow the final mockup from the AI-129 brainstorm (question-led, two choice cards). Existing sidebar look, no new tokens or colors, emoji kept, no marketing copy.
+- Copy, layout, and look follow the final mockup from the AI-129 brainstorm (question-led, two choice cards). Existing sidebar look, no new colors (two tokens were later added for existing values; see below), emoji kept, no marketing copy.
 - Each home-page choice opens Guided with step 1 preset to that input kind.
-- *(Added after QA.)* The header is a short three-step intro ("Looper works in three steps:", then an ordered list) above the question. It replaces the helper line "AI will read each row, one at a time.", whose point step 3 now carries. AI output is called "responses", not "answers" or "results".
+- *(Added after QA.)* A quiet "How it works" aside (light gray box, small dim text, ordered list of three steps) sits above the question, which is a step larger. It replaces the helper line "AI will read each row, one at a time.", whose point step 3 now carries. A first version used a plain "Looper works in three steps:" sentence and full-size list; it competed with the choices, so it was boxed and dimmed. AI output is called "responses", not "answers" or "results".
+- *(Added after QA.)* The footer is pinned to the bottom of the sidebar; the main flow (aside, question, choices, Freeform line, More tools) stays together at the top. Two tokens were added for the aside: `--surface-subtle: #f8f9fa` and `--text-tertiary: #5f6368`. Both values were already used as raw hex elsewhere in `sidebar.css`.
 - **A home-page choice always opens a fresh Guided** with that choice honored. Earlier Guided progress is not restored from the home page. *(Revised after QA; see "Revision" below.)*
 - With no filled-in rows, step 1 opens with one empty row of the chosen kind. Both "+ Column" and "+ Drive folder" stay.
 - "Go Freeform" behaves like today's Freeform button, including restoring earlier Freeform state.
@@ -36,14 +37,13 @@ Top to bottom:
 
 | Element | Content |
 |---|---|
-| `.home-intro` | "Looper works in three steps:" |
-| `ol.home-steps` | 1. "Pick what you want AI to read." 2. "Write the directions it should follow." 3. "Run it on each row and get responses in a new column." |
+| `.home-aside` | Gray box: `.home-aside-label` "How it works", then `ol.home-steps`: 1. "Pick what you want AI to read." 2. "Write the directions it should follow." 3. "Run it on each row and get responses in a new column." |
 | `.home-question` | "What do you want to work on?" |
 | `.home-choice#btn-guided-columns` | 📄 **Columns in this sheet** / "Text, links, or Drive files already in your spreadsheet" |
 | `.home-choice#btn-guided-folder` | 📂 **A Drive folder** / "Import a folder, one file per row" |
 | `.home-freeform` | "Already know what to do?" + `.link-btn#btn-run-ai` "Go Freeform" |
 | `.home-tools` | "More tools" disclosure, collapsed on every mount: `#more-tools-toggle` (`.collapsible-header` with label "More tools", summary "Import, Extract, Sample…", chevron) controlling `#more-tools-content` (`.collapsible-content`), which holds the four `.tool-row` buttons (below). Reuses the RunControls MODEL/TOOLS `.collapsible-*` styles. *(Added after QA so the tools don't compete with the two choices.)* |
-| `.home-footer` | "Why one row at a time?" link + `Looper v{{VERSION}}` |
+| `.home-footer` | "Why one row at a time?" link + `Looper v{{VERSION}}`; last child of `.home`, pinned to the bottom with `margin-top: auto` |
 
 More-tools rows, in this order, keeping today's ids:
 
@@ -74,7 +74,7 @@ The Sample Rows label used to come from the button's `textContent`, which would 
 ### CSS (`src/client/sidebar.css`)
 
 - Delete `.tool-btn`, `.tool-btn:hover`, `.tool-btn:active`, `.tool-btn-text`, `.tool-btn-sub`, the `.tool-btn:has(...)` rules, and `.status-footer`. Only the home page used them.
-- Add one "Home page" block: `.home-intro`, `.home-steps` (+ `li`), `.home-question`, `.home-choice` (+ `:hover`, `-name`, `-sub`), `.home-freeform` (+ `.link-btn` with no padding), `.home-tools`, `.tool-row` (+ `:hover`, `:disabled`, `-sub`), shared `.home-choice .icon, .tool-row .icon`, `.home-footer` (+ `a`). Values come from the mockup.
+- Add one "Home page" block: `.home` (full-height flex column), `.home-aside`, `.home-aside-label`, `.home-steps` (+ `li`), `.home-question`, `.home-choice` (+ `:hover`, `-name`, `-sub`), `.home-freeform` (+ `.link-btn` with no padding), `.home-tools`, `.tool-row` (+ `:hover`, `:disabled`, `-sub`), shared `.home-choice .icon, .tool-row .icon`, `.home-footer` (+ `a`). Values come from the mockup.
 - The choice-card hover background uses the existing `rgba(26, 115, 232, 0.06)` instead of the mockup's new `#f8fbff`. The footer border keeps the existing `#eee`.
 
 ## 2. Opening Guided with a preset
@@ -125,7 +125,7 @@ Written test-first.
   - A filled row plus a preset restores the row (Back from Freeform). *(c)*
   - A flow saved on step 2 or 3 plus a preset reopens on that step (Back from Freeform). *(d)*
 - **`__tests__/panels/tool-list.test.ts`**, rewritten:
-  - Intro copy, the three steps in order, and the question after them; no `.home-help`.
+  - "How it works" label and the three steps in the aside; the question after the aside and before the choices; no `.home-intro` or `.home-help`; everything inside one `.home` whose last child is the footer.
   - Each choice's `navigate` call: exactly `("guided-ai-inference", { startWith })`, with no third argument.
   - Bare Freeform navigate.
   - "More tools" label and summary; collapsed by default; toggle opens and closes and keeps `aria-expanded` in sync.
@@ -143,7 +143,8 @@ Written test-first.
 
 The dev sheet also has the Marketplace Looper installed, which can mask branch changes. Make sure you are testing the branch build.
 
-1. The home page matches the mockup (with the three-step intro added), with working hover states on cards and rows. Step 3 wraps cleanly, with its number aligned to the wrapped line.
+1. The home page matches the mockup (with the "How it works" aside added), with working hover states on cards and rows. The aside reads as quiet context and the question and cards lead. Steps 2 and 3 wrap cleanly inside the box.
+2a. The footer sits at the bottom of the sidebar with empty space above it. Expanding More tools grows into that space; on a short window everything scrolls and the footer ends up below More tools without overlapping. The job strip (start a Sample Rows run) appears below the panel without covering the footer.
 2. **Fresh:** "Columns in this sheet" opens one empty column picker. Back, then "A Drive folder" opens one folder box with the cursor in it. *(a)*
 3. **Always fresh from home:** pick a column in step 1 (or finish steps 1 and 2). Back, then click either choice: Guided starts fresh with that choice's row. *(b)*
 4. **Back stack:** finish steps 1 and 2, then "Switch to Freeform", then Back: Guided is as left, on step 3. *(c, d)*

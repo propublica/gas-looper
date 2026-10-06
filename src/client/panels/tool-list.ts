@@ -88,47 +88,51 @@ export class ToolListPanel implements Panel {
         </span>
       </button>`;
     return `
-      <p class="home-intro">Looper works in three steps:</p>
-      <ol class="home-steps">
-        <li>Pick what you want AI to read.</li>
-        <li>Write the directions it should follow.</li>
-        <li>Run it on each row and get responses in a new column.</li>
-      </ol>
-      <p class="home-question">What do you want to work on?</p>
-      ${choice(
-        "btn-guided-columns",
-        "📄",
-        "Columns in this sheet",
-        "Text, links, or Drive files already in your spreadsheet",
-      )}
-      ${choice("btn-guided-folder", "📂", "A Drive folder", "Import a folder, one file per row")}
-      <p class="home-freeform">Already know what to do? <button id="btn-run-ai" class="link-btn">Go Freeform</button></p>
-      <div class="home-tools">
-        <button type="button" id="more-tools-toggle" class="collapsible-header" aria-expanded="false" aria-controls="more-tools-content">
-          <span class="collapsible-label">More tools</span>
-          <span class="collapsible-summary">Import, Extract, Sample…</span>
-          <span class="collapsible-chevron">▶</span>
-        </button>
-        <div id="more-tools-content" class="collapsible-content" hidden>
-          ${toolRow(
-            "btn-import-drive-links",
-            "📂",
-            "Import Drive Links",
-            "Add a folder's files to your sheet, by file type",
-          )}
-          ${toolRow("btn-extract-text", "📜", "Extract Text", "Pull text from Docs, PDFs, and images")}
-          ${toolRow("btn-sample-rows", "🎲", "Sample Rows", "Pick a random set to check by hand")}
-          ${toolRow(
-            "btn-format-markdown",
-            "📝",
-            "Format Markdown",
-            "Turn AI **formatting** into rich text",
-          )}
+      <div class="home">
+        <div class="home-aside">
+          <p class="home-aside-label">How it works</p>
+          <ol class="home-steps">
+            <li>Pick what you want AI to read.</li>
+            <li>Write the directions it should follow.</li>
+            <li>Run it on each row and get responses in a new column.</li>
+          </ol>
         </div>
-      </div>
-      <div class="home-footer">
-        <a href="${WHY_ONE_ROW_URL}" target="_blank" rel="noopener">Why one row at a time?</a>
-        <span>Looper v{{VERSION}}</span>
+        <p class="home-question">What do you want to work on?</p>
+        ${choice(
+          "btn-guided-columns",
+          "📄",
+          "Columns in this sheet",
+          "Text, links, or Drive files already in your spreadsheet",
+        )}
+        ${choice("btn-guided-folder", "📂", "A Drive folder", "Import a folder, one file per row")}
+        <p class="home-freeform">Already know what to do? <button id="btn-run-ai" class="link-btn">Go Freeform</button></p>
+        <div class="home-tools">
+          <button type="button" id="more-tools-toggle" class="collapsible-header" aria-expanded="false" aria-controls="more-tools-content">
+            <span class="collapsible-label">More tools</span>
+            <span class="collapsible-summary">Import, Extract, Sample…</span>
+            <span class="collapsible-chevron">▶</span>
+          </button>
+          <div id="more-tools-content" class="collapsible-content" hidden>
+            ${toolRow(
+              "btn-import-drive-links",
+              "📂",
+              "Import Drive Links",
+              "Add a folder's files to your sheet, by file type",
+            )}
+            ${toolRow("btn-extract-text", "📜", "Extract Text", "Pull text from Docs, PDFs, and images")}
+            ${toolRow("btn-sample-rows", "🎲", "Sample Rows", "Pick a random set to check by hand")}
+            ${toolRow(
+              "btn-format-markdown",
+              "📝",
+              "Format Markdown",
+              "Turn AI **formatting** into rich text",
+            )}
+          </div>
+        </div>
+        <div class="home-footer">
+          <a href="${WHY_ONE_ROW_URL}" target="_blank" rel="noopener">Why one row at a time?</a>
+          <span>Looper v{{VERSION}}</span>
+        </div>
       </div>
     `;
   }

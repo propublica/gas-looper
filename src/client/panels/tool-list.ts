@@ -33,6 +33,13 @@ export class ToolListPanel implements Panel {
     container.querySelector("#btn-run-ai")?.addEventListener("click", () => {
       nav.navigate("configure-ai-run");
     });
+    // Collapsed on every mount so the two Guided choices stay the focus.
+    container.querySelector("#more-tools-toggle")?.addEventListener("click", () => {
+      const toggle = container.querySelector<HTMLButtonElement>("#more-tools-toggle")!;
+      const content = container.querySelector<HTMLElement>("#more-tools-content")!;
+      content.hidden = !content.hidden;
+      toggle.setAttribute("aria-expanded", String(!content.hidden));
+    });
     container.querySelector("#btn-import-drive-links")?.addEventListener("click", () => {
       nav.navigate("import-drive-links");
     });
@@ -92,21 +99,27 @@ export class ToolListPanel implements Panel {
       ${choice("btn-guided-folder", "📂", "A Drive folder", "Import a folder, one file per row")}
       <p class="home-freeform">Already know what to do? <button id="btn-run-ai" class="link-btn">Go Freeform</button></p>
       <div class="home-tools">
-        <h3>Other tools</h3>
-        ${toolRow(
-          "btn-import-drive-links",
-          "📂",
-          "Import Drive Links",
-          "Add a folder's files to your sheet, by file type",
-        )}
-        ${toolRow("btn-extract-text", "📜", "Extract Text", "Pull text from Docs, PDFs, and images")}
-        ${toolRow("btn-sample-rows", "🎲", "Sample Rows", "Pick a random set to check by hand")}
-        ${toolRow(
-          "btn-format-markdown",
-          "📝",
-          "Format Markdown",
-          "Turn AI **formatting** into rich text",
-        )}
+        <button type="button" id="more-tools-toggle" class="collapsible-header" aria-expanded="false" aria-controls="more-tools-content">
+          <span class="collapsible-label">More tools</span>
+          <span class="collapsible-summary">Import Files, Extract text, Sample, Format</span>
+          <span class="collapsible-chevron">▶</span>
+        </button>
+        <div id="more-tools-content" class="collapsible-content" hidden>
+          ${toolRow(
+            "btn-import-drive-links",
+            "📂",
+            "Import Drive Links",
+            "Add a folder's files to your sheet, by file type",
+          )}
+          ${toolRow("btn-extract-text", "📜", "Extract Text", "Pull text from Docs, PDFs, and images")}
+          ${toolRow("btn-sample-rows", "🎲", "Sample Rows", "Pick a random set to check by hand")}
+          ${toolRow(
+            "btn-format-markdown",
+            "📝",
+            "Format Markdown",
+            "Turn AI **formatting** into rich text",
+          )}
+        </div>
       </div>
       <div class="home-footer">
         <a href="${WHY_ONE_ROW_URL}" target="_blank" rel="noopener">Why one row at a time?</a>

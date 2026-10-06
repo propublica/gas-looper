@@ -40,10 +40,10 @@ Top to bottom:
 | `.home-choice#btn-guided-columns` | 📄 **Columns in this sheet** / "Text, links, or Drive files already in your spreadsheet" |
 | `.home-choice#btn-guided-folder` | 📂 **A Drive folder** / "Import a folder, one file per row" |
 | `.home-freeform` | "Already know what to do?" + `.link-btn#btn-run-ai` "Go Freeform" |
-| `.home-tools` | `<h3>Other tools</h3>` then four `.tool-row` buttons (below) |
+| `.home-tools` | "More tools" disclosure, collapsed on every mount: `#more-tools-toggle` (`.collapsible-header` with label "More tools", summary "Import Files, Extract text, Sample, Format", chevron) controlling `#more-tools-content` (`.collapsible-content`), which holds the four `.tool-row` buttons (below). Reuses the RunControls MODEL/TOOLS `.collapsible-*` styles. *(Added after QA so the tools don't compete with the two choices.)* |
 | `.home-footer` | "Why one row at a time?" link + `Looper v{{VERSION}}` |
 
-Other-tools rows, in this order, keeping today's ids:
+More-tools rows, in this order, keeping today's ids:
 
 | Id | Icon | Name | Description |
 |---|---|---|---|
@@ -126,7 +126,8 @@ Written test-first.
   - Question copy.
   - Each choice's `navigate` call: exactly `("guided-ai-inference", { startWith })`, with no third argument.
   - Bare Freeform navigate.
-  - Other-tools order and copy.
+  - "More tools" label and summary; collapsed by default; toggle opens and closes and keeps `aria-expanded` in sync.
+  - More-tools order and copy.
   - Footer link text, `target="_blank"`, and version.
   - Sample Rows job label.
   - Format Markdown in-flight and error states.
@@ -146,5 +147,5 @@ The dev sheet also has the Marketplace Looper installed, which can mask branch c
 4. **Back stack:** finish steps 1 and 2, then "Switch to Freeform", then Back: Guided is as left, on step 3. *(c, d)*
 5. **Freeform handoff wins:** open Freeform and set some columns, go home, open Guided, "Switch to Freeform": Freeform shows Guided's config. *(e)*
 6. "Go Freeform" opens Freeform, and Freeform → Back → Go Freeform restores its earlier state.
-7. Other tools still work: Sample Rows shows "🎲 Sample Rows" in the job strip, and Format Markdown shows "Formatting..." while running.
+7. "More tools" starts collapsed, its summary fits on one line with no "…", the toggle opens and closes (chevron rotates; Tab then Enter/Space works), and expanded tools still work: Sample Rows shows "🎲 Sample Rows" in the job strip, and Format Markdown shows "Formatting..." while running.
 8. "Why one row at a time?" opens the IRE post in a new tab, and the footer shows the right version.

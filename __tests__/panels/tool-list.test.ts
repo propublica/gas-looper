@@ -91,11 +91,40 @@ describe("ToolListPanel — entry question", () => {
   });
 });
 
-describe("ToolListPanel — other tools", () => {
-  it("renders the other tools as rows with one-line descriptions, in order", () => {
+describe("ToolListPanel — more tools", () => {
+  it("labels the disclosure 'More tools' with a one-line summary", () => {
     const c = mountPanel();
-    expect(c.querySelector(".home-tools h3")!.textContent).toBe("Other tools");
-    const rows = Array.from(c.querySelectorAll(".tool-row")).map((row) => [
+    const toggle = c.querySelector<HTMLButtonElement>("#more-tools-toggle")!;
+    expect(toggle.querySelector(".collapsible-label")!.textContent).toBe("More tools");
+    expect(toggle.querySelector(".collapsible-summary")!.textContent).toBe(
+      "Import Files, Extract text, Sample, Format",
+    );
+  });
+
+  it("starts collapsed", () => {
+    const c = mountPanel();
+    expect(c.querySelector<HTMLElement>("#more-tools-content")!.hidden).toBe(true);
+    expect(c.querySelector("#more-tools-toggle")!.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("clicking the toggle opens the tools, and clicking again closes them", () => {
+    const c = mountPanel();
+    const toggle = c.querySelector<HTMLButtonElement>("#more-tools-toggle")!;
+    const content = c.querySelector<HTMLElement>("#more-tools-content")!;
+
+    toggle.click();
+    expect(content.hidden).toBe(false);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+
+    toggle.click();
+    expect(content.hidden).toBe(true);
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("renders the tools inside the disclosure as rows with one-line descriptions, in order", () => {
+    const c = mountPanel();
+    const content = c.querySelector("#more-tools-content")!;
+    const rows = Array.from(content.querySelectorAll(".tool-row")).map((row) => [
       row.id,
       row.querySelector(".tool-row-name")!.textContent,
       row.querySelector(".tool-row-sub")!.textContent,

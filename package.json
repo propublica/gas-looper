@@ -1,6 +1,6 @@
 {
   "name": "gas-looper",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "description": "Looper — a Google Sheets add-on for running AI and document tools across spreadsheet rows",
   "private": true,
   "type": "module",

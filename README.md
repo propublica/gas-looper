@@ -31,7 +31,7 @@ For help writing your first prompt, check out [looper-skills](https://github.com
 
 The easiest way to get started is to open our [template sheet](https://docs.google.com/spreadsheets/d/1Nti37ya2PzO7LeJ03YFCmRdNn2U2RsHNPa58Hzi8HzI/edit?usp=sharing). It comes with Looper pre-installed and a tutorial walkthrough.
 
-You'll likely see a **Request access** prompt — click it. We approve requests individually.
+You'll likely see a **Request access** prompt — click it and send us a message introducing yourself. We approve requests individually.
 
 When you're ready to begin, open the **Installation** tab and follow its setup steps. It will walk you through copying the template, configuring an API key and the relevant permissions. See [Your data](#your-data) for more privacy information.
 
